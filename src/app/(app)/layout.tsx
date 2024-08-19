@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Oregano } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/ui/cn";
 import { Footer } from "@/components/Footer";
@@ -10,6 +10,12 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "700", "800"],
+});
+
+const oregano = Oregano({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -38,6 +44,7 @@ export default function RootLayout({
         <body
           className={cn(
             inter.variable,
+            oregano.variable,
             "grid grid-rows-[auto_minmax(0,1fr)_auto] min-h-[100dvh]"
           )}
         >

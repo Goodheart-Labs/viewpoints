@@ -60,7 +60,7 @@ function Poll({
       className="bg-white/50 rounded-lg p-4 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] hover:bg-white transition-colors"
     >
       <div className="grid gap-1">
-        <h2 className="text-lg font-medium text-gray-900 leading-tight text-pretty">
+        <h2 className="text-lg font-medium text-neutral-900 leading-tight text-pretty">
           {title}
         </h2>
         <div className="flex items-center text-xs text-neutral-400 space-x-2">
@@ -79,7 +79,7 @@ function Poll({
             height={24}
           />
         )}
-        <span className="text-sm text-gray-700">{author_name}</span>
+        <span className="text-sm text-neutral-700">{author_name}</span>
       </div>
     </Link>
   );
