@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-sans), sans-serif;
+}
+
+html {
+  @apply antialiased;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+@layer components {
+  *,
+  ::before,
+  ::after {
+    --tw-ring-color: theme("colors.foreground/0.25");
+    @apply border-neutral-200;
+  }
+}
