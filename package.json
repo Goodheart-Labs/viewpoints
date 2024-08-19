@@ -36,6 +36,7 @@
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
     "@types/pg": "^8.11.6",
+    "@types/uuid": "^10.0.0",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "cmdk": "latest",
@@ -49,7 +50,8 @@
     "react-hook-form": "latest",
     "react-icons": "latest",
     "sonner": "latest",
-    "tailwind-merge": "latest"
+    "tailwind-merge": "latest",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "typescript": "^5",

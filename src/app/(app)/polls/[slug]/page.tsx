@@ -1,3 +1,6 @@
+import { getVisitorId } from "@/lib/getVisitorId";
+
 export default async function PollPage() {
-  return <div>hi there</div>;
+  const visitorId = await getVisitorId();
+  return <div>{visitorId}</div>;
 }
