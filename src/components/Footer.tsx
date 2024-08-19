@@ -16,36 +16,65 @@ export function Footer() {
           />
 
           <div className="flex space-x-6">
-            <Link
+            <FooterLink
               href="https://chat.whatsapp.com/CTbNWGEebFEJoheWjCXm5G"
-              target="_blank"
-              rel="noopener noreferrer"
+              icon={FaWhatsapp}
             >
-              <FaWhatsapp className="text-2xl" />
-            </Link>
-            <Link
+              WhatsApp
+            </FooterLink>
+            <FooterLink
               href="https://github.com/Goodheart-Labs/viewpoints.xyz"
-              target="_blank"
-              rel="noopener noreferrer"
+              icon={FiGithub}
             >
-              <FiGithub className="text-2xl" />
-            </Link>
-            <Link
+              GitHub
+            </FooterLink>
+            <FooterLink
               href="https://twitter.com/nathanpmyoung"
-              target="_blank"
-              rel="noopener noreferrer"
+              icon={FiTwitter}
             >
-              <FiTwitter className="text-2xl" />
-            </Link>
+              Twitter
+            </FooterLink>
           </div>
 
-          <Link href="/privacy-policy" className="text-sm">
+          <Link href="/privacy-policy" className="text-sm hover:opacity-50">
             Privacy Policy
           </Link>
 
-          <p className="text-sm">© {new Date().getFullYear()} Goodheart Labs</p>
+          <p className="text-sm">
+            ©{new Date().getFullYear()}&nbsp;
+            <Link
+              href="https://goodheartlabs.com/"
+              className="hover:opacity-50"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Goodheart Labs
+            </Link>
+          </p>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterLink({
+  href,
+  icon: Icon,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+  icon: typeof FiGithub;
+}) {
+  return (
+    <Link
+      href={href}
+      className="text-sm flex items-center gap-1 hover:opacity-50"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Icon />
+      {children}
+    </Link>
   );
 }

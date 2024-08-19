@@ -51,7 +51,7 @@ export function PollStatement({
         <div className="flex space-x-4 justify-center">
           <StatementButton
             icon={FiThumbsDown}
-            className="bg-red-400 text-white hover:bg-red-500"
+            className="bg-red-500 text-white hover:bg-red-600"
           >
             Disagree
           </StatementButton>
@@ -63,7 +63,7 @@ export function PollStatement({
           </StatementButton>
           <StatementButton
             icon={FiThumbsUp}
-            className="bg-green-400 text-white hover:bg-green-500"
+            className="bg-green-500 text-white hover:bg-green-600"
           >
             Agree
           </StatementButton>

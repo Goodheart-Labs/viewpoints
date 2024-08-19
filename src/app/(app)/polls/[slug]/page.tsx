@@ -14,9 +14,9 @@ export default async function PollPage({
   const { poll, statements } = await getPoll(slug, visitorId);
 
   return (
-    <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-8">
-      <div className="grid gap-2">
-        <div className="flex gap-1 items-center">
+    <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
+      <div className="grid">
+        <div className="flex gap-1 items-center mb-4">
           <PollButton icon={FiLink}>Copy Link</PollButton>
           <PollButton icon={LuQrCode}>Show QR Code</PollButton>
           <PollButton icon={FiPlus}>Add Statement</PollButton>
@@ -27,7 +27,7 @@ export default async function PollPage({
         <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900">
           {poll.title}
         </h1>
-        <h2 className="text-lg text-neutral-400 text-pretty -mt-1">
+        <h2 className="text-lg text-neutral-400 text-pretty">
           {poll.core_question ||
             "What do you think of the following statements?"}
         </h2>

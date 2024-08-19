@@ -6,7 +6,7 @@ import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 export function Header() {
   return (
     <header>
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3">
         <Link href="/">
           <Image src="/logo.png" alt="viewpoints.xyz" width={160} height={25} />
         </Link>
