@@ -57,7 +57,7 @@ function Poll({
   return (
     <Link
       href={`/polls/${slug}`}
-      className="bg-white/50 rounded-lg p-4 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] hover:bg-white transition-colors"
+      className="bg-white rounded-lg p-6 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] border shadow-sm"
     >
       <div className="grid gap-1">
         <h2 className="text-lg font-medium text-neutral-900 leading-tight text-pretty">

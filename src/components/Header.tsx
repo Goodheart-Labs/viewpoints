@@ -1,6 +1,13 @@
 import Link, { LinkProps } from "next/link";
 import Image from "next/image";
-import { FiHome, FiBookOpen, FiPlus, FiLogIn } from "react-icons/fi";
+import {
+  FiHome,
+  FiBookOpen,
+  FiPlus,
+  FiLogIn,
+  FiList,
+  FiGrid,
+} from "react-icons/fi";
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 
 export function Header() {
@@ -29,6 +36,7 @@ export function Header() {
 
 const linkStyles =
   "text-sm font-medium text-neutral-500 hover:text-neutral-700 flex items-center gap-2";
+
 function NavLink({
   children,
   icon: Icon,
@@ -54,7 +62,12 @@ function AuthLink() {
         </SignInButton>
       </SignedOut>
       <SignedIn>
-        <UserButton />
+        <>
+          <NavLink href="/user/polls" icon={FiGrid}>
+            My Polls
+          </NavLink>
+          <UserButton />
+        </>
       </SignedIn>
     </>
   );
