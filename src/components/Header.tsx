@@ -1,6 +1,7 @@
 import Link, { LinkProps } from "next/link";
 import Image from "next/image";
 import { FiHome, FiBookOpen, FiPlus, FiLogIn } from "react-icons/fi";
+import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 
 export function Header() {
   return (
@@ -19,27 +20,42 @@ export function Header() {
           <NavLink href="/create-poll" icon={FiPlus}>
             Create a Poll
           </NavLink>
-          <NavLink href="/sign-in" icon={FiLogIn}>
-            Sign In
-          </NavLink>
+          <AuthLink />
         </div>
       </div>
     </header>
   );
 }
 
+const linkStyles =
+  "text-sm font-medium text-neutral-500 hover:text-neutral-700 flex items-center gap-2";
 function NavLink({
   children,
   icon: Icon,
   ...props
 }: LinkProps & { children: React.ReactNode; icon: typeof FiHome }) {
   return (
-    <Link
-      className="text-sm font-medium text-neutral-500 hover:text-neutral-700 flex items-center gap-2"
-      {...props}
-    >
+    <Link className={linkStyles} {...props}>
       <Icon size={16} />
       {children}
     </Link>
+  );
+}
+
+function AuthLink() {
+  return (
+    <>
+      <SignedOut>
+        <SignInButton>
+          <div className={linkStyles}>
+            <FiLogIn size={16} />
+            Sign In
+          </div>
+        </SignInButton>
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+    </>
   );
 }
