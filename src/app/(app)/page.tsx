@@ -41,8 +41,10 @@ function getPolls() {
         .as("respondentCount"),
     ])
     .where("polls.visibility", "=", "public")
-    .orderBy("polls.id", "desc")
+    .where("statements.visible", "=", true)
     .groupBy(["polls.id", "authors.name", "authors.avatarUrl"])
+    .having((eb) => eb.fn.count("statements.id"), ">", 0)
+    .orderBy("polls.id", "desc")
     .execute();
 }
 
