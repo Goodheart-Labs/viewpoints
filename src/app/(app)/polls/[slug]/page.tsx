@@ -1,9 +1,10 @@
 import { getPoll } from "@/lib/getPoll";
-import { getVisitorId } from "@/lib/getVisitorId";
+
 import { FiCode, FiBarChart, FiPlus, FiLink } from "react-icons/fi";
 import { LuQrCode } from "react-icons/lu";
 
 import { PollStatement } from "@/components/PollStatement";
+import { getVisitorId } from "@/lib/actions";
 
 export default async function PollPage({
   params: { slug },

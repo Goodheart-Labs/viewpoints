@@ -2,7 +2,7 @@ import Link from "next/link";
 import { db } from "@/db/client";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import { FiEye, FiPlus, FiSettings, FiEdit2 } from "react-icons/fi";
+import { FiEye, FiPlus, FiSettings } from "react-icons/fi";
 import { Button } from "@/ui/button";
 import { isUserPro } from "@/lib/isUserPro";
 import { UpgradeLink } from "@/components/UpgradeLink";
@@ -24,9 +24,11 @@ export default async function Page() {
     <div className="w-full max-w-5xl mx-auto grid gap-4 content-start p-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-neutral-900">Your Polls</h1>
-        <Button variant="highlight">
-          <FiPlus className="w-4 h-4 mr-2" />
-          Create Poll
+        <Button variant="highlight" asChild>
+          <Link href="/new-poll">
+            <FiPlus className="w-4 h-4 mr-2" />
+            Create Poll
+          </Link>
         </Button>
       </header>
       <div className="grid gap-2">
@@ -73,7 +75,8 @@ function UserPoll({
 async function getUserPolls(userId: string) {
   return db
     .selectFrom("polls")
-    .select(["id", "title", "core_question", "slug"])
+    .select(["id", "title", "core_question", "slug", "created_at"])
     .where("user_id", "=", userId)
+    .orderBy("created_at", "desc")
     .execute();
 }

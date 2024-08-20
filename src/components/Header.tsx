@@ -25,7 +25,7 @@ export function Header() {
           <NavLink href="/how-it-works" icon={FiBookOpen}>
             How It Works
           </NavLink>
-          <NavLink href="/create-poll" icon={FiPlus}>
+          <NavLink href="/new-poll" icon={FiPlus}>
             Create a Poll
           </NavLink>
           <AuthLink />
