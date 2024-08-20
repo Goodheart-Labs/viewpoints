@@ -5,6 +5,7 @@ import { LuQrCode } from "react-icons/lu";
 
 import { PollStatement } from "@/components/PollStatement";
 import { getVisitorId } from "@/lib/actions";
+import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 
 export default async function PollPage({
   params: { slug },
@@ -29,8 +30,7 @@ export default async function PollPage({
           {poll.title}
         </h1>
         <h2 className="text-lg text-neutral-400 text-pretty">
-          {poll.core_question ||
-            "What do you think of the following statements?"}
+          {poll.core_question || DEFAULT_CORE_QUESTION}
         </h2>
       </div>
       <div className="grid gap-2">

@@ -1,7 +1,7 @@
 "use client";
 
 import { createPoll, getNewPollSlug } from "@/lib/actions";
-import { FieldError, useForm, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/ui/input";
 import { Textarea } from "@/ui/textarea";
@@ -17,6 +17,8 @@ import { Label } from "@/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import { CreatePoll, createPollSchema } from "@/lib/schemas";
 import { usePendingAction } from "@/lib/usePendingAction";
+import { FormField } from "./FormField";
+import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 
 export function NewPollForm() {
   const [isPending, handleAction] = usePendingAction(createPoll);
@@ -28,6 +30,7 @@ export function NewPollForm() {
       with_demographic_questions: false,
       new_statements_visible_by_default: true,
       poll_type: "public",
+      question: DEFAULT_CORE_QUESTION,
     },
     disabled: isPending,
   });
@@ -55,7 +58,7 @@ export function NewPollForm() {
       </FormField>
       <FormField
         title="Main Question"
-        description="What's the key question you're trying to answer?"
+        description={DEFAULT_CORE_QUESTION}
         errors={form.formState.errors.question}
       >
         <Input
@@ -162,30 +165,5 @@ export function NewPollForm() {
       </Accordion>
       <Button type="submit">Save & Publish</Button>
     </form>
-  );
-}
-
-function FormField({
-  title,
-  description,
-  errors,
-  children,
-}: {
-  title: string;
-  description: string;
-  errors: FieldError | undefined;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="grid gap-3">
-      <div className="grid gap-0.5">
-        <h3 className="text-xl font-semibold leading-6 text-neutral-900">
-          {title}
-        </h3>
-        <p className="text-neutral-500 text-base">{description}</p>
-      </div>
-      {children}
-      {errors && <p className="text-sm text-red-500">{errors.message}</p>}
-    </div>
   );
 }

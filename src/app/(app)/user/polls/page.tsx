@@ -6,6 +6,7 @@ import { FiEye, FiPlus, FiSettings } from "react-icons/fi";
 import { Button } from "@/ui/button";
 import { isUserPro } from "@/lib/isUserPro";
 import { UpgradeLink } from "@/components/UpgradeLink";
+import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -55,7 +56,7 @@ function UserPoll({
       <Link href={`/polls/${slug}`} className="grid p-6 flex-grow">
         <h2 className="text-lg font-medium text-neutral-900">{title}</h2>
         <span className="text-neutral-500 text-sm text-pretty overflow-hidden text-ellipsis whitespace-nowrap">
-          {core_question ? core_question : <em>No question</em>}
+          {core_question ? core_question : DEFAULT_CORE_QUESTION}
         </span>
       </Link>
       <div className="flex gap-4 p-4">

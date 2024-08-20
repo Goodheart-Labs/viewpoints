@@ -58,7 +58,10 @@ export async function createPoll({
   const visitorId = getVisitorIdOrThrow();
   const { protect } = auth();
 
-  if (!user || !visitorId) return protect();
+  if (!user || !visitorId) {
+    protect();
+    return;
+  }
 
   // Switch to this if allowing anonymous poll creators
   // if (!user && !visitorId) return protect();
@@ -147,4 +150,97 @@ export async function getVisitorId() {
     redirect(headers().get("x-pathname") || "/");
   }
   return visitorId;
+}
+
+/**
+ * Changes the visibility of a poll
+ */
+export async function changePollVisibility({
+  pollId,
+  visibility,
+}: {
+  pollId: number;
+  visibility: "public" | "hidden" | "private";
+}) {
+  await db
+    .updateTable("polls")
+    .set({ visibility })
+    .where("id", "=", pollId)
+    .execute();
+  revalidatePath(`/user/polls/${pollId}`);
+}
+
+/**
+ * Toggles the visibility of new statements for a poll
+ */
+export async function toggleNewStatementsVisibility({
+  pollId,
+  visible,
+}: {
+  pollId: number;
+  visible: boolean;
+}) {
+  await db
+    .updateTable("polls")
+    .set({ new_statements_visible_by_default: visible })
+    .where("id", "=", pollId)
+    .execute();
+  revalidatePath(`/user/polls/${pollId}`);
+}
+
+/**
+ * Toggles the visibility of a statement
+ */
+export async function toggleStatementVisibility({
+  pollId,
+  statementId,
+  visible,
+}: {
+  pollId: number;
+  statementId: number;
+  visible: boolean;
+}) {
+  await db
+    .updateTable("statements")
+    .set({ visible })
+    .where("id", "=", statementId)
+    .execute();
+  revalidatePath(`/user/polls/${pollId}`);
+}
+
+/**
+ * Deletes a statement
+ */
+export async function deleteStatement({
+  pollId,
+  statementId,
+}: {
+  pollId: number;
+  statementId: number;
+}) {
+  await db.deleteFrom("statements").where("id", "=", statementId).execute();
+  revalidatePath(`/user/polls/${pollId}`);
+}
+
+/**
+ * Removes all flags from a statement
+ */
+export async function removeAllFlagsFromStatement({
+  pollId,
+  statementId,
+}: {
+  pollId: number;
+  statementId: number;
+}) {
+  await db
+    .deleteFrom("flagged_statements")
+    .where("statementId", "=", statementId)
+    .execute();
+  // make statement visible again
+  await db
+    .updateTable("statements")
+    .set({ visible: true })
+    .where("id", "=", statementId)
+    .execute();
+  revalidatePath(`/user/polls/${pollId}`);
 }

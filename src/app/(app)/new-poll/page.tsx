@@ -23,7 +23,7 @@ export default async function NewPoll() {
       : result.count;
   const canCreatePoll = isPro || count < MAX_POLLS;
   return (
-    <div className="w-full max-w-5xl mx-auto grid gap-4 content-start p-4 py-8">
+    <div className="w-full max-w-4xl mx-auto grid gap-4 content-start p-4 py-8">
       <header>
         <h1 className="text-2xl font-semibold text-neutral-900">
           Create a Poll

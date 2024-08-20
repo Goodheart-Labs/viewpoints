@@ -5,6 +5,7 @@ import { cn } from "@/ui/cn";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
