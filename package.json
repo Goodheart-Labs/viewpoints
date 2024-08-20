@@ -40,6 +40,7 @@
     "class-variance-authority": "latest",
     "clsx": "latest",
     "cmdk": "latest",
+    "dayjs": "^1.11.12",
     "kysely": "^0.27.4",
     "kysely-codegen": "^0.15.0",
     "next": "14.2.5",
@@ -50,6 +51,7 @@
     "react-hook-form": "latest",
     "react-icons": "latest",
     "sonner": "latest",
+    "stripe": "^16.8.0",
     "tailwind-merge": "latest",
     "uuid": "^10.0.0"
   },

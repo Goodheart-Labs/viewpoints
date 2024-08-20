@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { FiEye, FiPlus, FiSettings, FiEdit2 } from "react-icons/fi";
 import { Button } from "@/ui/button";
+import { isUserPro } from "@/lib/isUserPro";
+import { UpgradeLink } from "@/components/UpgradeLink";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -12,6 +14,9 @@ export default async function Page() {
   const { userId } = auth();
 
   if (!userId) notFound();
+
+  const isPro = await isUserPro();
+  console.log({ isPro });
 
   const userPolls = await getUserPolls(userId);
 
@@ -28,6 +33,7 @@ export default async function Page() {
         {userPolls.map((poll) => (
           <UserPoll key={poll.id} {...poll} />
         ))}
+        {!isPro ? <UpgradeLink>Want unlimited polls?</UpgradeLink> : null}
       </div>
     </div>
   );

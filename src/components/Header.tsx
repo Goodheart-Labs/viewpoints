@@ -7,6 +7,7 @@ import {
   FiLogIn,
   FiList,
   FiGrid,
+  FiUser,
 } from "react-icons/fi";
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 
@@ -64,7 +65,10 @@ function AuthLink() {
       <SignedIn>
         <>
           <NavLink href="/user/polls" icon={FiGrid}>
-            My Polls
+            Your Polls
+          </NavLink>
+          <NavLink href="/user/account" icon={FiUser}>
+            Account
           </NavLink>
           <UserButton />
         </>
