@@ -1,9 +1,9 @@
-import { db } from "@/db/client";
+import { getIndexPolls } from "@/lib/getIndexPolls";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
-  const polls = await getPolls();
+  const polls = await getIndexPolls();
 
   return (
     <main className="px-4 w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 content-start">
@@ -14,40 +14,6 @@ export default async function Home() {
   );
 }
 
-function getPolls() {
-  return db
-    .selectFrom("polls")
-    .innerJoin("statements", "polls.id", "statements.poll_id")
-    .innerJoin("authors", "polls.user_id", "authors.userId")
-    .select(({ fn, eb }) => [
-      "polls.id",
-      "polls.slug",
-      "polls.title",
-      "polls.user_id",
-      "authors.name as author_name",
-      "authors.avatarUrl as author_avatar_url",
-      fn.count<number>("statements.id").as("statementCount"),
-      eb
-        .selectFrom("responses")
-        .innerJoin("statements as s", "responses.statementId", "s.id")
-        .whereRef("s.poll_id", "=", "polls.id")
-        .select(
-          fn
-            // @ts-ignore
-            .count<number>("responses.session_id")
-            .distinct()
-            .as("respondentCount")
-        )
-        .as("respondentCount"),
-    ])
-    .where("polls.visibility", "=", "public")
-    .where("statements.visible", "=", true)
-    .groupBy(["polls.id", "authors.name", "authors.avatarUrl"])
-    .having((eb) => eb.fn.count("statements.id"), ">", 0)
-    .orderBy("polls.id", "desc")
-    .execute();
-}
-
 function Poll({
   title,
   author_name,
@@ -55,7 +21,7 @@ function Poll({
   statementCount,
   respondentCount,
   slug,
-}: Awaited<ReturnType<typeof getPolls>>[number]) {
+}: Awaited<ReturnType<typeof getIndexPolls>>[number]) {
   return (
     <Link
       href={`/polls/${slug}`}
