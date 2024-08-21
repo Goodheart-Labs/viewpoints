@@ -331,7 +331,7 @@ function Flag({
         <span>{reason}</span>
       </div>
       <p className="text-xs mb-2">{description}</p>
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-neutral-500">
         Flagged on {format(new Date(created_at), "MMM d, yyyy")}
       </p>
     </div>

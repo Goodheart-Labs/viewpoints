@@ -30,3 +30,15 @@ export const createPollSchema = z.object({
 });
 
 export type CreatePoll = z.infer<typeof createPollSchema>;
+
+export type StatementChoice = {
+  agree: number;
+  skip: number;
+  disagree: number;
+};
+
+export type StatementReview = {
+  consensus: number;
+  conflict: number;
+  confusion: number;
+};

@@ -6,7 +6,7 @@ export default async function Home() {
   const polls = await getPolls();
 
   return (
-    <main className="px-4 container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 content-start">
+    <main className="px-4 w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 content-start">
       {polls.map((poll) => (
         <Poll key={poll.id} {...poll} />
       ))}

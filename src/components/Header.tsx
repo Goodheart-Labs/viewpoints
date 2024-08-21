@@ -5,7 +5,6 @@ import {
   FiBookOpen,
   FiPlus,
   FiLogIn,
-  FiList,
   FiGrid,
   FiUser,
 } from "react-icons/fi";
@@ -19,9 +18,9 @@ export function Header() {
           <Image src="/logo.png" alt="viewpoints.xyz" width={160} height={25} />
         </Link>
         <div className="flex items-center gap-4">
-          <NavLink href="/" icon={FiHome}>
+          {/* <NavLink href="/" icon={FiHome}>
             Home
-          </NavLink>
+          </NavLink> */}
           <NavLink href="/how-it-works" icon={FiBookOpen}>
             How It Works
           </NavLink>
