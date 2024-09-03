@@ -9,7 +9,7 @@ import {
   FiThumbsDown,
   FiMeh,
   FiUsers,
-  FiMessageSquare,
+  FiMessageCircle,
 } from "react-icons/fi";
 
 export const dynamic = "force-dynamic";
@@ -28,16 +28,12 @@ export default async function ResultsPage({
 
   return (
     <div className="grid gap-4">
-      <div className="flex justify-center items-center gap-4">
-        <div className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-md text-sm flex items-center">
-          <FiMessageSquare size={16} className="mr-2" />
-          <span>{data.responsesCount} Responses</span>
-        </div>
-        <div className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-md text-sm flex items-center">
-          <FiUsers size={16} className="mr-2" />
-          <span>{data.uniqueRespondentsCount} Respondents</span>
-        </div>
-      </div>
+      <p className="text-center text-neutral-600 text-base bg-neutral-100 p-4 rounded-full">
+        <FiUsers className="inline-block -mt-1 mr-2" size={20} />
+        <strong>{data.uniqueRespondentsCount} people</strong> have given{" "}
+        <strong>{data.responsesCount} responses</strong>
+        <FiMessageCircle className="inline-block -mt-1 mx-1" size={20} />
+      </p>
 
       {visitorId &&
       visitorMostConsensusStatementId &&

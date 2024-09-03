@@ -1,4 +1,3 @@
-import { getVisitorId } from "@/lib/actions";
 import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 import { getPoll } from "@/lib/getPoll";
 import Link from "next/link";
@@ -14,8 +13,7 @@ export default async function PollLayout({
     slug: string;
   };
 }) {
-  const visitorId = await getVisitorId();
-  const { poll } = await getPoll(slug, visitorId);
+  const { poll } = await getPoll(slug);
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
       <div className="grid">
@@ -24,7 +22,7 @@ export default async function PollLayout({
           <PollButton icon={LuQrCode}>Show QR Code</PollButton>
           <PollButton icon={FiPlus}>Add Statement</PollButton>
           <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
-            Jump to Results
+            View Results
           </PollButton>
           {/* <PollButton>Download Results</PollButton>
     <PollButton>Share Results</PollButton> */}

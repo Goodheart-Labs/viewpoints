@@ -9,6 +9,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
+import { ModeToggle } from "./ModeToggle";
 
 export function Header() {
   return (
@@ -18,16 +19,14 @@ export function Header() {
           <Image src="/logo.png" alt="viewpoints.xyz" width={160} height={25} />
         </Link>
         <div className="flex items-center gap-4">
-          {/* <NavLink href="/" icon={FiHome}>
-            Home
-          </NavLink> */}
-          <NavLink href="/how-it-works" icon={FiBookOpen}>
+          {/* <NavLink href="/how-it-works" icon={FiBookOpen}>
             How It Works
-          </NavLink>
+          </NavLink> */}
           <NavLink href="/new-poll" icon={FiPlus}>
             Create a Poll
           </NavLink>
           <AuthLink />
+          <ModeToggle />
         </div>
       </div>
     </header>
@@ -35,7 +34,7 @@ export function Header() {
 }
 
 const linkStyles =
-  "text-sm font-medium text-neutral-500 hover:text-neutral-700 flex items-center gap-2";
+  "text-sm font-medium text-neutral-500 hover:text-neutral-700 flex items-center gap-2 cursor-pointer";
 
 function NavLink({
   children,

@@ -10,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getVisitorIdOrThrow } from "./getVisitorIdOrThrow";
 import { createDemoQuestions } from "./createDemoQuestions";
+import { ChoiceEnum } from "kysely-codegen";
 
 /**
  * Checks if a slug exists in the database
@@ -33,7 +34,11 @@ export async function revalidateUserPolls() {
  * Get a valid slug for a new poll
  */
 export async function getNewPollSlug(title: string) {
-  let slug = slugify(title, { lower: true }),
+  let slug = slugify(title, {
+      lower: true,
+      replacement: "-",
+      remove: /[*+~.()'"!:@]/g,
+    }),
     i = 0;
   while (await checkSlugExists(slug)) {
     i++;
@@ -243,4 +248,98 @@ export async function removeAllFlagsFromStatement({
     .where("id", "=", statementId)
     .execute();
   revalidatePath(`/user/polls/${pollId}`);
+}
+
+/**
+ * Creates a response to a statement
+ */
+export async function createResponse({
+  statementId,
+  pollId,
+  choice,
+  optionId,
+}: {
+  statementId: number;
+  pollId: number;
+  choice?: ChoiceEnum;
+  optionId?: number;
+}) {
+  if (!choice && !optionId) {
+    throw new Error("Either choice or optionId must be provided");
+  }
+
+  const user = await currentUser();
+  const visitorId = getVisitorIdOrThrow();
+
+  await db
+    .insertInto("responses")
+    .values({
+      statementId,
+      choice: choice || null,
+      option_id: optionId || null,
+      user_id: user?.id,
+      session_id: visitorId,
+    })
+    .execute();
+
+  revalidatePath(`/polls/${pollId}`);
+}
+
+/**
+ * Flags a statement
+ */
+export async function flagStatement({
+  statementId,
+  reason,
+  description,
+}: {
+  statementId: number;
+  reason: string;
+  description: string | null;
+}) {
+  const user = await currentUser();
+  const visitorId = getVisitorIdOrThrow();
+
+  const statement = await db
+    .selectFrom("statements")
+    .selectAll()
+    .where("id", "=", statementId)
+    .executeTakeFirst();
+
+  if (!statement) {
+    throw new Error("Statement not found");
+  }
+
+  await db
+    .insertInto("flagged_statements")
+    .values({
+      statementId,
+      user_id: user?.id,
+      session_id: visitorId,
+      reason,
+      description,
+    })
+    .execute();
+
+  // Get the total number of flags for this statement
+  const totalFlags = await db
+    .selectFrom("flagged_statements")
+    .select((eb) => [
+      eb.fn.countAll<number>().as("total_flags"),
+      eb.ref("statementId").as("statement_id"),
+    ])
+    .where("statementId", "=", statementId)
+    .groupBy("statementId")
+    .executeTakeFirst();
+
+  // If the total number of flags is greater than or equal to 3, hide the statement
+  if (totalFlags && totalFlags.total_flags >= 3) {
+    await db
+      .updateTable("statements")
+      .set({ visible: false })
+      .where("id", "=", statementId)
+      .execute();
+  }
+
+  revalidatePath(`/polls/${statement.poll_id}`);
 }
