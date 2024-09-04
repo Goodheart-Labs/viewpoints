@@ -20,12 +20,16 @@ export default async function Account() {
   return (
     <div className="w-full max-w-3xl mx-auto grid gap-4 content-start p-4 py-8">
       <header className="grid">
-        <h1 className="text-2xl font-semibold text-neutral-900">Account</h1>
-        <p className="text-neutral-600">Logged in as: {email}</p>
+        <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
+          Account
+        </h1>
+        <p className="text-neutral-600 dark:text-neutral-400">
+          Logged in as: {email}
+        </p>
       </header>
       {subscription ? (
-        <div className="bg-white rounded-lg border shadow-sm p-4 grid gap-4">
-          <h2 className="text-lg font-bold text-neutral-900">
+        <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-sm p-4 grid gap-4">
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
             Subscription Details
           </h2>
           <div className="grid gap-2 text-base">
@@ -59,8 +63,8 @@ export default async function Account() {
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-lg border shadow-sm p-6">
-          <p className="text-neutral-600 mb-4">
+        <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-sm p-6">
+          <p className="text-neutral-600 dark:text-neutral-400 mb-4">
             You don&apos;t have an active subscription.
           </p>
           <Button className="w-full text-base font-medium" asChild>
@@ -81,8 +85,10 @@ function SubscriptionDetail({
 }) {
   return (
     <p className="flex justify-between">
-      <span className="font-medium text-neutral-600">{label}:</span>
-      <span className="text-neutral-900">
+      <span className="font-medium text-neutral-600 dark:text-neutral-400">
+        {label}:
+      </span>
+      <span className="text-neutral-900 dark:text-neutral-100">
         {value.charAt(0).toUpperCase() + value.slice(1)}
       </span>
     </p>

@@ -38,7 +38,7 @@ export function NewPollForm() {
   return (
     <form
       onSubmit={form.handleSubmit(handleAction)}
-      className="bg-white p-4 rounded-xl border grid gap-8"
+      className="p-4 rounded-xl border grid gap-8 bg-white dark:bg-neutral-950"
     >
       <FormField
         title="Poll Title"

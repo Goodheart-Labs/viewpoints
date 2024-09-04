@@ -16,8 +16,8 @@ export default async function PollLayout({
   const { poll } = await getPoll(slug);
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
-      <div className="grid">
-        <div className="flex gap-1 items-center mb-4">
+      <div className="grid gap-1">
+        <div className="flex gap-1 items-center mb-3">
           <PollButton icon={FiLink}>Copy Link</PollButton>
           <PollButton icon={LuQrCode}>Show QR Code</PollButton>
           <PollButton icon={FiPlus}>Add Statement</PollButton>
@@ -27,10 +27,10 @@ export default async function PollLayout({
           {/* <PollButton>Download Results</PollButton>
     <PollButton>Share Results</PollButton> */}
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900">
+        <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
           {poll.title}
         </h1>
-        <h2 className="text-lg text-neutral-400 text-pretty">
+        <h2 className="text-lg text-pretty text-neutral-400 dark:text-neutral-500">
           {poll.core_question || DEFAULT_CORE_QUESTION}
         </h2>
       </div>
@@ -40,7 +40,7 @@ export default async function PollLayout({
 }
 
 const pollBtnClasses =
-  "flex items-center gap-2 text-sm text-neutral-500 font-medium p-1 px-2 bg-neutral-100 rounded-md hover:bg-neutral-200 transition-colors";
+  "flex items-center gap-2 text-sm font-medium p-1 px-2 rounded-md transition-colors text-neutral-500 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-400";
 
 function PollButton({
   children,

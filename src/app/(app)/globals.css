@@ -19,7 +19,8 @@ body {
   ::before,
   ::after {
     --tw-ring-color: theme("colors.foreground/0.25");
-    @apply border-neutral-200;
+    @apply border-neutral-200 dark:border-neutral-700;
+    @apply ring-offset-background dark:!ring-offset-foreground;
   }
 }
 

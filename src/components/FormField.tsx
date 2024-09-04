@@ -20,19 +20,25 @@ export function FormField({
     <div className={cn("grid gap-3", { "animate-pulse": loading })}>
       <div className="grid gap-0.5">
         <div className="flex items-center gap-2">
-          <h3 className="text-xl font-semibold leading-6 text-neutral-900">
+          <h3 className="text-xl font-semibold leading-6 text-neutral-900 dark:text-neutral-100">
             {title}
           </h3>
           {loading ? (
-            <FiLoader className="w-4 h-4 text-purple-400 animate-spin" />
+            <FiLoader className="w-4 h-4 animate-spin text-purple-400 dark:text-purple-600" />
           ) : null}
         </div>
         {description ? (
-          <p className="text-neutral-500 text-base">{description}</p>
+          <p className="text-base text-neutral-500 dark:text-neutral-400">
+            {description}
+          </p>
         ) : null}
       </div>
       {children}
-      {errors && <p className="text-sm text-red-500">{errors.message}</p>}
+      {errors && (
+        <p className="text-sm text-red-500 dark:text-red-400">
+          {errors.message}
+        </p>
+      )}
     </div>
   );
 }

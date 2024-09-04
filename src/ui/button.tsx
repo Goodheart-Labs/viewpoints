@@ -9,14 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-foreground text-background hover:bg-foreground/80",
+        default:
+          "bg-foreground text-background hover:bg-foreground/80 dark:bg-background dark:text-foreground dark:hover:bg-background",
         brand: "bg-brand-600 text-background hover:bg-brand-700",
         destructive: "bg-red-500 text-white hover:bg-red-600",
         highlight: "bg-highlight-600 text-background hover:bg-highlight-700",
         outline:
-          "border bg-background hover:bg-neutral-100 hover:text-neutral-800",
+          "border bg-background hover:bg-neutral-100 hover:text-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-200",
         secondary:
-          "bg-neutral-100 text-secondary-foreground hover:bg-neutral-100/80 !shadow-none",
+          "bg-neutral-100 text-secondary-foreground hover:bg-neutral-100/80 !shadow-none dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700",
         ghost: "hover:bg-neutral-100 hover:text-neutral-800 !shadow-none",
         link: "text-foreground underline-offset-4 hover:underline !shadow-none",
       },

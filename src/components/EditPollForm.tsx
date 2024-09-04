@@ -41,7 +41,7 @@ export function EditPollForm({
   console.log({ statements, flaggedStatements });
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="bg-white p-4 rounded-xl border grid gap-8 shadow-sm">
+      <div className="bg-white dark:bg-neutral-950 p-4 rounded-xl border grid gap-8 shadow-sm">
         <FormField title="Title">
           <Input value={poll.title} disabled />
         </FormField>
@@ -280,7 +280,7 @@ function Flags({
   );
   return (
     <div
-      className={cn("border-t p-2 bg-neutral-50 text-sm", {
+      className={cn("border-t p-2 bg-neutral-50 dark:bg-neutral-900 text-sm", {
         "border-dashed": !visible,
       })}
     >
@@ -325,13 +325,13 @@ function Flag({
   ReturnType<typeof getPollAdminData>
 >["flaggedStatements"][number][number]) {
   return (
-    <div className="bg-orange-50 border border-orange-200 p-3 rounded-lg shadow-sm">
+    <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 p-3 rounded-lg shadow-sm">
       <div className="flex items-center gap-2 mb-2">
-        <FiAlertTriangle className="text-red-500" />
+        <FiAlertTriangle className="text-red-500 dark:text-red-400" />
         <span>{reason}</span>
       </div>
       <p className="text-xs mb-2">{description}</p>
-      <p className="text-xs text-neutral-500">
+      <p className="text-xs text-neutral-500 dark:text-neutral-400">
         Flagged on {format(new Date(created_at), "MMM d, yyyy")}
       </p>
     </div>

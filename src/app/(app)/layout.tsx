@@ -11,7 +11,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const oregano = Oregano({
@@ -44,7 +44,7 @@ export default function RootLayout({
           className={cn(
             inter.variable,
             oregano.variable,
-            "bg-background text-foreground dark:bg-foreground dark:text-background antialiased",
+            "bg-neutral-50 text-foreground dark:bg-foreground dark:text-background antialiased",
             "grid grid-rows-[auto_minmax(0,1fr)_auto] min-h-[100dvh]"
           )}
         >

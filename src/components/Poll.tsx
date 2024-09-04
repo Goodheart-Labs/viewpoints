@@ -1,10 +1,8 @@
 "use client";
 
 import type { getPoll } from "@/lib/getPoll";
-import { forwardRef, useOptimistic } from "react";
-import { FiThumbsDown, FiThumbsUp, FiMeh, FiFlag } from "react-icons/fi";
-import Image from "next/image";
-import { IconType } from "react-icons";
+import { forwardRef, useOptimistic, useState } from "react";
+import { FiFlag } from "react-icons/fi";
 import { cn } from "@/ui/cn";
 import { createResponse } from "@/lib/actions";
 import { usePendingAction } from "@/lib/usePendingAction";
@@ -13,6 +11,8 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import FlagStatementDialog from "./FlagStatementDialog";
 import { Progress } from "@/ui/progress";
+import { ChoiceEnum } from "kysely-codegen";
+import { VARIANT_ICON } from "@/lib/copy";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
 
@@ -45,13 +45,11 @@ export function Poll({
     (o) => o.statement_id === statement?.id
   );
 
-  console.log({ length: statements.length, count });
-
   return (
     <div className="grid gap-2">
       <Progress
         value={(100 * (count - statements.length)) / count}
-        className="h-1 text-neutral-300"
+        className="h-1 text-neutral-300 dark:text-neutral-700"
       />
       <AnimatePresence mode="popLayout" initial={false}>
         {statements.length ? (
@@ -126,14 +124,8 @@ export function Poll({
 }
 
 type StatementButtonProps = {
-  variant: "agree" | "disagree" | "skip";
+  variant: ChoiceEnum;
 } & React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>;
-
-const iconMap: Record<StatementButtonProps["variant"], IconType> = {
-  disagree: FiThumbsDown,
-  skip: FiMeh,
-  agree: FiThumbsUp,
-};
 
 /**
  * A button that allows the user to respond to a statement.
@@ -144,7 +136,7 @@ function StatementButton({
   variant,
   ...props
 }: StatementButtonProps) {
-  const Icon = iconMap[variant];
+  const Icon = VARIANT_ICON[variant];
   return (
     <button
       className={cn(
@@ -208,13 +200,13 @@ export const PollStatement = forwardRef<
   return (
     <motion.div
       ref={ref}
-      className="border rounded-xl bg-white shadow-sm grid overflow-hidden"
+      className="border rounded-xl bg-white shadow-sm grid overflow-hidden dark:bg-neutral-950 min-h-[275px] grid grid-rows-[minmax(0,1fr)_auto]"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.2, rotate }}
       transition={{ duration: 0.4 }}
     >
-      <div className="grid gap-8 p-8">
+      <div className="grid gap-8 p-8 content-center">
         <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text">
           {text}
         </p>
@@ -256,7 +248,7 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
     return (
       <motion.div
         ref={ref}
-        className="grid gap-4 justify-items-center items-center justify-center p-8 bg-neutral-100 rounded-xl"
+        className="grid gap-4 justify-items-center items-center justify-center content-center p-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 min-h-[275px]"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 1.2 }}

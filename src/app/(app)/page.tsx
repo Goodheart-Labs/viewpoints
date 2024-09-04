@@ -25,13 +25,13 @@ function Poll({
   return (
     <Link
       href={`/polls/${slug}`}
-      className="bg-white rounded-lg p-6 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] border shadow-sm"
+      className="rounded-lg p-6 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] shadow-sm bg-white hover:bg-white/30 dark:bg-neutral-800 dark:hover:bg-neutral-800/80"
     >
       <div className="grid gap-1">
-        <h2 className="text-lg font-medium text-neutral-900 leading-tight text-pretty">
+        <h2 className="text-lg font-semibold leading-tight text-pretty text-neutral-700 dark:text-neutral-100">
           {title}
         </h2>
-        <div className="flex items-center text-xs text-neutral-400 space-x-2">
+        <div className="flex items-center space-x-2 text-neutral-400 text-[15px]">
           <span>{statementCount} statements</span>
           <span>•</span>
           <span>{respondentCount} respondents</span>
@@ -47,7 +47,9 @@ function Poll({
             height={24}
           />
         )}
-        <span className="text-sm text-neutral-700">{author_name}</span>
+        <span className="text-sm text-neutral-700 dark:text-neutral-300">
+          {author_name}
+        </span>
       </div>
     </Link>
   );

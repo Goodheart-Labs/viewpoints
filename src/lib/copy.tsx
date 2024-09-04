@@ -1,4 +1,6 @@
+import { ChoiceEnum } from "kysely-codegen";
 import { StatementReview } from "./schemas";
+import { FiThumbsUp, FiThumbsDown, FiSkipForward } from "react-icons/fi";
 
 export const DEFAULT_CORE_QUESTION =
   "What do you think of the following statements?";
@@ -9,3 +11,9 @@ export const SORT_EXPLANATIONS: Record<keyof StatementReview, React.ReactNode> =
     conflict: `Statements with the most disagreement (similar number of both 👍 and 👎) appear at the top.`,
     confusion: `Statements with the most 🤷 votes appear at the top.`,
   };
+
+export const VARIANT_ICON: Record<ChoiceEnum, typeof FiThumbsUp> = {
+  agree: FiThumbsUp,
+  disagree: FiThumbsDown,
+  skip: FiSkipForward,
+};
