@@ -1,7 +1,7 @@
 "use client";
 
 import type { getPoll } from "@/lib/getPoll";
-import { forwardRef, useOptimistic, useState } from "react";
+import { forwardRef, useOptimistic } from "react";
 import { FiBarChart, FiFlag, FiPlus } from "react-icons/fi";
 import { cn } from "@/ui/cn";
 import { createResponse } from "@/lib/actions";
@@ -32,7 +32,7 @@ export function Poll({
     serverStatements,
     (state) => {
       return state.slice(1);
-    }
+    },
   );
   const [isPending, respond] = usePendingAction(createResponse, () => {}, next);
 
@@ -42,7 +42,7 @@ export function Poll({
   const showAgreeDisagree = statement?.question_type === "default";
 
   const statementOptions = options.filter(
-    (o) => o.statement_id === statement?.id
+    (o) => o.statement_id === statement?.id,
   );
 
   return (
@@ -146,7 +146,7 @@ function StatementButton({
           "bg-yellow-500 text-white hover:bg-yellow-600": variant === "skip",
           "bg-green-500 text-white hover:bg-green-600": variant === "agree",
         },
-        className
+        className,
       )}
       {...props}
     >
@@ -195,7 +195,7 @@ export const PollStatement = forwardRef<
     next,
     question_type,
   },
-  ref
+  ref,
 ) {
   return (
     <motion.div
@@ -271,5 +271,5 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
         </div>
       </motion.div>
     );
-  }
+  },
 );

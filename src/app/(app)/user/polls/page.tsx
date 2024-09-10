@@ -2,13 +2,7 @@ import Link from "next/link";
 import { db } from "@/db/client";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import {
-  FiArrowRight,
-  FiEdit,
-  FiEye,
-  FiPlus,
-  FiSettings,
-} from "react-icons/fi";
+import { FiArrowRight, FiEdit, FiPlus } from "react-icons/fi";
 import { Button } from "@/ui/button";
 import { isUserPro } from "@/lib/isUserPro";
 import { UpgradeLink } from "@/components/UpgradeLink";
@@ -23,7 +17,6 @@ export default async function Page() {
   if (!userId) notFound();
 
   const isPro = await isUserPro();
-  console.log({ isPro });
 
   const userPolls = await getUserPolls(userId);
 
