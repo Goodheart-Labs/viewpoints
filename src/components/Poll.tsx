@@ -2,7 +2,7 @@
 
 import type { getPoll } from "@/lib/getPoll";
 import { forwardRef, useOptimistic, useState } from "react";
-import { FiFlag } from "react-icons/fi";
+import { FiBarChart, FiFlag, FiPlus } from "react-icons/fi";
 import { cn } from "@/ui/cn";
 import { createResponse } from "@/lib/actions";
 import { usePendingAction } from "@/lib/usePendingAction";
@@ -257,9 +257,18 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
         <h2 className="text-2xl font-extrabold text-center flex items-center gap-2">
           You&apos;ve responded to all statements!
         </h2>
-        <Button asChild>
-          <Link href={`/polls/${slug}/results`}>View Results</Link>
-        </Button>
+        <div className="flex gap-1 items-center">
+          <Button variant="default">
+            <FiPlus className="mr-2" />
+            Add Statement
+          </Button>
+          <Button asChild variant="brand">
+            <Link href={`/polls/${slug}/results`}>
+              <FiBarChart className="mr-2" />
+              View Results
+            </Link>
+          </Button>
+        </div>
       </motion.div>
     );
   }

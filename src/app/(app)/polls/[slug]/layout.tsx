@@ -1,7 +1,8 @@
 import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 import { getPoll } from "@/lib/getPoll";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
-import { FiLink, FiPlus, FiBarChart, FiCode } from "react-icons/fi";
+import { FiLink, FiPlus, FiBarChart, FiCode, FiEdit } from "react-icons/fi";
 import { LuQrCode } from "react-icons/lu";
 
 export default async function PollLayout({
@@ -13,17 +14,23 @@ export default async function PollLayout({
     slug: string;
   };
 }) {
+  const session = auth();
   const { poll } = await getPoll(slug);
+  const isOwner = poll.user_id === session.userId;
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
       <div className="grid gap-1">
         <div className="flex gap-1 items-center mb-3">
           <PollButton icon={FiLink}>Copy Link</PollButton>
           <PollButton icon={LuQrCode}>Show QR Code</PollButton>
-          <PollButton icon={FiPlus}>Add Statement</PollButton>
           <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
-            View Results
+            Results
           </PollButton>
+          {isOwner ? (
+            <PollButton icon={FiEdit} href={`/user/polls/${poll.id}`}>
+              Edit
+            </PollButton>
+          ) : null}
           {/* <PollButton>Download Results</PollButton>
     <PollButton>Share Results</PollButton> */}
         </div>
