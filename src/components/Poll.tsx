@@ -13,6 +13,7 @@ import FlagStatementDialog from "./FlagStatementDialog";
 import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
 import { VARIANT_ICON } from "@/lib/copy";
+import { usePathname } from "next/navigation";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
 
@@ -245,6 +246,9 @@ export const PollStatement = forwardRef<
 
 export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
   function GoToResults({ slug }, ref) {
+    const path = usePathname();
+    const isEmbed = path.startsWith("/embed");
+
     return (
       <motion.div
         ref={ref}
@@ -263,7 +267,10 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
             Add Statement
           </Button>
           <Button asChild variant="brand">
-            <Link href={`/polls/${slug}/results`}>
+            <Link
+              href={`/polls/${slug}/results`}
+              target={isEmbed ? "_blank" : undefined}
+            >
               <FiBarChart className="mr-2" />
               View Results
             </Link>

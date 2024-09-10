@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 const isPublicRoute = createRouteMatcher([
   "/",
   "/polls/(.*)",
+  "/embed/polls/(.*)",
   "/api/polls/(.*)",
   "/api/public/(.*)",
   "/privacy-policy",
