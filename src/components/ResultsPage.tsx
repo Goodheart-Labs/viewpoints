@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { ChoiceEnum } from "kysely-codegen";
 import Link from "next/link";
 import { FiMessageCircle, FiUsers } from "react-icons/fi";
+import { TabsTriggerProps } from "@radix-ui/react-tabs";
 export function ResultsPage({
   slug,
   sort,
@@ -33,7 +34,7 @@ export function ResultsPage({
     data;
   return (
     <div className="grid gap-4">
-      <p className="text-center text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100">
+      <p className="text-center text-sm sm:text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100">
         <FiUsers className="inline-block -mt-1 mr-2" size={20} />
         <strong>{data.uniqueRespondentsCount} people</strong> have given{" "}
         <strong>{data.responsesCount} responses</strong>
@@ -56,22 +57,22 @@ export function ResultsPage({
         </div>
         <div className="flex items-center justify-between">
           <Tabs value={sort}>
-            <TabsList>
-              <TabsTrigger value="consensus" asChild>
+            <TabsList className="bg-transparent dark:bg-transparent flex gap-2 p-0">
+              <CustomTabTrigger value="consensus" asChild>
                 <Link href={`/polls/${slug}/results?sort=consensus`}>
                   Most Consensus
                 </Link>
-              </TabsTrigger>
-              <TabsTrigger value="conflict" asChild>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="conflict" asChild>
                 <Link href={`/polls/${slug}/results?sort=conflict`}>
                   Most Conflict
                 </Link>
-              </TabsTrigger>
-              <TabsTrigger value="confusion" asChild>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="confusion" asChild>
                 <Link href={`/polls/${slug}/results?sort=confusion`}>
                   Most Confusion
                 </Link>
-              </TabsTrigger>
+              </CustomTabTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -144,8 +145,7 @@ function Highlights({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white dark:bg-neutral-800 p-4 rounded-lg shadow">
           <h3 className="text-sm font-medium mb-2 flex items-center">
-            {/* <FiThumbsUp className="mr-2 text-green-600" size={16} /> */}
-            My most consensus view
+            Your most consensus view
           </h3>
           <p className="font-medium mb-2">
             {visitorMostConsensusStatement?.text}
@@ -174,8 +174,7 @@ function Highlights({
         </div>
         <div className="bg-white dark:bg-neutral-800 p-4 rounded-lg shadow">
           <h3 className="text-sm font-medium mb-2 flex items-center">
-            {/* <FiThumbsDown className="mr-2 text-red-600" size={16} /> */}
-            My most controversial view
+            Your most controversial view
           </h3>
           <p className="font-medium mb-2">
             {visitorMostConflictStatement?.text}
@@ -225,5 +224,16 @@ function Chip({
       <Icon className="mr-1" size={14} />
       {children}
     </div>
+  );
+}
+
+function CustomTabTrigger(props: TabsTriggerProps) {
+  return (
+    <TabsTrigger
+      className="p-0 bg-transparent dark:bg-transparent underline underline-offset-4 shadow-none decoration-neutral-400/0 data-[state=active]:decoration-neutral-400 data-[state=active]:text-neutral-800 dark:data-[state=active]:text-neutral-100 dark:data-[state=active]:bg-transparent"
+      {...props}
+    >
+      {props.children}
+    </TabsTrigger>
   );
 }

@@ -31,7 +31,7 @@ export function PollHeader({
 }) {
   return (
     <div className="flex gap-1 items-center mb-3">
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <PollButton icon={FiLink}>Share</PollButton>
         </DropdownMenuTrigger>

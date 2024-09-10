@@ -97,7 +97,7 @@ export function Poll({
                 </StatementButton>
               </>
             ) : (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-1 md:gap-4">
                 {statementOptions.map((option) => (
                   <OptionButton
                     key={option.id}
@@ -140,7 +140,7 @@ function StatementButton({
   return (
     <button
       className={cn(
-        "text-2xl flex items-center rounded-full p-2 px-4 transition-colors",
+        "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-colors",
         {
           "bg-red-500 text-white hover:bg-red-600": variant === "disagree",
           "bg-yellow-500 text-white hover:bg-yellow-600": variant === "skip",
@@ -150,8 +150,8 @@ function StatementButton({
       )}
       {...props}
     >
-      <Icon className="mr-2" />
-      <span className="text-lg">{children}</span>
+      <Icon className="sm:mr-2" />
+      <span className="hidden sm:block text-lg">{children}</span>
     </button>
   );
 }
