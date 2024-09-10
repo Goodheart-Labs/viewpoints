@@ -47,7 +47,7 @@ export default function RootLayout({
               inter.variable,
               oregano.variable,
               "bg-neutral-50 text-foreground dark:bg-foreground dark:text-background antialiased",
-              "grid grid-rows-[auto_minmax(0,1fr)_auto] min-h-[100dvh]"
+              "grid grid-rows-[auto_minmax(0,1fr)_auto] min-h-[100dvh]",
             )}
           >
             <ThemeProvider

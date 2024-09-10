@@ -4,7 +4,7 @@ import { useTransition } from "react";
 export function usePendingAction<T>(
   action: (formData: T) => Promise<void>,
   callback?: () => void,
-  before?: () => void
+  before?: () => void,
 ) {
   const [isPending, startTransition] = useTransition();
 

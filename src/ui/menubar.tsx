@@ -3,7 +3,7 @@
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
 import * as React from "react";
 
-import { LuChevronRight, LuCheck, LuCircle } from "react-icons/lu";
+import { LuCheck, LuChevronRight, LuCircle } from "react-icons/lu";
 import { cn } from "./cn";
 
 const MenubarMenu = MenubarPrimitive.Menu;

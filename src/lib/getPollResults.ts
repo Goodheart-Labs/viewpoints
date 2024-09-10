@@ -9,7 +9,7 @@ import { ChoiceEnum } from "kysely-codegen";
 export async function getPollResults(
   slug: string,
   sort: keyof StatementReview,
-  visitorId?: string
+  visitorId?: string,
 ) {
   const poll = await db
     .selectFrom("polls")
@@ -37,24 +37,27 @@ export async function getPollResults(
     .where(
       "statementId",
       "in",
-      visibleStatements.map((statement) => statement.id)
+      visibleStatements.map((statement) => statement.id),
     )
     .execute();
 
   // Count unique respondents
   const uniqueRespondentsCount = new Set(
-    responses.map((response) => response.session_id)
+    responses.map((response) => response.session_id),
   ).size;
 
   // Count agree/disagree/skip for each statement
-  const choiceCount = visibleStatements.reduce((acc, statement) => {
-    acc[statement.id] = {
-      agree: 0,
-      disagree: 0,
-      skip: 0,
-    };
-    return acc;
-  }, {} as Record<string, StatementChoice>);
+  const choiceCount = visibleStatements.reduce(
+    (acc, statement) => {
+      acc[statement.id] = {
+        agree: 0,
+        disagree: 0,
+        skip: 0,
+      };
+      return acc;
+    },
+    {} as Record<string, StatementChoice>,
+  );
 
   for (const { statementId, choice } of responses) {
     if (!choice) continue;
@@ -114,7 +117,7 @@ export async function getPollResults(
     // Get all statements that the visitor has responded to
     const visitorResponses = responses.filter(
       (response) =>
-        response.session_id === visitorId || response.user_id === visitorId
+        response.session_id === visitorId || response.user_id === visitorId,
     );
 
     for (const { statementId, choice } of visitorResponses) {
@@ -126,7 +129,7 @@ export async function getPollResults(
           (response) =>
             response.statementId === statementId &&
             response.session_id !== visitorId &&
-            response.user_id !== visitorId
+            response.user_id !== visitorId,
         )
         .reduce(
           (acc, response) => {
@@ -134,7 +137,7 @@ export async function getPollResults(
             acc[response.choice] += 1;
             return acc;
           },
-          { agree: 0, disagree: 0, skip: 0 } as Record<ChoiceEnum, number>
+          { agree: 0, disagree: 0, skip: 0 } as Record<ChoiceEnum, number>,
         );
 
       let consensusCount = 0;

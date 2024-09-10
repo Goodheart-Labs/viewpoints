@@ -3,7 +3,7 @@
 import * as SelectPrimitive from "@radix-ui/react-select";
 import * as React from "react";
 
-import { LuChevronDown, LuChevronUp, LuCheck } from "react-icons/lu";
+import { LuCheck, LuChevronDown, LuChevronUp } from "react-icons/lu";
 import { cn } from "./cn";
 
 const Select = SelectPrimitive.Root;

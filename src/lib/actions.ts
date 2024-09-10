@@ -102,8 +102,8 @@ export async function createPoll({
               session_id: visitorId,
               text: statement,
             })
-            .execute()
-        )
+            .execute(),
+        ),
       );
     }
 

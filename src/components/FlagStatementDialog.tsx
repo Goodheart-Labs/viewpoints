@@ -44,7 +44,7 @@ export default function FlagStatementDialog({
     () => {
       setOpen(false);
       next();
-    }
+    },
   );
 
   const handleSubmit = (e: React.FormEvent) => {

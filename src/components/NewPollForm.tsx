@@ -1,7 +1,7 @@
 "use client";
 
 import { createPoll, getNewPollSlug } from "@/lib/actions";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/ui/input";
 import { Textarea } from "@/ui/textarea";

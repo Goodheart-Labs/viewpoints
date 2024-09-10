@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FiZap, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiZap } from "react-icons/fi";
 
 export function UpgradeLink({
   children = "Need more polls?",

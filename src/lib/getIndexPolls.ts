@@ -26,7 +26,7 @@ export function getIndexPolls() {
             // @ts-ignore
             .count<number>("responses.session_id")
             .distinct()
-            .as("respondentCount")
+            .as("respondentCount"),
         )
         .as("respondentCount"),
     ])

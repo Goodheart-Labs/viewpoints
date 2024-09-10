@@ -22,7 +22,7 @@ export const createPollSchema = z.object({
       message: `At least ${
         5 - getStatementsArrayFromString(value).length
       } more statements required. (Use a new line for each statement)`,
-    })
+    }),
   ),
   with_demographic_questions: z.boolean().default(false),
   new_statements_visible_by_default: z.boolean().default(true),

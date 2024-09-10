@@ -1,6 +1,6 @@
 import { ChoiceEnum } from "kysely-codegen";
 import { StatementReview } from "./schemas";
-import { FiThumbsUp, FiThumbsDown, FiSkipForward } from "react-icons/fi";
+import { FiSkipForward, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
 export const DEFAULT_CORE_QUESTION =
   "What do you think of the following statements?";

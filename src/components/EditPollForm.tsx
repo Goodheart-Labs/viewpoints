@@ -129,7 +129,7 @@ function EditNewStatementsVisibility({
     toggleNewStatementsVisibility,
     () => {
       toast.success("New statements visibility updated");
-    }
+    },
   );
 
   const handleVisibilityChange = (checked: boolean) => {
@@ -171,13 +171,13 @@ function Statement({
     toggleStatementVisibility,
     () => {
       toast.success("Statement visibility updated");
-    }
+    },
   );
   const [deleteLoading, deleteHandler] = usePendingAction(
     deleteStatement,
     () => {
       toast.success("Statement deleted");
-    }
+    },
   );
 
   return (
@@ -276,7 +276,7 @@ function Flags({
     removeAllFlagsFromStatement,
     () => {
       toast.success("All flags removed");
-    }
+    },
   );
   return (
     <div

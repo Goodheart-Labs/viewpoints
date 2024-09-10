@@ -42,7 +42,7 @@ export async function getPoll(slug: string) {
     .where(
       "statement_id",
       "in",
-      statements.map((s) => s.id)
+      statements.map((s) => s.id),
     )
     .execute();
 
@@ -54,7 +54,7 @@ export async function getPoll(slug: string) {
     .where(
       "statementId",
       "in",
-      statements.map((s) => s.id)
+      statements.map((s) => s.id),
     )
     .execute();
 
@@ -68,7 +68,7 @@ export async function getPoll(slug: string) {
     .where(
       "statementId",
       "in",
-      statements.map((s) => s.id)
+      statements.map((s) => s.id),
     )
     .execute();
 
@@ -98,19 +98,19 @@ export async function getPoll(slug: string) {
  */
 function shuffleStatements(
   statements: Awaited<ReturnType<typeof getPoll>>["statements"],
-  sessionId: string
+  sessionId: string,
 ) {
   const demographicQuestions = statements.filter(
-    (s) => s.question_type === "demographic"
+    (s) => s.question_type === "demographic",
   );
 
   const nonDemographicQuestions = statements.filter(
-    (s) => s.question_type !== "demographic"
+    (s) => s.question_type !== "demographic",
   );
 
   const shuffledNonDemographicQuestions = predictableShuffle(
     nonDemographicQuestions,
-    sessionId
+    sessionId,
   );
 
   const result = [...shuffledNonDemographicQuestions];
@@ -120,7 +120,7 @@ function shuffleStatements(
     result.splice(demographicIndex, 0, demographicQuestions.pop()!);
     // increment by the ceiling of the remaining non-demographic questions / demographic questions
     demographicIndex += Math.ceil(
-      (nonDemographicQuestions.length - 3) / (demographicQuestions.length - 1)
+      (nonDemographicQuestions.length - 3) / (demographicQuestions.length - 1),
     );
   }
 

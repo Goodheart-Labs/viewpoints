@@ -29,7 +29,7 @@ export async function createDemoQuestions(
   pollInfo: Pick<
     Insertable<DB["statements"]>,
     "poll_id" | "user_id" | "session_id"
-  >
+  >,
 ) {
   for (const { question, responses } of questions) {
     // eslint-disable-next-line no-await-in-loop
@@ -51,7 +51,7 @@ export async function createDemoQuestions(
         responses.map((option) => ({
           statement_id: currentQuestion.id,
           option,
-        }))
+        })),
       )
       .execute();
   }

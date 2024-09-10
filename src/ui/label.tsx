@@ -21,4 +21,4 @@ const Label = React.forwardRef<
 ));
 Label.displayName = "Label";
 
-export { Label,labelVariants };
+export { Label, labelVariants };

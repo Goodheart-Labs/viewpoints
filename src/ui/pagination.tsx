@@ -1,6 +1,10 @@
 import * as React from "react";
 
-import { LuChevronLeft, LuChevronRight, LuMoreHorizontal } from "react-icons/lu";
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuMoreHorizontal,
+} from "react-icons/lu";
 import { ButtonProps, buttonVariants } from "./button";
 import { cn } from "./cn";
 

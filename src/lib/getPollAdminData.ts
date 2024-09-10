@@ -27,18 +27,21 @@ export async function getPollAdminData(id: number) {
       .where(
         "statementId",
         "in",
-        db.selectFrom("statements").select("id").where("poll_id", "=", poll.id)
+        db.selectFrom("statements").select("id").where("poll_id", "=", poll.id),
       )
       .execute(),
   ]);
 
-  const flaggedStatements = allFlaggedStatements.reduce((acc, fs) => {
-    if (!acc[fs.statementId]) {
-      acc[fs.statementId] = [];
-    }
-    acc[fs.statementId].push(fs);
-    return acc;
-  }, {} as Record<number, Selectable<DB["flagged_statements"]>[]>);
+  const flaggedStatements = allFlaggedStatements.reduce(
+    (acc, fs) => {
+      if (!acc[fs.statementId]) {
+        acc[fs.statementId] = [];
+      }
+      acc[fs.statementId].push(fs);
+      return acc;
+    },
+    {} as Record<number, Selectable<DB["flagged_statements"]>[]>,
+  );
 
   return { poll, statements, flaggedStatements };
 }

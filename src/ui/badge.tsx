@@ -34,4 +34,4 @@ const Badge = ({ className, variant, ...props }: BadgeProps) => {
 };
 Badge.displayName = "Badge";
 
-export { Badge,badgeVariants };
+export { Badge, badgeVariants };
