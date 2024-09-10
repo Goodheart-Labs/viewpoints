@@ -1,17 +1,39 @@
+"use client";
+
 import Link, { LinkProps } from "next/link";
 import Image from "next/image";
 import {
-  FiHome,
-  FiBookOpen,
-  FiPlus,
-  FiLogIn,
   FiGrid,
+  FiHome,
+  FiLogIn,
+  FiMenu,
+  FiPlus,
   FiUser,
+  FiX,
 } from "react-icons/fi";
-import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "./ModeToggle";
+import { useState } from "react";
+import { cn } from "@/ui/cn";
+
+function MobileNavLinks({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="grid gap-4 mt-4">
+      <NavLink href="/new-poll" icon={FiPlus} onClick={onClose}>
+        Create a Poll
+      </NavLink>
+      <AuthLink isMobile onClose={onClose} />
+      <UserButton userProfileMode="modal" />
+    </div>
+  );
+}
 
 export function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <header>
       <div className="flex items-center justify-between px-4 py-3">
@@ -32,15 +54,29 @@ export function Header() {
           />
         </Link>
         <div className="flex items-center gap-4">
-          {/* <NavLink href="/how-it-works" icon={FiBookOpen}>
-            How It Works
-          </NavLink> */}
-          <NavLink href="/new-poll" icon={FiPlus}>
-            Create a Poll
-          </NavLink>
-          <AuthLink />
+          <div className="hidden md:flex items-center gap-4">
+            <NavLink href="/new-poll" icon={FiPlus}>
+              Create a Poll
+            </NavLink>
+            <AuthLink />
+          </div>
           <ModeToggle />
+          <button className="md:hidden" onClick={toggleMenu}>
+            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
         </div>
+      </div>
+
+      <div
+        className={cn(
+          "md:hidden px-4 py-1 h-0 overflow-hidden transition-all duration-300 h-auto",
+          {
+            "max-h-0 opacity-0": !isMenuOpen,
+            "max-h-[300px] opacity-100": isMenuOpen,
+          },
+        )}
+      >
+        <MobileNavLinks onClose={closeMenu} />
       </div>
     </header>
   );
@@ -62,12 +98,18 @@ function NavLink({
   );
 }
 
-function AuthLink() {
+function AuthLink({
+  isMobile,
+  onClose,
+}: {
+  isMobile?: boolean;
+  onClose?: () => void;
+}) {
   return (
     <>
       <SignedOut>
         <SignInButton>
-          <div className={linkStyles}>
+          <div className={linkStyles} onClick={isMobile ? onClose : undefined}>
             <FiLogIn size={16} />
             Sign In
           </div>
@@ -75,13 +117,21 @@ function AuthLink() {
       </SignedOut>
       <SignedIn>
         <>
-          <NavLink href="/user/polls" icon={FiGrid}>
+          <NavLink
+            href="/user/polls"
+            icon={FiGrid}
+            onClick={isMobile ? onClose : undefined}
+          >
             Your Polls
           </NavLink>
-          <NavLink href="/user/account" icon={FiUser}>
+          <NavLink
+            href="/user/account"
+            icon={FiUser}
+            onClick={isMobile ? onClose : undefined}
+          >
             Account
           </NavLink>
-          <UserButton />
+          {!isMobile && <UserButton />}
         </>
       </SignedIn>
     </>

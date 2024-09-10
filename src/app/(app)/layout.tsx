@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { QueryProvider } from "@/components/QueryProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,28 +40,30 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={cn(
-            inter.variable,
-            oregano.variable,
-            "bg-neutral-50 text-foreground dark:bg-foreground dark:text-background antialiased",
-            "grid grid-rows-[auto_minmax(0,1fr)_auto] min-h-[100dvh]"
-          )}
-        >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+      <QueryProvider>
+        <html lang="en" suppressHydrationWarning>
+          <body
+            className={cn(
+              inter.variable,
+              oregano.variable,
+              "bg-neutral-50 text-foreground dark:bg-foreground dark:text-background antialiased",
+              "grid grid-rows-[auto_minmax(0,1fr)_auto] min-h-[100dvh]"
+            )}
           >
-            <Header />
-            {children}
-            <Footer />
-            <Toaster />
-          </ThemeProvider>
-        </body>
-      </html>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              {children}
+              <Footer />
+              <Toaster />
+            </ThemeProvider>
+          </body>
+        </html>
+      </QueryProvider>
     </ClerkProvider>
   );
 }
