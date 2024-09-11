@@ -1,5 +1,4 @@
 import { getIndexPolls } from "@/lib/getIndexPolls";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
@@ -39,7 +38,7 @@ function Poll({
       </div>
       <div className="flex items-center mt-2">
         {author_avatar_url && (
-          <Image
+          <img
             src={author_avatar_url}
             alt={author_name ?? ""}
             className="rounded-full mr-2"
