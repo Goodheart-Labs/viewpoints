@@ -36,7 +36,9 @@ export function Poll({
       return state.slice(1);
     },
   );
-  const [isPending, respond] = usePendingAction(createResponse, () => {}, next);
+  const [, respond] = usePendingAction(createResponse, {
+    before: next,
+  });
 
   const statement = statements[0];
 

@@ -23,9 +23,11 @@ export default function AddStatementDialog({
   const { slug } = useParams();
   const [open, setOpen] = useState(false);
   const [statement, setStatement] = useState("");
-  const [isPending, handler] = usePendingAction(addStatement, () => {
-    setOpen(false);
-    window.location.reload();
+  const [isPending, handler] = usePendingAction(addStatement, {
+    after: () => {
+      setOpen(false);
+      window.location.reload();
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {

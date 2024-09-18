@@ -38,7 +38,6 @@ export function EditPollForm({
   statements,
   flaggedStatements,
 }: Awaited<ReturnType<typeof getPollAdminData>>) {
-  console.log({ statements, flaggedStatements });
   return (
     <TooltipProvider delayDuration={0}>
       <div className="bg-white dark:bg-neutral-950 p-4 rounded-xl border grid gap-8 shadow-sm">
@@ -77,8 +76,10 @@ function EditVisibility({
   pollId: number;
   defaultValue: string;
 }) {
-  const [loading, handler] = usePendingAction(changePollVisibility, () => {
-    toast.success("Poll visibility updated");
+  const [loading, handler] = usePendingAction(changePollVisibility, {
+    after: () => {
+      toast.success("Poll visibility updated");
+    },
   });
   const handleVisibilityChange = (value: "public" | "hidden" | "private") => {
     handler({ pollId, visibility: value });
@@ -125,12 +126,11 @@ function EditNewStatementsVisibility({
   pollId: number;
   defaultValue: boolean;
 }) {
-  const [loading, handler] = usePendingAction(
-    toggleNewStatementsVisibility,
-    () => {
+  const [loading, handler] = usePendingAction(toggleNewStatementsVisibility, {
+    after: () => {
       toast.success("New statements visibility updated");
     },
-  );
+  });
 
   const handleVisibilityChange = (checked: boolean) => {
     handler({ pollId, visible: checked });
@@ -167,18 +167,16 @@ function Statement({
   >["flaggedStatements"][number];
   pollId: number;
 }) {
-  const [visLoading, visHandler] = usePendingAction(
-    toggleStatementVisibility,
-    () => {
+  const [visLoading, visHandler] = usePendingAction(toggleStatementVisibility, {
+    after: () => {
       toast.success("Statement visibility updated");
     },
-  );
-  const [deleteLoading, deleteHandler] = usePendingAction(
-    deleteStatement,
-    () => {
+  });
+  const [deleteLoading, deleteHandler] = usePendingAction(deleteStatement, {
+    after: () => {
       toast.success("Statement deleted");
     },
-  );
+  });
 
   return (
     <div
@@ -274,8 +272,10 @@ function Flags({
 }) {
   const [removeAllLoading, removeAllHandler] = usePendingAction(
     removeAllFlagsFromStatement,
-    () => {
-      toast.success("All flags removed");
+    {
+      after: () => {
+        toast.success("All flags removed");
+      },
     },
   );
   return (

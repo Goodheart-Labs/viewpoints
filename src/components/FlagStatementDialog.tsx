@@ -36,16 +36,15 @@ export default function FlagStatementDialog({
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [otherReason, setOtherReason] = useState("");
 
-  const [loading, handler] = usePendingAction(
-    flagStatement,
-    () => {
+  const [loading, handler] = usePendingAction(flagStatement, {
+    after: () => {
       toast.success("Statement flagged");
     },
-    () => {
+    before: () => {
       setOpen(false);
       next();
     },
-  );
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

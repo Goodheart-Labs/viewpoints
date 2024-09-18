@@ -20,11 +20,11 @@ import {
 import { toast } from "sonner";
 import { getBaseUrl } from "@/lib/getBaseUrl";
 import Link from "next/link";
-import { forwardRef } from "react";
+import { forwardRef, useCallback } from "react";
 import QRCodeDialog from "./QRCodeDialog";
 import { usePathname } from "next/navigation";
 
-import { useBetterPendingAction } from "@/lib/usePendingAction";
+import { usePendingAction } from "@/lib/usePendingAction";
 import { getCSV } from "@/lib/getCsv";
 
 export function PollHeader({
@@ -38,7 +38,7 @@ export function PollHeader({
 }) {
   const pathname = usePathname();
   const isResultsPage = pathname.endsWith("/results");
-  const [isPending, handleDownload] = useBetterPendingAction(getCSV, {
+  const [isPending, handleDownload] = usePendingAction(getCSV, {
     after(csv) {
       const blob = new Blob([csv], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
@@ -49,6 +49,15 @@ export function PollHeader({
       URL.revokeObjectURL(url);
     },
   });
+  const copyEmbedCode = useCallback(() => {
+    const embedCode = `<iframe src="${getBaseUrl()}/embed/polls/${slug}" 
+        frameborder="0" 
+        scrolling="no" 
+        allowfullscreen 
+        style="width: 100%; height: 500px; border: none; overflow: hidden;">
+    </iframe>`;
+    copyText(embedCode, "Embed code copied to clipboard");
+  }, [slug]);
 
   return (
     <div className="flex gap-1 items-center mb-3">
@@ -74,7 +83,7 @@ export function PollHeader({
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             onSelect={() => {
-              copyLink(
+              copyText(
                 `${getBaseUrl()}/polls/${slug}`,
                 "Poll link copied to clipboard",
               );
@@ -85,7 +94,7 @@ export function PollHeader({
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => {
-              copyLink(
+              copyText(
                 `${getBaseUrl()}/polls/${slug}/results`,
                 "Results link copied to clipboard",
               );
@@ -100,6 +109,10 @@ export function PollHeader({
               Show QR code
             </DropdownMenuItem>
           </QRCodeDialog>
+          <DropdownMenuItem onSelect={copyEmbedCode}>
+            <FiCode className="w-4 h-4 mr-2" />
+            Copy embed code
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <PollButton icon={FiDownload} onClick={() => handleDownload({ pollId })}>
@@ -137,7 +150,7 @@ const PollButton = forwardRef<HTMLButtonElement, PollButtonProps>(
   },
 );
 
-function copyLink(url: string, success: string) {
+function copyText(url: string, success: string) {
   navigator.clipboard.writeText(url).then(() => {
     toast.success(success, {
       icon: <FiClipboard />,
