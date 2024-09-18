@@ -5,8 +5,10 @@ import {
   FiBarChart,
   FiClipboard,
   FiCode,
+  FiDownload,
   FiEdit,
   FiLink,
+  FiShare2,
 } from "react-icons/fi";
 import { LuQrCode } from "react-icons/lu";
 import {
@@ -22,17 +24,32 @@ import { forwardRef } from "react";
 import QRCodeDialog from "./QRCodeDialog";
 import { usePathname } from "next/navigation";
 
+import { useBetterPendingAction } from "@/lib/usePendingAction";
+import { getCSV } from "@/lib/getCsv";
+
 export function PollHeader({
   slug,
   isOwner,
-  id,
+  pollId,
 }: {
   slug: string;
   isOwner: boolean;
-  id: number;
+  pollId: number;
 }) {
   const pathname = usePathname();
   const isResultsPage = pathname.endsWith("/results");
+  const [isPending, handleDownload] = useBetterPendingAction(getCSV, {
+    after(csv) {
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `poll-${slug}-results.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+  });
+
   return (
     <div className="flex gap-1 items-center mb-3">
       {isResultsPage ? (
@@ -45,13 +62,14 @@ export function PollHeader({
         </PollButton>
       )}
       {isOwner ? (
-        <PollButton icon={FiEdit} href={`/user/polls/${id}`}>
+        <PollButton icon={FiEdit} href={`/user/polls/${pollId}`}>
           Edit
         </PollButton>
       ) : null}
+
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <PollButton icon={FiLink}>Share</PollButton>
+          <PollButton icon={FiShare2}>Share</PollButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem
@@ -84,6 +102,9 @@ export function PollHeader({
           </QRCodeDialog>
         </DropdownMenuContent>
       </DropdownMenu>
+      <PollButton icon={FiDownload} onClick={() => handleDownload({ pollId })}>
+        {isPending ? "Downloading..." : "Download"}
+      </PollButton>
     </div>
   );
 }

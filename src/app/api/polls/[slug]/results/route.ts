@@ -7,7 +7,6 @@ export async function GET(
   { params }: { params: { slug: string } },
 ) {
   const visitorId = getOptionalVisitorId();
-  console.log("visitorId", visitorId);
   const { slug } = params;
   const { searchParams } = new URL(req.url);
   const sort = (searchParams.get("sort") ??

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="py-6 bg-gradient-to-b from-neutral-50 to-neutral-200 dark:from-foreground dark:to-neutral-950">
+    <footer className="py-6 bg-gradient-to-b from-neutral-50 to-white dark:from-foreground dark:to-neutral-950">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-4 items-center justify-items-center">
           <Image

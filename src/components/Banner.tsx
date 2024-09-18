@@ -6,8 +6,8 @@ export function Banner() {
     <div className="w-full text-neutral-800 dark:text-white">
       <div className="py-12">
         <div className="grid gap-6 md:grid-cols-[1fr_auto] items-center">
-          <div className="grid gap-4">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-neutral-800 to-neutral-600 dark:from-white dark:to-neutral-300">
+          <div className="grid gap-4 pl-1">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight dark:from-white dark:to-neutral-300">
               What on earth are you thinking?
             </h2>
             <p className="text-lg md:text-xl text-neutral-400 dark:text-neutral-400 text-balance font-medium">

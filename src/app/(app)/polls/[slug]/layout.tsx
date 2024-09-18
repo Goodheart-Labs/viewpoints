@@ -15,20 +15,20 @@ export default async function PollLayout({
   };
 }) {
   const session = auth();
-  const { poll } = await getPoll(slug);
-  const isOwner = poll.user_id === session.userId;
+  const results = await getPoll(slug);
+  const isOwner = results.poll.user_id === session.userId;
   const isCouncilPoll = slug.includes("council");
 
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
       {isCouncilPoll ? <BackToSouthGlos /> : null}
       <div className="grid gap-1">
-        <PollHeader slug={slug} isOwner={isOwner} id={poll.id} />
+        <PollHeader slug={slug} isOwner={isOwner} pollId={results.poll.id} />
         <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
-          {poll.title}
+          {results.poll.title}
         </h1>
         <h2 className="text-lg text-pretty text-neutral-400 dark:text-neutral-500">
-          {poll.core_question || DEFAULT_CORE_QUESTION}
+          {results.poll.core_question || DEFAULT_CORE_QUESTION}
         </h2>
       </div>
       {children}
