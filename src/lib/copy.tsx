@@ -17,3 +17,9 @@ export const VARIANT_ICON: Record<ChoiceEnum, typeof FiThumbsUp> = {
   disagree: FiThumbsDown,
   skip: FiSkipForward,
 };
+
+export const SEO = {
+  title: "viewpoints.xyz",
+  description:
+    "Viewpoints is a platform for collecting the opinions of others.",
+};
