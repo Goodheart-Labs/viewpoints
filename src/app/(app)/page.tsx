@@ -1,14 +1,24 @@
+import { Banner } from "@/components/Banner";
 import { getIndexPolls } from "@/lib/getIndexPolls";
 import Link from "next/link";
+import { FiCalendar } from "react-icons/fi";
 
 export default async function Home() {
   const polls = await getIndexPolls();
 
   return (
-    <main className="px-4 w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 content-start">
-      {polls.map((poll) => (
-        <Poll key={poll.id} {...poll} />
-      ))}
+    <main className="px-4 w-full max-w-5xl mx-auto">
+      <Banner />
+
+      <h2 className="text-xl font-medium my-4 ml-px text-neutral-800 dark:text-neutral-200 border-b pb-2 flex items-center">
+        <FiCalendar className="inline-block mr-2" />
+        Latest Polls
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
+        {polls.map((poll) => (
+          <Poll key={poll.id} {...poll} />
+        ))}
+      </div>
     </main>
   );
 }

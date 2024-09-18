@@ -14,6 +14,7 @@ import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
 import { VARIANT_ICON } from "@/lib/copy";
 import { usePathname } from "next/navigation";
+import AddStatementDialog from "./AddStatementDialog";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
 
@@ -262,10 +263,12 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
           You&apos;ve responded to all statements!
         </h2>
         <div className="flex gap-1 items-center">
-          <Button variant="default">
-            <FiPlus className="mr-2" />
-            Add Statement
-          </Button>
+          <AddStatementDialog>
+            <Button variant="default">
+              <FiPlus className="mr-2" />
+              Add Statement
+            </Button>
+          </AddStatementDialog>
           <Button asChild variant="brand">
             <Link
               href={`/polls/${slug}/results`}

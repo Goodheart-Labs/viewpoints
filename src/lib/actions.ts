@@ -343,3 +343,36 @@ export async function flagStatement({
 
   revalidatePath(`/polls/${statement.poll_id}`);
 }
+
+/**
+ * Adds a statement to a poll
+ */
+export async function addStatement({
+  slug,
+  statement,
+}: {
+  slug: string;
+  statement: string;
+}) {
+  // First, get the poll
+  const poll = await db
+    .selectFrom("polls")
+    .selectAll()
+    .where("slug", "=", slug)
+    .executeTakeFirst();
+
+  if (!poll) {
+    throw new Error("Poll not found");
+  }
+
+  // Then, add the statement
+  await db
+    .insertInto("statements")
+    .values({
+      poll_id: poll.id,
+      text: statement.trim(),
+    })
+    .execute();
+
+  revalidatePath(`/polls/${slug}`);
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  FiArchive,
   FiBarChart,
   FiClipboard,
   FiCode,
@@ -19,6 +20,7 @@ import { getBaseUrl } from "@/lib/getBaseUrl";
 import Link from "next/link";
 import { forwardRef } from "react";
 import QRCodeDialog from "./QRCodeDialog";
+import { usePathname } from "next/navigation";
 
 export function PollHeader({
   slug,
@@ -29,8 +31,24 @@ export function PollHeader({
   isOwner: boolean;
   id: number;
 }) {
+  const pathname = usePathname();
+  const isResultsPage = pathname.endsWith("/results");
   return (
     <div className="flex gap-1 items-center mb-3">
+      {isResultsPage ? (
+        <PollButton icon={FiArchive} href={`/polls/${slug}`}>
+          Vote
+        </PollButton>
+      ) : (
+        <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
+          Results
+        </PollButton>
+      )}
+      {isOwner ? (
+        <PollButton icon={FiEdit} href={`/user/polls/${id}`}>
+          Edit
+        </PollButton>
+      ) : null}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <PollButton icon={FiLink}>Share</PollButton>
@@ -66,16 +84,6 @@ export function PollHeader({
           </QRCodeDialog>
         </DropdownMenuContent>
       </DropdownMenu>
-      <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
-        Results
-      </PollButton>
-      {isOwner ? (
-        <PollButton icon={FiEdit} href={`/user/polls/${id}`}>
-          Edit
-        </PollButton>
-      ) : null}
-      {/* <PollButton>Download Results</PollButton>
-  <PollButton>Share Results</PollButton> */}
     </div>
   );
 }
