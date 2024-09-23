@@ -146,9 +146,12 @@ function StatementButton({
       className={cn(
         "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-colors",
         {
-          "bg-red-500 text-white hover:bg-red-600": variant === "disagree",
-          "bg-yellow-500 text-white hover:bg-yellow-600": variant === "skip",
-          "bg-green-500 text-white hover:bg-green-600": variant === "agree",
+          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600":
+            variant === "disagree",
+          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600":
+            variant === "skip",
+          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600":
+            variant === "agree",
         },
         className,
       )}
