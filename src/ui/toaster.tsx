@@ -10,8 +10,8 @@ const Toaster = ({ ...props }: React.ComponentProps<typeof Sonner>) => {
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border group-[.toaster]:shadow-md",
-          title: "group-[.toast]:font-display group-[.toast]:text-lg",
+            "group toast group-[.toaster]:bg-background dark:group-[.toaster]:bg-foreground group-[.toaster]:text-foreground dark:group-[.toaster]:text-background group-[.toaster]:border group-[.toaster]:shadow-md",
+          title: "",
           description: "group-[.toast]:text-neutral-500",
           actionButton:
             "group-[.toast]:bg-foreground group-[.toast]:text-neutral-100 group-[.toast]:rounded-md",

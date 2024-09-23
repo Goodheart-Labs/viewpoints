@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getPollResults } from "@/lib/getPollResults";
 import { StatementReview } from "@/lib/schemas";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +12,7 @@ import { ChoiceEnum } from "kysely-codegen";
 import Link from "next/link";
 import { FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
+
 export function ResultsPage({
   slug,
   sort,
@@ -21,6 +24,14 @@ export function ResultsPage({
   visitorId?: string;
   initialData: Awaited<ReturnType<typeof getPollResults>>;
 }) {
+  const searchParams = useSearchParams();
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    const liveParam = searchParams.get("live");
+    setIsLive(liveParam === "true");
+  }, [searchParams]);
+
   const { data } = useQuery({
     queryKey: ["results", slug, sort],
     queryFn: async () => {
@@ -30,27 +41,43 @@ export function ResultsPage({
     initialData,
     refetchInterval: 10_000,
   });
+
   const { visitorMostConflictStatementId, visitorMostConsensusStatementId } =
     data;
+
+  const { push } = useRouter();
+
+  useQuery({
+    queryKey: ["live", slug],
+    queryFn: async () => {
+      const res = await fetch(`/api/polls/${slug}/live`);
+      const { hasNewStatements } = (await res.json()) as {
+        hasNewStatements: boolean;
+      };
+
+      if (hasNewStatements) push(`/polls/${slug}`);
+
+      return { hasNewStatements };
+    },
+    refetchInterval: 10_000,
+    enabled: isLive,
+  });
+
   return (
     <div className="grid gap-4">
       <p className="text-center text-sm sm:text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100">
         <FiUsers className="inline-block -mt-1 mr-2" size={20} />
-        <strong>{data.uniqueRespondentsCount} people</strong> have given{" "}
-        <strong>{data.responsesCount} responses</strong>
+        <strong>
+          {data.uniqueRespondentsCount}{" "}
+          {data.uniqueRespondentsCount === 1 ? "person has" : "people have"}
+        </strong>{" "}
+        given{" "}
+        <strong>
+          {data.responsesCount}{" "}
+          {data.responsesCount === 1 ? "response" : "responses"}
+        </strong>
         <FiMessageCircle className="inline-block -mt-1 mx-1" size={20} />
       </p>
-
-      {visitorId &&
-      visitorMostConsensusStatementId &&
-      visitorMostConflictStatementId ? (
-        <Highlights
-          visitorMostConflictStatementId={visitorMostConflictStatementId}
-          visitorMostConsensusStatementId={visitorMostConsensusStatementId}
-          statements={data.statements}
-          choicePercentage={data.choicePercentage}
-        />
-      ) : null}
       <div className="grid gap-4">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold">Results</h1>
@@ -115,6 +142,16 @@ export function ResultsPage({
             ))}
         </div>
       </div>
+      {visitorId &&
+      visitorMostConsensusStatementId &&
+      visitorMostConflictStatementId ? (
+        <Highlights
+          visitorMostConflictStatementId={visitorMostConflictStatementId}
+          visitorMostConsensusStatementId={visitorMostConsensusStatementId}
+          statements={data.statements}
+          choicePercentage={data.choicePercentage}
+        />
+      ) : null}
     </div>
   );
 }

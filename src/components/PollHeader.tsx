@@ -8,6 +8,7 @@ import {
   FiDownload,
   FiEdit,
   FiLink,
+  FiPlus,
   FiShare2,
 } from "react-icons/fi";
 import { LuQrCode } from "react-icons/lu";
@@ -26,6 +27,7 @@ import { usePathname } from "next/navigation";
 
 import { usePendingAction } from "@/lib/usePendingAction";
 import { getCSV } from "@/lib/getCsv";
+import AddStatementDialog from "./AddStatementDialog";
 
 export function PollHeader({
   slug,
@@ -76,6 +78,9 @@ export function PollHeader({
         </PollButton>
       ) : null}
 
+      <AddStatementDialog>
+        <PollButton icon={FiPlus}>Add Statement</PollButton>
+      </AddStatementDialog>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <PollButton icon={FiShare2}>Share</PollButton>
@@ -113,11 +118,12 @@ export function PollHeader({
             <FiCode className="w-4 h-4 mr-2" />
             Copy embed code
           </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => handleDownload({ pollId })}>
+            <FiDownload className="w-4 h-4 mr-2" />
+            Download CSV
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <PollButton icon={FiDownload} onClick={() => handleDownload({ pollId })}>
-        {isPending ? "Downloading..." : "Download"}
-      </PollButton>
     </div>
   );
 }

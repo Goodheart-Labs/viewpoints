@@ -228,7 +228,7 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
     useEffect(() => {
       const timer = setTimeout(() => {
         if (!isEmbed) {
-          push(`/polls/${slug}/results`);
+          push(`/polls/${slug}/results?live=true`);
         }
       }, 1750);
 
@@ -250,7 +250,7 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
         <div className="flex gap-1 items-center">
           <Button asChild variant="brand" className="results-button">
             <Link
-              href={`/polls/${slug}/results`}
+              href={`/polls/${slug}/results?live=true`}
               target={isEmbed ? "_blank" : undefined}
             >
               <FiBarChart className="mr-2" />
