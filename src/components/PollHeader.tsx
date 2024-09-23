@@ -60,7 +60,7 @@ export function PollHeader({
   }, [slug]);
 
   return (
-    <div className="flex gap-1 items-center mb-3">
+    <div className="flex gap-1 items-center mb-3 justify-end">
       {isResultsPage ? (
         <PollButton icon={FiArchive} href={`/polls/${slug}`}>
           Vote
