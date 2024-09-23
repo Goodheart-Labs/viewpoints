@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import FlagStatementDialog from "./FlagStatementDialog";
 import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
-import { VARIANT_ICON } from "@/lib/copy";
+import { CHOICE_COPY, CHOICE_ICON } from "@/lib/copy";
 import { usePathname, useRouter } from "next/navigation";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
@@ -69,7 +69,7 @@ export function Poll({
                   }}
                   onMouseEnter={rotateLeft}
                 >
-                  Disagree
+                  {CHOICE_COPY.disagree}
                 </StatementButton>
                 <StatementButton
                   variant="skip"
@@ -82,7 +82,7 @@ export function Poll({
                   }}
                   onMouseEnter={noRotate}
                 >
-                  Skip
+                  {CHOICE_COPY.skip}
                 </StatementButton>
                 <StatementButton
                   variant="agree"
@@ -95,7 +95,7 @@ export function Poll({
                   }}
                   onMouseEnter={rotateRight}
                 >
-                  Agree
+                  {CHOICE_COPY.agree}
                 </StatementButton>
               </>
             ) : (
@@ -138,7 +138,7 @@ function StatementButton({
   variant,
   ...props
 }: StatementButtonProps) {
-  const Icon = VARIANT_ICON[variant];
+  const Icon = CHOICE_ICON[variant];
   return (
     <button
       className={cn(
