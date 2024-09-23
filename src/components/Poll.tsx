@@ -1,8 +1,8 @@
 "use client";
 
 import type { getPoll } from "@/lib/getPoll";
-import { forwardRef, useOptimistic } from "react";
-import { FiBarChart, FiFlag, FiPlus } from "react-icons/fi";
+import { forwardRef, useEffect, useOptimistic } from "react";
+import { FiBarChart, FiFlag } from "react-icons/fi";
 import { cn } from "@/ui/cn";
 import { createResponse } from "@/lib/actions";
 import { usePendingAction } from "@/lib/usePendingAction";
@@ -13,8 +13,7 @@ import FlagStatementDialog from "./FlagStatementDialog";
 import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
 import { VARIANT_ICON } from "@/lib/copy";
-import { usePathname } from "next/navigation";
-import AddStatementDialog from "./AddStatementDialog";
+import { usePathname, useRouter } from "next/navigation";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
 
@@ -25,7 +24,6 @@ const noRotate = () => (rotate = 0);
 
 export function Poll({
   statements: serverStatements,
-  responses,
   options,
   poll,
   count,
@@ -191,19 +189,7 @@ export const PollStatement = forwardRef<
     children: React.ReactNode;
     next: () => void;
   }
->(function PollStatement(
-  {
-    text,
-    created_at,
-    author_name,
-    author_avatar_url,
-    children,
-    id,
-    next,
-    question_type,
-  },
-  ref,
-) {
+>(function PollStatement({ text, children, id, next, question_type }, ref) {
   return (
     <motion.div
       ref={ref}
@@ -229,23 +215,6 @@ export const PollStatement = forwardRef<
           </FlagStatementDialog>
         </div>
       ) : null}
-      {/* <div className="flex items-center justify-end">
-          {author_avatar_url ? (
-            <Image
-              src={author_avatar_url}
-              alt={author_name ?? ""}
-              className="rounded-full mr-2"
-              width={32}
-              height={32}
-            />
-          ) : null}
-          <div className="grid text-xs">
-            <span className="font-medium text-neutral-700">{author_name}</span>
-            <span className="text-neutral-400 tabular-nums">
-              {new Date(created_at).toLocaleDateString()}
-            </span>
-          </div>
-        </div> */}
     </motion.div>
   );
 });
@@ -254,6 +223,17 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
   function GoToResults({ slug }, ref) {
     const path = usePathname();
     const isEmbed = path.startsWith("/embed");
+    const { push } = useRouter();
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        if (!isEmbed) {
+          push(`/polls/${slug}/results`);
+        }
+      }, 1750);
+
+      return () => clearTimeout(timer);
+    }, [slug, isEmbed, push]);
 
     return (
       <motion.div
@@ -268,19 +248,13 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
           You&apos;ve responded to all statements!
         </h2>
         <div className="flex gap-1 items-center">
-          <AddStatementDialog>
-            <Button variant="default">
-              <FiPlus className="mr-2" />
-              Add Statement
-            </Button>
-          </AddStatementDialog>
-          <Button asChild variant="brand">
+          <Button asChild variant="brand" className="results-button">
             <Link
               href={`/polls/${slug}/results`}
               target={isEmbed ? "_blank" : undefined}
             >
               <FiBarChart className="mr-2" />
-              View Results
+              Go to Results
             </Link>
           </Button>
         </div>
