@@ -30,6 +30,7 @@ body {
 
 .results-button {
   position: relative;
+  overflow: hidden;
 }
 
 .results-button::after {
@@ -39,7 +40,7 @@ body {
   left: 0;
   width: 0%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.25);
   animation: animateWidth 2s linear;
   mix-blend-mode: multiply;
 }

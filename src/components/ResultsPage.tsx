@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getPollResults } from "@/lib/getPollResults";
 import { StatementReview } from "@/lib/schemas";
 import { useQuery } from "@tanstack/react-query";
-import { SORT_EXPLANATIONS, CHOICE_ICON } from "@/lib/copy";
+import { CHOICE_ICON, SORT_EXPLANATIONS } from "@/lib/copy";
 import { cn } from "@/ui/cn";
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { ChoiceEnum } from "kysely-codegen";

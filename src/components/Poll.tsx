@@ -1,7 +1,7 @@
 "use client";
 
 import type { getPoll } from "@/lib/getPoll";
-import { forwardRef, useEffect, useOptimistic } from "react";
+import { forwardRef, useEffect, useOptimistic, useState } from "react";
 import { FiBarChart, FiFlag } from "react-icons/fi";
 import { cn } from "@/ui/cn";
 import { createResponse } from "@/lib/actions";
@@ -14,6 +14,8 @@ import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
 import { CHOICE_COPY, CHOICE_ICON } from "@/lib/copy";
 import { usePathname, useRouter } from "next/navigation";
+import { animated, useSprings } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
 
@@ -21,6 +23,8 @@ let rotate = 10;
 const rotateRight = () => (rotate = 10);
 const rotateLeft = () => (rotate = -10);
 const noRotate = () => (rotate = 0);
+
+const DRAG_THRESHOLD = 200;
 
 export function Poll({
   statements: serverStatements,
@@ -47,76 +51,164 @@ export function Poll({
     (o) => o.statement_id === statement?.id,
   );
 
+  const [dragSelection, setDragSelection] = useState<ChoiceEnum | null>(null);
+
+  const [springs, api] = useSprings(statements.length, (i) => ({
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotate: 0,
+  }));
+
+  const bind = useDrag(
+    ({
+      active,
+      movement: [mx, my],
+      direction: [dx],
+      velocity: [vx],
+      memo = [0, 0],
+      swipe: [swipeX, swipeY],
+    }) => {
+      if (!active) {
+        memo = [0, 0]; // Reset memo when drag ends
+
+        let choice: ChoiceEnum | null = null;
+        if (dragSelection) {
+          choice = dragSelection;
+        } else if (swipeX !== 0) {
+          choice = swipeX < 0 ? "disagree" : "agree";
+        } else if (swipeY !== 0) {
+          choice = swipeY < 0 ? "skip" : null;
+        }
+
+        if (choice) {
+          respond({
+            statementId: statement.id,
+            choice: choice,
+            pollId: poll.id,
+          });
+        }
+
+        setDragSelection(null); // Reset drag selection when drag ends
+      } else {
+        const distances: { direction: ChoiceEnum; value: number }[] = [
+          { direction: "agree", value: mx },
+          { direction: "disagree", value: -mx },
+          { direction: "skip", value: -my },
+        ];
+
+        const validDistances = distances.filter(
+          ({ value }) => value >= DRAG_THRESHOLD,
+        );
+        const maxDistance = validDistances.sort((a, b) => b.value - a.value)[0];
+
+        setDragSelection(maxDistance ? maxDistance.direction : null);
+      }
+
+      api.start((i) => ({
+        x: active ? mx / 2 : 0, // Added damping by dividing movement
+        y: active ? my / 2 : 0, // Added damping by dividing movement
+        scale: active ? 1.1 : 1,
+        rotate: active ? 2 * vx * (dx < 0 ? -1 : 1) : 0,
+        config: { mass: 2, tension: 500, friction: 100 }, // Ensure config is applied here as well
+      }));
+
+      return memo;
+    },
+  );
+
+  // On this page, we prevent overflow on the body
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-2 group" data-drag-selection={dragSelection}>
       <Progress
         value={(100 * (count - statements.length)) / count}
         className="h-1 text-neutral-300 dark:text-neutral-700"
       />
       <AnimatePresence mode="popLayout" initial={false}>
         {statements.length ? (
-          <PollStatement key={statement.id} next={next} {...statement}>
-            {showAgreeDisagree ? (
-              <>
-                <StatementButton
-                  variant="disagree"
-                  onClick={() => {
-                    respond({
-                      statementId: statement.id,
-                      choice: "disagree",
-                      pollId: poll.id,
-                    });
-                  }}
-                  onMouseEnter={rotateLeft}
-                >
-                  {CHOICE_COPY.disagree}
-                </StatementButton>
-                <StatementButton
-                  variant="skip"
-                  onClick={() => {
-                    respond({
-                      statementId: statement.id,
-                      choice: "skip",
-                      pollId: poll.id,
-                    });
-                  }}
-                  onMouseEnter={noRotate}
-                >
-                  {CHOICE_COPY.skip}
-                </StatementButton>
-                <StatementButton
-                  variant="agree"
-                  onClick={() => {
-                    respond({
-                      statementId: statement.id,
-                      choice: "agree",
-                      pollId: poll.id,
-                    });
-                  }}
-                  onMouseEnter={rotateRight}
-                >
-                  {CHOICE_COPY.agree}
-                </StatementButton>
-              </>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-1 md:gap-4">
-                {statementOptions.map((option) => (
-                  <OptionButton
-                    key={option.id}
+          <animated.div
+            style={{
+              x: springs[0].x,
+              y: springs[0].y,
+              scale: springs[0].scale,
+              rotate: springs[0].rotate,
+            }}
+            className={cn("cursor-grab touch-none", {
+              "cursor-grabbing": springs[0].x.get() !== 0,
+            })}
+            key={statement.id}
+            {...bind()}
+          >
+            <PollStatement next={next} {...statement}>
+              {showAgreeDisagree ? (
+                <>
+                  <StatementButton
+                    variant="disagree"
                     onClick={() => {
                       respond({
                         statementId: statement.id,
-                        optionId: option.id,
+                        choice: "disagree",
                         pollId: poll.id,
                       });
                     }}
+                    onMouseEnter={rotateLeft}
                   >
-                    {option.option}
-                  </OptionButton>
-                ))}
-              </div>
-            )}
-          </PollStatement>
+                    {CHOICE_COPY.disagree}
+                  </StatementButton>
+                  <StatementButton
+                    variant="skip"
+                    onClick={() => {
+                      respond({
+                        statementId: statement.id,
+                        choice: "skip",
+                        pollId: poll.id,
+                      });
+                    }}
+                    onMouseEnter={noRotate}
+                  >
+                    {CHOICE_COPY.skip}
+                  </StatementButton>
+                  <StatementButton
+                    variant="agree"
+                    onClick={() => {
+                      respond({
+                        statementId: statement.id,
+                        choice: "agree",
+                        pollId: poll.id,
+                      });
+                    }}
+                    onMouseEnter={rotateRight}
+                  >
+                    {CHOICE_COPY.agree}
+                  </StatementButton>
+                </>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-1 md:gap-4">
+                  {statementOptions.map((option) => (
+                    <OptionButton
+                      key={option.id}
+                      onClick={() => {
+                        respond({
+                          statementId: statement.id,
+                          optionId: option.id,
+                          pollId: poll.id,
+                        });
+                      }}
+                    >
+                      {option.option}
+                    </OptionButton>
+                  ))}
+                </div>
+              )}
+            </PollStatement>
+          </animated.div>
         ) : (
           <GoToResults slug={poll.slug!} />
         )}
@@ -142,13 +234,13 @@ function StatementButton({
   return (
     <button
       className={cn(
-        "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-colors",
+        "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-all select-none",
         {
-          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600":
+          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600 group-data-[drag-selection=disagree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=agree]:opacity-50":
             variant === "disagree",
-          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600":
+          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600 group-data-[drag-selection=skip]:scale-110 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=agree]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
             variant === "skip",
-          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600":
+          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600 group-data-[drag-selection=agree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
             variant === "agree",
         },
         className,
@@ -200,7 +292,7 @@ export const PollStatement = forwardRef<
       transition={{ duration: 0.4 }}
     >
       <div className="grid gap-8 p-8 content-center">
-        <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text">
+        <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text select-none">
           {text}
         </p>
         <div className="flex space-x-4 justify-center">{children}</div>
