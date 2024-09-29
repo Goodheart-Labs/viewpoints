@@ -98,6 +98,9 @@ export async function getPollResults(
       consensus,
       conflict,
       confusion,
+      agree: choices.agree,
+      disagree: choices.disagree,
+      recent: statement.created_at.getTime(),
     };
   }
 
