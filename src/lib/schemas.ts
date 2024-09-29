@@ -41,4 +41,6 @@ export type StatementReview = {
   consensus: number;
   conflict: number;
   confusion: number;
+  agree: number;
+  disagree: number;
 };

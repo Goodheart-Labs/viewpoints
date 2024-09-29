@@ -82,26 +82,56 @@ export function ResultsPage({
         <div className="grid gap-2">
           <Tabs value={sort} className="w-full">
             <TabsList className="bg-transparent dark:bg-transparent flex gap-2 justify-center">
+              <CustomTabTrigger value="agree" asChild>
+                <Link
+                  href={`/polls/${slug}/results?sort=agree${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Agree
+                </Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="disagree" asChild>
+                <Link
+                  href={`/polls/${slug}/results?sort=disagree${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Disagree
+                </Link>
+              </CustomTabTrigger>
               <CustomTabTrigger value="consensus" asChild>
-                <Link href={`/polls/${slug}/results?sort=consensus`}>
-                  Most Consensus
+                <Link
+                  href={`/polls/${slug}/results?sort=consensus${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Consensus
                 </Link>
               </CustomTabTrigger>
               <CustomTabTrigger value="conflict" asChild>
-                <Link href={`/polls/${slug}/results?sort=conflict`}>
-                  Most Conflict
+                <Link
+                  href={`/polls/${slug}/results?sort=conflict${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Conflict
                 </Link>
               </CustomTabTrigger>
               <CustomTabTrigger value="confusion" asChild>
-                <Link href={`/polls/${slug}/results?sort=confusion`}>
-                  Most Confusion
+                <Link
+                  href={`/polls/${slug}/results?sort=confusion${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Confusion
                 </Link>
               </CustomTabTrigger>
             </TabsList>
           </Tabs>
-          <div className="bg-neutral-800 text-white p-4 rounded-lg flex items-center gap-3 max-w-lg mx-auto">
+          <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center gap-3 max-w-lg mx-auto">
             <FiList className="flex-shrink-0 opacity-50" size={20} />
-            <p className="text-sm font-medium text-pretty text-neutral-200">
+            <p className="text-sm font-medium text-pretty text-neutral-700 dark:text-neutral-200">
               {SORT_EXPLANATIONS[sort]}
             </p>
           </div>
@@ -171,7 +201,7 @@ function Chip({
 function CustomTabTrigger(props: TabsTriggerProps) {
   return (
     <TabsTrigger
-      className="p-2 text-center text-base font-medium border-b-2 border-transparent transition-colors duration-200 hover:text-neutral-800 dark:hover:text-neutral-200 data-[state=active]:border-neutral-800 dark:data-[state=active]:border-neutral-200 data-[state=active]:text-neutral-800 dark:data-[state=active]:text-neutral-200 bg-transparent data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent"
+      className="p-2 text-center text-base font-medium border-b-2 border-transparent transition-colors duration-200 hover:text-neutral-800 dark:hover:text-neutral-200 data-[state=active]:border-neutral-800 dark:data-[state=active]:border-neutral-800 dark:data-[state=active]:text-neutral-800 dark:data-[state=active]:text-neutral-200 bg-transparent data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent"
       {...props}
     >
       {props.children}
