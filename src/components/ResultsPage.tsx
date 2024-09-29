@@ -12,6 +12,7 @@ import { ChoiceEnum } from "kysely-codegen";
 import Link from "next/link";
 import { FiList, FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
+import { CreatePollCallout } from "./CreatePollCallout";
 
 export function ResultsPage({
   slug,
@@ -42,9 +43,6 @@ export function ResultsPage({
     refetchInterval: 10_000,
   });
 
-  const { visitorMostConflictStatementId, visitorMostConsensusStatementId } =
-    data;
-
   const { push } = useRouter();
 
   useQuery({
@@ -65,7 +63,7 @@ export function ResultsPage({
 
   return (
     <div className="grid gap-4">
-      <p className="text-center text-sm sm:text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100">
+      <p className="text-center text-sm sm:text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100 border-2">
         <FiUsers className="inline-block -mt-1 mr-2" size={20} />
         <strong>
           {data.uniqueRespondentsCount}{" "}
@@ -127,6 +125,15 @@ export function ResultsPage({
                   Confusion
                 </Link>
               </CustomTabTrigger>
+              <CustomTabTrigger value="recent" asChild>
+                <Link
+                  href={`/polls/${slug}/results?sort=recent${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Recent
+                </Link>
+              </CustomTabTrigger>
             </TabsList>
           </Tabs>
           <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center gap-3 max-w-lg mx-auto">
@@ -172,6 +179,7 @@ export function ResultsPage({
             ))}
         </div>
       </div>
+      <CreatePollCallout />
     </div>
   );
 }

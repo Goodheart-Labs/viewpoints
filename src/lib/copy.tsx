@@ -18,6 +18,7 @@ export const SORT_EXPLANATIONS: Record<keyof StatementReview, React.ReactNode> =
     confusion: `Statements with the most "${CHOICE_COPY.skip}" votes appear at the top.`,
     agree: `Statements with the most 👍 votes appear at the top.`,
     disagree: `Statements with the most 👎 votes appear at the top.`,
+    recent: `Statements that were added most recently appear at the top.`,
   };
 
 export const CHOICE_ICON: Record<ChoiceEnum, typeof FiThumbsUp> = {

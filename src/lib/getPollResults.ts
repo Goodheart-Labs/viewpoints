@@ -100,6 +100,7 @@ export async function getPollResults(
       confusion,
       agree: choices.agree,
       disagree: choices.disagree,
+      recent: statement.created_at.getTime(),
     };
   }
 
