@@ -61,15 +61,17 @@ export function ResultsPage({
     enabled: isLive,
   });
 
+  const isSingleRespondent = data.uniqueRespondentsCount === 1;
+
   return (
     <div className="grid gap-4">
       <p className="text-center text-sm sm:text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100 border-2">
         <FiUsers className="inline-block -mt-1 mr-2" size={20} />
         <strong>
           {data.uniqueRespondentsCount}{" "}
-          {data.uniqueRespondentsCount === 1 ? "person has" : "people have"}
+          {isSingleRespondent ? "person" : "people"}
         </strong>{" "}
-        given{" "}
+        {isSingleRespondent ? "has" : "have"} given{" "}
         <strong>
           {data.responsesCount}{" "}
           {data.responsesCount === 1 ? "response" : "responses"}
