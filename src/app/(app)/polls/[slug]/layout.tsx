@@ -24,10 +24,10 @@ export default async function PollLayout({
       {isCouncilPoll ? <BackToSouthGlos /> : null}
       <div className="grid gap-1">
         <PollHeader slug={slug} isOwner={isOwner} pollId={results.poll.id} />
-        <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
+        <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
           {results.poll.title}
         </h1>
-        <h2 className="text-lg text-pretty text-neutral-400 dark:text-neutral-500">
+        <h2 className="sm:text-lg text-pretty text-neutral-400 dark:text-neutral-500 leading-tight">
           {results.poll.core_question || DEFAULT_CORE_QUESTION}
         </h2>
       </div>

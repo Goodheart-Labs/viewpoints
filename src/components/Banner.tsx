@@ -17,7 +17,7 @@ export function Banner() {
             </p>
           </div>
           <Link
-            href="/create"
+            href="/new-poll"
             className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium rounded-lg text-white bg-gradient-to-r from-neutral-700 to-neutral-900 hover:from-neutral-600 hover:to-neutral-800 dark:from-white dark:to-neutral-300 dark:text-black dark:hover:from-neutral-100 dark:hover:to-neutral-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-800 dark:focus:ring-white"
           >
             <FiPlus className="mr-2" />

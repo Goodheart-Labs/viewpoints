@@ -5,7 +5,7 @@ import { cn } from "@/ui/cn";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "sonner";
+import { Toaster } from "@/ui/toaster";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryProvider } from "@/components/QueryProvider";
 import { SEO } from "@/lib/copy";

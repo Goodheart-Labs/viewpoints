@@ -27,3 +27,29 @@ body {
 .statement-text {
   text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
+
+.results-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.results-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  animation: animateWidth 2s linear;
+  mix-blend-mode: multiply;
+}
+
+@keyframes animateWidth {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
