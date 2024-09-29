@@ -1,8 +1,8 @@
 "use client";
 
 import type { getPoll } from "@/lib/getPoll";
-import { forwardRef, useOptimistic } from "react";
-import { FiBarChart, FiFlag, FiPlus } from "react-icons/fi";
+import { forwardRef, useEffect, useOptimistic, useState } from "react";
+import { FiBarChart, FiFlag } from "react-icons/fi";
 import { cn } from "@/ui/cn";
 import { createResponse } from "@/lib/actions";
 import { usePendingAction } from "@/lib/usePendingAction";
@@ -12,9 +12,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import FlagStatementDialog from "./FlagStatementDialog";
 import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
-import { VARIANT_ICON } from "@/lib/copy";
-import { usePathname } from "next/navigation";
-import AddStatementDialog from "./AddStatementDialog";
+import { CHOICE_COPY, CHOICE_ICON } from "@/lib/copy";
+import { usePathname, useRouter } from "next/navigation";
+import { animated, useSprings } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
 
@@ -23,9 +24,10 @@ const rotateRight = () => (rotate = 10);
 const rotateLeft = () => (rotate = -10);
 const noRotate = () => (rotate = 0);
 
+const DRAG_THRESHOLD = 200;
+
 export function Poll({
   statements: serverStatements,
-  responses,
   options,
   poll,
   count,
@@ -49,76 +51,164 @@ export function Poll({
     (o) => o.statement_id === statement?.id,
   );
 
+  const [dragSelection, setDragSelection] = useState<ChoiceEnum | null>(null);
+
+  const [springs, api] = useSprings(statements.length, (i) => ({
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotate: 0,
+  }));
+
+  const bind = useDrag(
+    ({
+      active,
+      movement: [mx, my],
+      direction: [dx],
+      velocity: [vx],
+      memo = [0, 0],
+      swipe: [swipeX, swipeY],
+    }) => {
+      if (!active) {
+        memo = [0, 0]; // Reset memo when drag ends
+
+        let choice: ChoiceEnum | null = null;
+        if (dragSelection) {
+          choice = dragSelection;
+        } else if (swipeX !== 0) {
+          choice = swipeX < 0 ? "disagree" : "agree";
+        } else if (swipeY !== 0) {
+          choice = swipeY < 0 ? "skip" : null;
+        }
+
+        if (choice) {
+          respond({
+            statementId: statement.id,
+            choice: choice,
+            pollId: poll.id,
+          });
+        }
+
+        setDragSelection(null); // Reset drag selection when drag ends
+      } else {
+        const distances: { direction: ChoiceEnum; value: number }[] = [
+          { direction: "agree", value: mx },
+          { direction: "disagree", value: -mx },
+          { direction: "skip", value: -my },
+        ];
+
+        const validDistances = distances.filter(
+          ({ value }) => value >= DRAG_THRESHOLD,
+        );
+        const maxDistance = validDistances.sort((a, b) => b.value - a.value)[0];
+
+        setDragSelection(maxDistance ? maxDistance.direction : null);
+      }
+
+      api.start((i) => ({
+        x: active ? mx / 2 : 0, // Added damping by dividing movement
+        y: active ? my / 2 : 0, // Added damping by dividing movement
+        scale: active ? 1.1 : 1,
+        rotate: active ? 2 * vx * (dx < 0 ? -1 : 1) : 0,
+        config: { mass: 2, tension: 500, friction: 100 }, // Ensure config is applied here as well
+      }));
+
+      return memo;
+    },
+  );
+
+  // On this page, we prevent overflow on the body
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-2 group" data-drag-selection={dragSelection}>
       <Progress
         value={(100 * (count - statements.length)) / count}
         className="h-1 text-neutral-300 dark:text-neutral-700"
       />
       <AnimatePresence mode="popLayout" initial={false}>
         {statements.length ? (
-          <PollStatement key={statement.id} next={next} {...statement}>
-            {showAgreeDisagree ? (
-              <>
-                <StatementButton
-                  variant="disagree"
-                  onClick={() => {
-                    respond({
-                      statementId: statement.id,
-                      choice: "disagree",
-                      pollId: poll.id,
-                    });
-                  }}
-                  onMouseEnter={rotateLeft}
-                >
-                  Disagree
-                </StatementButton>
-                <StatementButton
-                  variant="skip"
-                  onClick={() => {
-                    respond({
-                      statementId: statement.id,
-                      choice: "skip",
-                      pollId: poll.id,
-                    });
-                  }}
-                  onMouseEnter={noRotate}
-                >
-                  Skip
-                </StatementButton>
-                <StatementButton
-                  variant="agree"
-                  onClick={() => {
-                    respond({
-                      statementId: statement.id,
-                      choice: "agree",
-                      pollId: poll.id,
-                    });
-                  }}
-                  onMouseEnter={rotateRight}
-                >
-                  Agree
-                </StatementButton>
-              </>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-1 md:gap-4">
-                {statementOptions.map((option) => (
-                  <OptionButton
-                    key={option.id}
+          <animated.div
+            style={{
+              x: springs[0].x,
+              y: springs[0].y,
+              scale: springs[0].scale,
+              rotate: springs[0].rotate,
+            }}
+            className={cn("cursor-grab touch-none", {
+              "cursor-grabbing": springs[0].x.get() !== 0,
+            })}
+            key={statement.id}
+            {...bind()}
+          >
+            <PollStatement next={next} {...statement}>
+              {showAgreeDisagree ? (
+                <>
+                  <StatementButton
+                    variant="disagree"
                     onClick={() => {
                       respond({
                         statementId: statement.id,
-                        optionId: option.id,
+                        choice: "disagree",
                         pollId: poll.id,
                       });
                     }}
+                    onMouseEnter={rotateLeft}
                   >
-                    {option.option}
-                  </OptionButton>
-                ))}
-              </div>
-            )}
-          </PollStatement>
+                    {CHOICE_COPY.disagree}
+                  </StatementButton>
+                  <StatementButton
+                    variant="skip"
+                    onClick={() => {
+                      respond({
+                        statementId: statement.id,
+                        choice: "skip",
+                        pollId: poll.id,
+                      });
+                    }}
+                    onMouseEnter={noRotate}
+                  >
+                    {CHOICE_COPY.skip}
+                  </StatementButton>
+                  <StatementButton
+                    variant="agree"
+                    onClick={() => {
+                      respond({
+                        statementId: statement.id,
+                        choice: "agree",
+                        pollId: poll.id,
+                      });
+                    }}
+                    onMouseEnter={rotateRight}
+                  >
+                    {CHOICE_COPY.agree}
+                  </StatementButton>
+                </>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-1 md:gap-4">
+                  {statementOptions.map((option) => (
+                    <OptionButton
+                      key={option.id}
+                      onClick={() => {
+                        respond({
+                          statementId: statement.id,
+                          optionId: option.id,
+                          pollId: poll.id,
+                        });
+                      }}
+                    >
+                      {option.option}
+                    </OptionButton>
+                  ))}
+                </div>
+              )}
+            </PollStatement>
+          </animated.div>
         ) : (
           <GoToResults slug={poll.slug!} />
         )}
@@ -140,15 +230,18 @@ function StatementButton({
   variant,
   ...props
 }: StatementButtonProps) {
-  const Icon = VARIANT_ICON[variant];
+  const Icon = CHOICE_ICON[variant];
   return (
     <button
       className={cn(
-        "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-colors",
+        "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-all select-none",
         {
-          "bg-red-500 text-white hover:bg-red-600": variant === "disagree",
-          "bg-yellow-500 text-white hover:bg-yellow-600": variant === "skip",
-          "bg-green-500 text-white hover:bg-green-600": variant === "agree",
+          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600 group-data-[drag-selection=disagree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=agree]:opacity-50":
+            variant === "disagree",
+          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600 group-data-[drag-selection=skip]:scale-110 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=agree]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+            variant === "skip",
+          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600 group-data-[drag-selection=agree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+            variant === "agree",
         },
         className,
       )}
@@ -188,19 +281,7 @@ export const PollStatement = forwardRef<
     children: React.ReactNode;
     next: () => void;
   }
->(function PollStatement(
-  {
-    text,
-    created_at,
-    author_name,
-    author_avatar_url,
-    children,
-    id,
-    next,
-    question_type,
-  },
-  ref,
-) {
+>(function PollStatement({ text, children, id, next, question_type }, ref) {
   return (
     <motion.div
       ref={ref}
@@ -211,7 +292,7 @@ export const PollStatement = forwardRef<
       transition={{ duration: 0.4 }}
     >
       <div className="grid gap-8 p-8 content-center">
-        <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text">
+        <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text select-none">
           {text}
         </p>
         <div className="flex space-x-4 justify-center">{children}</div>
@@ -226,23 +307,6 @@ export const PollStatement = forwardRef<
           </FlagStatementDialog>
         </div>
       ) : null}
-      {/* <div className="flex items-center justify-end">
-          {author_avatar_url ? (
-            <Image
-              src={author_avatar_url}
-              alt={author_name ?? ""}
-              className="rounded-full mr-2"
-              width={32}
-              height={32}
-            />
-          ) : null}
-          <div className="grid text-xs">
-            <span className="font-medium text-neutral-700">{author_name}</span>
-            <span className="text-neutral-400 tabular-nums">
-              {new Date(created_at).toLocaleDateString()}
-            </span>
-          </div>
-        </div> */}
     </motion.div>
   );
 });
@@ -251,6 +315,17 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
   function GoToResults({ slug }, ref) {
     const path = usePathname();
     const isEmbed = path.startsWith("/embed");
+    const { push } = useRouter();
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        if (!isEmbed) {
+          push(`/polls/${slug}/results?live=true`);
+        }
+      }, 1750);
+
+      return () => clearTimeout(timer);
+    }, [slug, isEmbed, push]);
 
     return (
       <motion.div
@@ -265,19 +340,13 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
           You&apos;ve responded to all statements!
         </h2>
         <div className="flex gap-1 items-center">
-          <AddStatementDialog>
-            <Button variant="default">
-              <FiPlus className="mr-2" />
-              Add Statement
-            </Button>
-          </AddStatementDialog>
-          <Button asChild variant="brand">
+          <Button asChild variant="brand" className="results-button">
             <Link
-              href={`/polls/${slug}/results`}
+              href={`/polls/${slug}/results?live=true`}
               target={isEmbed ? "_blank" : undefined}
             >
               <FiBarChart className="mr-2" />
-              View Results
+              Go to Results
             </Link>
           </Button>
         </div>

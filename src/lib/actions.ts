@@ -37,7 +37,7 @@ export async function getNewPollSlug(title: string) {
   let slug = slugify(title, {
       lower: true,
       replacement: "-",
-      remove: /[*+~.()'"!:@]/g,
+      strict: true,
     }),
     i = 0;
   while (await checkSlugExists(slug)) {

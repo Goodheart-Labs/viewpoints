@@ -68,7 +68,7 @@ function Poll({
 function CreatePoll() {
   return (
     <Link
-      href="/create"
+      href="/new-poll"
       className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-6 grid content-between min-h-[160px] lg:min-h-[200px] shadow-md hover:rotate-1 hover:scale-105 transition-all duration-300"
     >
       <div className="grid gap-2">
