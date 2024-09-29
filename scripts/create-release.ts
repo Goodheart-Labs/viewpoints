@@ -60,13 +60,13 @@ function updateVersion(newVersion: string): void {
 function getMergedPRs(): string {
   let prList = "";
   try {
-    // console.log("Fetching tags from remote...");
+    // Update local tags from remote
     exec("git fetch --tags");
 
     // Get the most recent tag
     const lastTag = exec(
-      "git describe --tags --abbrev=0 2>/dev/null || echo ''",
-    );
+      "git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1)",
+    ).trim();
 
     if (!lastTag) {
       console.log("No tags found. Fetching all merged PRs.");
@@ -74,6 +74,7 @@ function getMergedPRs(): string {
         `gh pr list --base main --state merged --limit 1000 --json number,title,mergedAt --jq '.[] | "- " + .title + " (#" + (.number | tostring) + ")"'`,
       );
     } else {
+      console.log(`Most recent tag: ${lastTag}`);
       // ... (rest of the existing code for when a tag is found)
     }
 
