@@ -41,4 +41,7 @@ export type StatementReview = {
   consensus: number;
   conflict: number;
   confusion: number;
+  agree: number;
+  disagree: number;
+  recent: number; // How recently the statement was added
 };

@@ -60,13 +60,13 @@ function updateVersion(newVersion: string): void {
 function getMergedPRs(): string {
   let prList = "";
   try {
-    // console.log("Fetching tags from remote...");
+    // Update local tags from remote
     exec("git fetch --tags");
 
     // Get the most recent tag
     const lastTag = exec(
-      "git describe --tags --abbrev=0 2>/dev/null || echo ''",
-    );
+      "git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1)",
+    ).trim();
 
     if (!lastTag) {
       console.log("No tags found. Fetching all merged PRs.");
@@ -74,14 +74,14 @@ function getMergedPRs(): string {
         `gh pr list --base main --state merged --limit 1000 --json number,title,mergedAt --jq '.[] | "- " + .title + " (#" + (.number | tostring) + ")"'`,
       );
     } else {
-      // ... (rest of the existing code for when a tag is found)
+      console.log(`Most recent tag: ${lastTag}`);
+      prList = exec(
+        `gh pr list --base main --state merged --limit 1000 --json number,title,mergedAt --jq '.[] | "- " + .title + " (#" + (.number | tostring) + ")"'`,
+      );
     }
 
     if (prList.trim() === "") {
       console.log("No PRs found after the last tag.");
-    } else {
-      console.log("PRs found:");
-      console.log(prList);
     }
   } catch (error) {
     console.error("Error in getMergedPRs:", error);
@@ -133,6 +133,10 @@ async function createRelease(): Promise<void> {
   const currentVersion = getCurrentVersion();
   console.log(`Current version: ${currentVersion}`);
 
+  const mergedPRs = getMergedPRs();
+  console.log("Merged PRs since last release:");
+  console.log(mergedPRs);
+
   // Prompt for new version
   const { versionBump } = await inquirer.prompt([
     {
@@ -149,10 +153,6 @@ async function createRelease(): Promise<void> {
 
   const newVersion = semver.inc(currentVersion, versionBump) || "";
   console.log(`New version: ${newVersion}`);
-
-  const mergedPRs = getMergedPRs();
-  console.log("Merged PRs since last release:");
-  console.log(mergedPRs);
 
   // Update version in package.json
   runAction(() => updateVersion(newVersion), "Updated version in package.json");
