@@ -75,14 +75,13 @@ function getMergedPRs(): string {
       );
     } else {
       console.log(`Most recent tag: ${lastTag}`);
-      // ... (rest of the existing code for when a tag is found)
+      prList = exec(
+        `gh pr list --base main --state merged --limit 1000 --json number,title,mergedAt --jq '.[] | "- " + .title + " (#" + (.number | tostring) + ")"'`,
+      );
     }
 
     if (prList.trim() === "") {
       console.log("No PRs found after the last tag.");
-    } else {
-      console.log("PRs found:");
-      console.log(prList);
     }
   } catch (error) {
     console.error("Error in getMergedPRs:", error);
@@ -134,6 +133,10 @@ async function createRelease(): Promise<void> {
   const currentVersion = getCurrentVersion();
   console.log(`Current version: ${currentVersion}`);
 
+  const mergedPRs = getMergedPRs();
+  console.log("Merged PRs since last release:");
+  console.log(mergedPRs);
+
   // Prompt for new version
   const { versionBump } = await inquirer.prompt([
     {
@@ -150,10 +153,6 @@ async function createRelease(): Promise<void> {
 
   const newVersion = semver.inc(currentVersion, versionBump) || "";
   console.log(`New version: ${newVersion}`);
-
-  const mergedPRs = getMergedPRs();
-  console.log("Merged PRs since last release:");
-  console.log(mergedPRs);
 
   // Update version in package.json
   runAction(() => updateVersion(newVersion), "Updated version in package.json");
