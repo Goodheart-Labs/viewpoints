@@ -57,15 +57,13 @@ export function Poll({
     x: 0,
     y: 0,
     scale: 1,
-    rotate: 0,
+    config: { mass: 1, tension: 10000, friction: 1000 }, // Very stiff spring
   }));
 
   const bind = useDrag(
     ({
       active,
       movement: [mx, my],
-      direction: [dx],
-      velocity: [vx],
       memo = [0, 0],
       swipe: [swipeX, swipeY],
     }) => {
@@ -106,11 +104,10 @@ export function Poll({
       }
 
       api.start((i) => ({
-        x: active ? mx / 2 : 0, // Added damping by dividing movement
-        y: active ? my / 2 : 0, // Added damping by dividing movement
-        scale: active ? 1.1 : 1,
-        rotate: active ? 2 * vx * (dx < 0 ? -1 : 1) : 0,
-        config: { mass: 2, tension: 500, friction: 100 }, // Ensure config is applied here as well
+        x: active ? mx : 0,
+        y: active ? my : 0,
+        scale: 1, // Remove scale change
+        config: { mass: 1, tension: 10000, friction: 1000 }, // Very stiff spring
       }));
 
       return memo;
@@ -138,7 +135,7 @@ export function Poll({
               x: springs[0].x,
               y: springs[0].y,
               scale: springs[0].scale,
-              rotate: springs[0].rotate,
+              // Remove rotate here
             }}
             className={cn("cursor-grab touch-none", {
               "cursor-grabbing": springs[0].x.get() !== 0,
