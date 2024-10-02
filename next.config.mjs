@@ -34,6 +34,16 @@ const nextConfig = {
         },
       ],
     },
+    {
+      source: "/embed/:path*",
+      headers: [
+        { key: "X-Frame-Options", value: "ALLOWALL" },
+        { key: "Access-Control-Allow-Credentials", value: "true" },
+        { key: "Access-Control-Allow-Origin", value: "*" },
+        { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS" },
+        { key: "Access-Control-Allow-Headers", value: "*" },
+      ],
+    },
   ],
 };
 
