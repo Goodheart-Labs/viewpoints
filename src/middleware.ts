@@ -32,8 +32,20 @@ export default clerkMiddleware((auth, req) => {
       value: auth().userId || uuidv4(),
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
+      sameSite: "none",
+      secure: true,
     });
     res.headers.set("x-pathname", req.nextUrl.pathname);
+  }
+
+  // Add this section to handle CORS for embed routes
+  if (req.nextUrl.pathname.startsWith("/embed/")) {
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
   }
 
   return res;
