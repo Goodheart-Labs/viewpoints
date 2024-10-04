@@ -12,7 +12,9 @@
     "format:ci": "prettier --check './**/*.{js,ts,tsx}'",
     "check": "tsc --noEmit",
     "db:codegen": "kysely-codegen",
-    "prepare": "husky"
+    "prepare": "husky",
+    "e2e:debug": "BASE_URL=http://localhost:3000  playwright test --ui",
+    "e2e:ci": "playwright test"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.3.1",
@@ -79,6 +81,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.14",
     "@types/node": "^20",
     "@types/react": "^18",

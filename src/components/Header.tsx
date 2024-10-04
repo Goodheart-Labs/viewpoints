@@ -37,7 +37,10 @@ export function Header() {
   return (
     <header>
       <div className="flex items-center justify-between px-4 py-3">
-        <Link href="/">
+        <Link href="/" className="flex items-center">
+          <h1 className="sr-only" data-testid="site-title">
+            viewpoints.xyz
+          </h1>
           <Image
             src="/logo.png"
             className="dark:hidden"
