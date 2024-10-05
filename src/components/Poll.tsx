@@ -24,14 +24,20 @@ const rotateRight = () => (rotate = 10);
 const rotateLeft = () => (rotate = -10);
 const noRotate = () => (rotate = 0);
 
-const DRAG_THRESHOLD = 200;
-
 export function Poll({
   statements: serverStatements,
   options,
   poll,
   count,
 }: GetPoll) {
+  const [dragThreshold, setDragThreshold] = useState(200);
+  useEffect(() => {
+    // Set the drag threshold to either 1/5 page width or height
+    const { innerWidth, innerHeight } = window;
+    const threshold = Math.min(innerWidth / 5, innerHeight / 5);
+    setDragThreshold(threshold);
+  }, []);
+
   const [statements, next] = useOptimistic<GetPoll["statements"], void>(
     serverStatements,
     (state) => {
@@ -96,7 +102,7 @@ export function Poll({
         ];
 
         const validDistances = distances.filter(
-          ({ value }) => value >= DRAG_THRESHOLD,
+          ({ value }) => value >= dragThreshold,
         );
         const maxDistance = validDistances.sort((a, b) => b.value - a.value)[0];
 
