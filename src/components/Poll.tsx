@@ -279,17 +279,36 @@ export const PollStatement = forwardRef<
     next: () => void;
   }
 >(function PollStatement({ text, children, id, next, question_type }, ref) {
+  const isEmbed = useIsEmbed();
+
   return (
     <motion.div
       ref={ref}
-      className="border rounded-xl bg-white shadow-sm grid overflow-hidden dark:bg-neutral-950 min-h-[275px] grid grid-rows-[minmax(0,1fr)_auto]"
+      className={cn(
+        "border rounded-xl bg-white shadow-sm grid overflow-hidden dark:bg-neutral-950 grid grid-rows-[minmax(0,1fr)_auto]",
+        {
+          "min-h-[275px]": !isEmbed,
+        },
+      )}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.2, rotate }}
       transition={{ duration: 0.4 }}
     >
-      <div className="grid gap-8 p-8 content-center">
-        <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text select-none">
+      <div
+        className={cn("grid gap-8 p-8 content-center", {
+          "gap-4": isEmbed,
+        })}
+      >
+        <p
+          className={cn(
+            "font-medium text-center tracking-[-0.02em] statement-text select-none",
+            {
+              "text-2xl": !isEmbed,
+              "text-lg": isEmbed,
+            },
+          )}
+        >
           {text}
         </p>
         <div className="flex space-x-4 justify-center">{children}</div>
@@ -310,8 +329,7 @@ export const PollStatement = forwardRef<
 
 export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
   function GoToResults({ slug }, ref) {
-    const path = usePathname();
-    const isEmbed = path.startsWith("/embed");
+    const isEmbed = useIsEmbed();
     const { push } = useRouter();
 
     useEffect(() => {
@@ -351,3 +369,8 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
     );
   },
 );
+
+function useIsEmbed() {
+  const path = usePathname();
+  return path.startsWith("/embed");
+}
