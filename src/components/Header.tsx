@@ -37,7 +37,10 @@ export function Header() {
   return (
     <header>
       <div className="flex items-center justify-between px-4 py-3">
-        <Link href="/">
+        <Link href="/" className="flex items-center">
+          <h1 className="sr-only" data-testid="site-title">
+            viewpoints.xyz
+          </h1>
           <Image
             src="/logo.png"
             className="dark:hidden"
@@ -55,7 +58,11 @@ export function Header() {
         </Link>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-4">
-            <NavLink href="/new-poll" icon={FiPlus}>
+            <NavLink
+              href="/new-poll"
+              icon={FiPlus}
+              data-testid="create-poll-button"
+            >
               Create a Poll
             </NavLink>
             <AuthLink />
