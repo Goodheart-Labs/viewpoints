@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getPollResults } from "@/lib/getPollResults";
 import { StatementReview } from "@/lib/schemas";
@@ -13,6 +13,7 @@ import Link from "next/link";
 import { FiList, FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
 import { CreatePollCallout } from "./CreatePollCallout";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function ResultsPage({
   slug,
@@ -62,6 +63,11 @@ export function ResultsPage({
   });
 
   const isSingleRespondent = data.uniqueRespondentsCount === 1;
+
+  // Show CTA in the 6th position or halfway down, whichever is smaller
+  const ctaPosition = Math.min(Math.floor(data.statements.length / 2), 6);
+  const [ctaShowing, setCtaShowing] = useState(true);
+  const closeCta = () => setCtaShowing(false);
 
   return (
     <div className="grid gap-4">
@@ -148,40 +154,55 @@ export function ResultsPage({
         <div className="grid gap-4">
           {data.statements
             .filter((s) => s.question_type === "default")
-            .map((statement) => (
-              <div
-                key={statement.id}
-                className="bg-white p-4 rounded-lg shadow dark:bg-neutral-800"
-                data-id={statement.id}
-              >
-                <p className="font-medium mb-2">{statement.text}</p>
-                <div className="flex gap-2">
-                  <Chip variant="agree">
-                    {Math.round(
-                      data.choicePercentage[statement.id].agree * 100,
-                    )}
-                    %
-                  </Chip>
-                  <Chip variant="disagree">
-                    {Math.round(
-                      data.choicePercentage[statement.id].disagree * 100,
-                    )}
-                    %
-                  </Chip>
-                  {data.choicePercentage[statement.id].skip > 0 && (
-                    <Chip variant="skip">
+            .map((statement, index) => (
+              <Fragment key={statement.id}>
+                <div
+                  className="bg-white p-4 rounded-lg shadow dark:bg-neutral-800"
+                  data-id={statement.id}
+                >
+                  <p className="font-medium mb-2">{statement.text}</p>
+                  <div className="flex gap-2">
+                    <Chip variant="agree">
                       {Math.round(
-                        data.choicePercentage[statement.id].skip * 100,
+                        data.choicePercentage[statement.id].agree * 100,
                       )}
                       %
                     </Chip>
-                  )}
+                    <Chip variant="disagree">
+                      {Math.round(
+                        data.choicePercentage[statement.id].disagree * 100,
+                      )}
+                      %
+                    </Chip>
+                    {data.choicePercentage[statement.id].skip > 0 && (
+                      <Chip variant="skip">
+                        {Math.round(
+                          data.choicePercentage[statement.id].skip * 100,
+                        )}
+                        %
+                      </Chip>
+                    )}
+                  </div>
                 </div>
-              </div>
+                <AnimatePresence>
+                  {index === ctaPosition && ctaShowing && (
+                    <motion.div
+                      initial={{ opacity: 1, scale: 1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{
+                        duration: 0.5,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <CreatePollCallout closeCta={closeCta} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Fragment>
             ))}
         </div>
       </div>
-      <CreatePollCallout />
     </div>
   );
 }

@@ -14,7 +14,7 @@ import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
 import { CHOICE_COPY, CHOICE_ICON } from "@/lib/copy";
 import { usePathname, useRouter } from "next/navigation";
-import { animated, useSprings } from "@react-spring/web";
+import { animated, useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
@@ -24,14 +24,17 @@ const rotateRight = () => (rotate = 10);
 const rotateLeft = () => (rotate = -10);
 const noRotate = () => (rotate = 0);
 
-const DRAG_THRESHOLD = 200;
-
 export function Poll({
   statements: serverStatements,
   options,
   poll,
   count,
 }: GetPoll) {
+  const [dragThreshold, setDragThreshold] = useState(200);
+  useEffect(() => {
+    setDragThreshold(window.innerWidth / 6);
+  }, []);
+
   const [statements, next] = useOptimistic<GetPoll["statements"], void>(
     serverStatements,
     (state) => {
@@ -53,12 +56,7 @@ export function Poll({
 
   const [dragSelection, setDragSelection] = useState<ChoiceEnum | null>(null);
 
-  const [springs, api] = useSprings(statements.length, (i) => ({
-    x: 0,
-    y: 0,
-    scale: 1,
-    config: { mass: 1, tension: 10000, friction: 1000 }, // Very stiff spring
-  }));
+  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
 
   const bind = useDrag(
     ({
@@ -74,7 +72,7 @@ export function Poll({
         if (dragSelection) {
           choice = dragSelection;
         } else if (swipeX !== 0) {
-          choice = swipeX < 0 ? "disagree" : "agree";
+          choice = swipeX > 0 ? "agree" : "disagree"; // Fixed: swipeX > 0 for agree, < 0 for disagree
         } else if (swipeY !== 0) {
           choice = swipeY < 0 ? "skip" : null;
         }
@@ -88,6 +86,7 @@ export function Poll({
         }
 
         setDragSelection(null); // Reset drag selection when drag ends
+        api.start({ x: 0, y: 0 }); // Reset position
       } else {
         const distances: { direction: ChoiceEnum; value: number }[] = [
           { direction: "agree", value: mx },
@@ -96,21 +95,35 @@ export function Poll({
         ];
 
         const validDistances = distances.filter(
-          ({ value }) => value >= DRAG_THRESHOLD,
+          ({ value }) => value >= dragThreshold,
         );
-        const maxDistance = validDistances.sort((a, b) => b.value - a.value)[0];
+        const maxDistance = validDistances.sort(
+          (a, b) => Math.abs(b.value) - Math.abs(a.value),
+        )[0];
 
         setDragSelection(maxDistance ? maxDistance.direction : null);
+
+        // Apply rubberband effect
+        const rubberband = (value: number, threshold: number) => {
+          const delta = Math.abs(value) - threshold;
+          const sign = Math.sign(value);
+          if (delta > 0) {
+            return sign * (threshold + delta * 0.3); // 0.3 is the rubberband factor
+          }
+          return value;
+        };
+
+        api.start({
+          x: rubberband(mx, dragThreshold),
+          y: rubberband(my, dragThreshold),
+          immediate: active,
+        });
       }
 
-      api.start((i) => ({
-        x: active ? mx : 0,
-        y: active ? my : 0,
-        scale: 1, // Remove scale change
-        config: { mass: 1, tension: 10000, friction: 1000 }, // Very stiff spring
-      }));
-
       return memo;
+    },
+    {
+      from: () => [x.get(), y.get()],
     },
   );
 
@@ -132,13 +145,16 @@ export function Poll({
         {statements.length ? (
           <animated.div
             style={{
-              x: springs[0].x,
-              y: springs[0].y,
-              scale: springs[0].scale,
-              // Remove rotate here
+              x,
+              y,
+              // Reduce the maximum rotation angle
+              rotate: x.to(
+                [-dragThreshold * 2, 0, dragThreshold * 2],
+                [-5, 0, 5], // Changed from [-10, 0, 10] to [-5, 0, 5]
+              ),
             }}
             className={cn("cursor-grab touch-none", {
-              "cursor-grabbing": springs[0].x.get() !== 0,
+              "cursor-grabbing": x.get() !== 0 || y.get() !== 0,
             })}
             key={statement.id}
             {...bind()}
@@ -233,11 +249,17 @@ function StatementButton({
       className={cn(
         "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-all select-none",
         {
-          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600 group-data-[drag-selection=disagree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=agree]:opacity-50":
+          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=agree]:opacity-50":
             variant === "disagree",
-          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600 group-data-[drag-selection=skip]:scale-110 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=agree]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=agree]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
             variant === "skip",
-          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600 group-data-[drag-selection=agree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+            variant === "agree",
+          "group-data-[drag-selection=disagree]:scale-110 group-data-[drag-selection=disagree]:bg-red-500 group-data-[drag-selection=disagree]:text-white":
+            variant === "disagree",
+          "group-data-[drag-selection=skip]:scale-110 group-data-[drag-selection=skip]:bg-yellow-400 group-data-[drag-selection=skip]:text-black":
+            variant === "skip",
+          "group-data-[drag-selection=agree]:scale-110 group-data-[drag-selection=agree]:bg-green-500 group-data-[drag-selection=agree]:text-white":
             variant === "agree",
         },
         className,
@@ -279,17 +301,36 @@ export const PollStatement = forwardRef<
     next: () => void;
   }
 >(function PollStatement({ text, children, id, next, question_type }, ref) {
+  const isEmbed = useIsEmbed();
+
   return (
     <motion.div
       ref={ref}
-      className="border rounded-xl bg-white shadow-sm grid overflow-hidden dark:bg-neutral-950 min-h-[275px] grid grid-rows-[minmax(0,1fr)_auto]"
+      className={cn(
+        "border rounded-xl bg-white shadow-sm grid overflow-hidden dark:bg-neutral-950 grid grid-rows-[minmax(0,1fr)_auto]",
+        {
+          "min-h-[275px]": !isEmbed,
+        },
+      )}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.2, rotate }}
       transition={{ duration: 0.4 }}
     >
-      <div className="grid gap-8 p-8 content-center">
-        <p className="text-2xl font-medium text-center tracking-[-0.02em] statement-text select-none">
+      <div
+        className={cn("grid gap-8 p-8 content-center", {
+          "gap-4": isEmbed,
+        })}
+      >
+        <p
+          className={cn(
+            "font-medium text-center tracking-[-0.02em] statement-text select-none",
+            {
+              "text-2xl": !isEmbed,
+              "text-lg": isEmbed,
+            },
+          )}
+        >
           {text}
         </p>
         <div className="flex space-x-4 justify-center">{children}</div>
@@ -310,8 +351,7 @@ export const PollStatement = forwardRef<
 
 export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
   function GoToResults({ slug }, ref) {
-    const path = usePathname();
-    const isEmbed = path.startsWith("/embed");
+    const isEmbed = useIsEmbed();
     const { push } = useRouter();
 
     useEffect(() => {
@@ -351,3 +391,8 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
     );
   },
 );
+
+function useIsEmbed() {
+  const path = usePathname();
+  return path.startsWith("/embed");
+}
