@@ -94,8 +94,6 @@ export function Poll({
           { direction: "skip", value: -my },
         ];
 
-        console.log(distances);
-
         const validDistances = distances.filter(
           ({ value }) => value >= dragThreshold,
         );
@@ -110,7 +108,7 @@ export function Poll({
           const delta = Math.abs(value) - threshold;
           const sign = Math.sign(value);
           if (delta > 0) {
-            return sign * (threshold + delta * 0.15); // 0.15 is the rubberband factor
+            return sign * (threshold + delta * 0.3); // 0.3 is the rubberband factor
           }
           return value;
         };
@@ -251,11 +249,17 @@ function StatementButton({
       className={cn(
         "text-2xl flex items-center rounded-full py-4 sm:py-2 px-4 transition-all select-none",
         {
-          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600 group-data-[drag-selection=disagree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=agree]:opacity-50":
+          "bg-red-200 text-red-800 hover:bg-red-300 dark:bg-red-700 dark:text-red-50 dark:hover:bg-red-600 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=agree]:opacity-50":
             variant === "disagree",
-          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600 group-data-[drag-selection=skip]:scale-110 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=agree]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+          "bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-700 dark:text-yellow-50 dark:hover:bg-yellow-600 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=agree]:scale-95 group-data-[drag-selection=agree]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
             variant === "skip",
-          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600 group-data-[drag-selection=agree]:scale-110 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+          "bg-green-200 text-green-800 hover:bg-green-300 dark:bg-green-700 dark:text-green-50 dark:hover:bg-green-600 group-data-[drag-selection=skip]:scale-95 group-data-[drag-selection=disagree]:scale-95 group-data-[drag-selection=skip]:opacity-50 group-data-[drag-selection=disagree]:opacity-50":
+            variant === "agree",
+          "group-data-[drag-selection=disagree]:scale-110 group-data-[drag-selection=disagree]:bg-red-500 group-data-[drag-selection=disagree]:text-white":
+            variant === "disagree",
+          "group-data-[drag-selection=skip]:scale-110 group-data-[drag-selection=skip]:bg-yellow-400 group-data-[drag-selection=skip]:text-black":
+            variant === "skip",
+          "group-data-[drag-selection=agree]:scale-110 group-data-[drag-selection=agree]:bg-green-500 group-data-[drag-selection=agree]:text-white":
             variant === "agree",
         },
         className,
