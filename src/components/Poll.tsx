@@ -14,7 +14,7 @@ import { Progress } from "@/ui/progress";
 import { ChoiceEnum } from "kysely-codegen";
 import { CHOICE_COPY, CHOICE_ICON } from "@/lib/copy";
 import { usePathname, useRouter } from "next/navigation";
-import { animated, useSprings } from "@react-spring/web";
+import { animated, useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
 type GetPoll = Awaited<ReturnType<typeof getPoll>>;
@@ -32,10 +32,7 @@ export function Poll({
 }: GetPoll) {
   const [dragThreshold, setDragThreshold] = useState(200);
   useEffect(() => {
-    // Set the drag threshold to either 1/5 page width or height
-    const { innerWidth, innerHeight } = window;
-    const threshold = Math.min(innerWidth / 5, innerHeight / 5);
-    setDragThreshold(threshold);
+    setDragThreshold(window.innerWidth / 6);
   }, []);
 
   const [statements, next] = useOptimistic<GetPoll["statements"], void>(
@@ -59,12 +56,7 @@ export function Poll({
 
   const [dragSelection, setDragSelection] = useState<ChoiceEnum | null>(null);
 
-  const [springs, api] = useSprings(statements.length, (i) => ({
-    x: 0,
-    y: 0,
-    scale: 1,
-    config: { mass: 1, tension: 10000, friction: 1000 }, // Very stiff spring
-  }));
+  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
 
   const bind = useDrag(
     ({
@@ -80,7 +72,7 @@ export function Poll({
         if (dragSelection) {
           choice = dragSelection;
         } else if (swipeX !== 0) {
-          choice = swipeX < 0 ? "disagree" : "agree";
+          choice = swipeX > 0 ? "agree" : "disagree"; // Fixed: swipeX > 0 for agree, < 0 for disagree
         } else if (swipeY !== 0) {
           choice = swipeY < 0 ? "skip" : null;
         }
@@ -94,6 +86,7 @@ export function Poll({
         }
 
         setDragSelection(null); // Reset drag selection when drag ends
+        api.start({ x: 0, y: 0 }); // Reset position
       } else {
         const distances: { direction: ChoiceEnum; value: number }[] = [
           { direction: "agree", value: mx },
@@ -101,22 +94,38 @@ export function Poll({
           { direction: "skip", value: -my },
         ];
 
+        console.log(distances);
+
         const validDistances = distances.filter(
           ({ value }) => value >= dragThreshold,
         );
-        const maxDistance = validDistances.sort((a, b) => b.value - a.value)[0];
+        const maxDistance = validDistances.sort(
+          (a, b) => Math.abs(b.value) - Math.abs(a.value),
+        )[0];
 
         setDragSelection(maxDistance ? maxDistance.direction : null);
+
+        // Apply rubberband effect
+        const rubberband = (value: number, threshold: number) => {
+          const delta = Math.abs(value) - threshold;
+          const sign = Math.sign(value);
+          if (delta > 0) {
+            return sign * (threshold + delta * 0.15); // 0.15 is the rubberband factor
+          }
+          return value;
+        };
+
+        api.start({
+          x: rubberband(mx, dragThreshold),
+          y: rubberband(my, dragThreshold),
+          immediate: active,
+        });
       }
 
-      api.start((i) => ({
-        x: active ? mx : 0,
-        y: active ? my : 0,
-        scale: 1, // Remove scale change
-        config: { mass: 1, tension: 10000, friction: 1000 }, // Very stiff spring
-      }));
-
       return memo;
+    },
+    {
+      from: () => [x.get(), y.get()],
     },
   );
 
@@ -138,13 +147,16 @@ export function Poll({
         {statements.length ? (
           <animated.div
             style={{
-              x: springs[0].x,
-              y: springs[0].y,
-              scale: springs[0].scale,
-              // Remove rotate here
+              x,
+              y,
+              // Reduce the maximum rotation angle
+              rotate: x.to(
+                [-dragThreshold * 2, 0, dragThreshold * 2],
+                [-5, 0, 5], // Changed from [-10, 0, 10] to [-5, 0, 5]
+              ),
             }}
             className={cn("cursor-grab touch-none", {
-              "cursor-grabbing": springs[0].x.get() !== 0,
+              "cursor-grabbing": x.get() !== 0 || y.get() !== 0,
             })}
             key={statement.id}
             {...bind()}
