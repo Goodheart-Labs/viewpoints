@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/sitemap.xml",
   "/success",
+  "/embed/(.*)",
 ]);
 
 export default clerkMiddleware((auth, req) => {
@@ -36,16 +37,6 @@ export default clerkMiddleware((auth, req) => {
       secure: true,
     });
     res.headers.set("x-pathname", req.nextUrl.pathname);
-  }
-
-  // Add this section to handle CORS for embed routes
-  if (req.nextUrl.pathname.startsWith("/embed/")) {
-    res.headers.set("Access-Control-Allow-Origin", "*");
-    res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization",
-    );
   }
 
   return res;
