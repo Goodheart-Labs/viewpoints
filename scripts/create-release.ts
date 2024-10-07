@@ -90,6 +90,15 @@ function getMergedPRs(): string {
   return prList;
 }
 
+// Function to check if we're on the main branch
+function checkMainBranch(): void {
+  const currentBranch = exec("git rev-parse --abbrev-ref HEAD");
+  if (currentBranch !== "main") {
+    console.error("Error: You must be on the main branch to run this script.");
+    process.exit(1);
+  }
+}
+
 /**
  * Runs action if not dry-run or prints message to console
  */
@@ -130,6 +139,9 @@ function openPullRequest(): void {
 
 // Main function
 async function createRelease(): Promise<void> {
+  // Check if we're on the main branch
+  checkMainBranch();
+
   const currentVersion = getCurrentVersion();
   console.log(`Current version: ${currentVersion}`);
 
