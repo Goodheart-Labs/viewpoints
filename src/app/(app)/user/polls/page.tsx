@@ -23,7 +23,10 @@ export default async function Page() {
   return (
     <div className="w-full max-w-5xl mx-auto grid gap-4 content-start p-4 py-8">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
+        <h1
+          className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50"
+          data-testid="your-polls"
+        >
           Your Polls
         </h1>
         <Button variant="highlight" asChild>

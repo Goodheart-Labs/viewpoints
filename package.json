@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,10 +12,14 @@
     "format:ci": "prettier --check './**/*.{js,ts,tsx}'",
     "check": "tsc --noEmit",
     "db:codegen": "kysely-codegen",
-    "prepare": "husky"
+    "prepare": "husky",
+    "e2e": "BASE_URL=http://localhost:3000  playwright test",
+    "e2e:debug": "BASE_URL=http://localhost:3000  playwright test --ui",
+    "e2e:ci": "playwright test"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.3.1",
+    "@clerk/testing": "^1.3.9",
     "@clerk/themes": "^2.1.27",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "latest",
@@ -79,6 +83,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.47.2",
     "@tailwindcss/typography": "^0.5.14",
     "@types/node": "^20",
     "@types/react": "^18",
