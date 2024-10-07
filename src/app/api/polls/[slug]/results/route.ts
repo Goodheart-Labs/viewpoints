@@ -13,5 +13,11 @@ export async function GET(
     "consensus") as keyof StatementReview;
 
   const results = await getPollResults(slug, sort, visitorId);
-  return Response.json(results);
+  return Response.json(results, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
 }
