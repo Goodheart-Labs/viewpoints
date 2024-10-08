@@ -53,7 +53,7 @@ function getCurrentVersion(): string {
 function updateVersion(newVersion: string): void {
   const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
   packageJson.version = newVersion;
-  fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2));
+  fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2) + "\n");
 }
 
 // Function to get merged PRs since last release
