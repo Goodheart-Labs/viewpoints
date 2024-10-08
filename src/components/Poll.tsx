@@ -30,7 +30,6 @@ export function Poll({
   count,
   embedVisitorId,
 }: GetPollData & { embedVisitorId?: string }) {
-  console.log("embedVisitorId", embedVisitorId);
   const [dragThreshold, setDragThreshold] = useState(200);
   useEffect(() => {
     setDragThreshold(window.innerWidth / 6);
@@ -46,11 +45,27 @@ export function Poll({
   );
 
   const [, respond] = usePendingAction(createResponse, {
-    before: next,
+    before: () => {
+      // optimistically remove the first statement
+      if (embedVisitorId) {
+        queryClient.setQueryData(
+          ["poll", poll.slug, "vote", embedVisitorId],
+          (data: GetPollData) => {
+            return {
+              ...data,
+              statements: data.statements.slice(1),
+            };
+          },
+        );
+      }
+      next();
+    },
     after: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["poll", poll.slug, "vote", embedVisitorId],
-      });
+      if (embedVisitorId) {
+        queryClient.invalidateQueries({
+          queryKey: ["poll", poll.slug, "vote", embedVisitorId],
+        });
+      }
     },
   });
 
