@@ -57,8 +57,9 @@ export function Poll({
             };
           },
         );
+      } else {
+        next();
       }
-      next();
     },
     after: () => {
       if (embedVisitorId) {
