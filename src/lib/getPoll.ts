@@ -5,8 +5,8 @@ import { getVisitorId } from "./actions";
 /**
  * Gets the data for the page where a visitor can respond to a poll
  */
-export async function getPoll(slug: string, clerkAllowed = true) {
-  const visitorId = await getVisitorId(clerkAllowed);
+export async function getPoll(slug: string, _visitorId?: string) {
+  const visitorId = _visitorId ?? (await getVisitorId());
 
   const poll = await db
     .selectFrom("polls")
@@ -164,3 +164,5 @@ class SeededRandom {
     return x - Math.floor(x);
   }
 }
+
+export type GetPollData = Awaited<ReturnType<typeof getPoll>>;

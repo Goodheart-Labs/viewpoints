@@ -1,6 +1,6 @@
 "use client";
 
-import type { getPoll } from "@/lib/getPoll";
+import type { getPoll, GetPollData } from "@/lib/getPoll";
 import { forwardRef, useEffect, useOptimistic, useState } from "react";
 import { FiBarChart, FiFlag } from "react-icons/fi";
 import { cn } from "@/ui/cn";
@@ -16,8 +16,7 @@ import { CHOICE_COPY, CHOICE_ICON } from "@/lib/copy";
 import { usePathname, useRouter } from "next/navigation";
 import { animated, useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-
-type GetPoll = Awaited<ReturnType<typeof getPoll>>;
+import { useQueryClient } from "@tanstack/react-query";
 
 let rotate = 10;
 const rotateRight = () => (rotate = 10);
@@ -29,20 +28,30 @@ export function Poll({
   options,
   poll,
   count,
-}: GetPoll) {
+  embedVisitorId,
+}: GetPollData & { embedVisitorId?: string }) {
+  console.log("embedVisitorId", embedVisitorId);
   const [dragThreshold, setDragThreshold] = useState(200);
   useEffect(() => {
     setDragThreshold(window.innerWidth / 6);
   }, []);
 
-  const [statements, next] = useOptimistic<GetPoll["statements"], void>(
+  const queryClient = useQueryClient();
+
+  const [statements, next] = useOptimistic<GetPollData["statements"], void>(
     serverStatements,
     (state) => {
       return state.slice(1);
     },
   );
+
   const [, respond] = usePendingAction(createResponse, {
     before: next,
+    after: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["poll", poll.slug, "vote", embedVisitorId],
+      });
+    },
   });
 
   const statement = statements[0];
@@ -82,6 +91,7 @@ export function Poll({
             statementId: statement.id,
             choice: choice,
             pollId: poll.id,
+            embedVisitorId,
           });
         }
 
@@ -169,6 +179,7 @@ export function Poll({
                         statementId: statement.id,
                         choice: "disagree",
                         pollId: poll.id,
+                        embedVisitorId,
                       });
                     }}
                     onMouseEnter={rotateLeft}
@@ -182,6 +193,7 @@ export function Poll({
                         statementId: statement.id,
                         choice: "skip",
                         pollId: poll.id,
+                        embedVisitorId,
                       });
                     }}
                     onMouseEnter={noRotate}
@@ -195,6 +207,7 @@ export function Poll({
                         statementId: statement.id,
                         choice: "agree",
                         pollId: poll.id,
+                        embedVisitorId,
                       });
                     }}
                     onMouseEnter={rotateRight}
@@ -212,6 +225,7 @@ export function Poll({
                           statementId: statement.id,
                           optionId: option.id,
                           pollId: poll.id,
+                          embedVisitorId,
                         });
                       }}
                     >

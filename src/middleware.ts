@@ -89,11 +89,9 @@ export default function middleware(
   request: NextRequest,
   event: NextMiddlewareEvtParam,
 ) {
-  // If on the embed route, create visitorId without clerk
+  // If on the embed route, the visitorId will be handled on the client side
   if (isEmbedRoute(request)) {
-    const res = NextResponse.next();
-    handleVisitorId(request, res, () => v4());
-    return res;
+    return NextResponse.next();
   }
 
   return clerkMiddleware(clerkHandler)(request, event);
