@@ -268,8 +268,6 @@ export async function createResponse({
   optionId?: number;
   embedVisitorId?: string;
 }) {
-  console.log("createResponse", embedVisitorId);
-
   if (!choice && !optionId) {
     throw new Error("Either choice or optionId must be provided");
   }
