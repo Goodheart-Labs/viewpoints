@@ -147,13 +147,21 @@ async function createAuthorIfNeeded(user: User) {
 /**
  * Returns the unique visitor id for the current user or generates a new one if none is found.
  */
-export async function getVisitorId() {
-  const { userId } = auth();
-  const visitorId = userId || cookies().get("visitorId")?.value;
+export async function getVisitorId(clerkAllowed = true) {
+  let visitorId = "";
+
+  if (clerkAllowed) {
+    const { userId } = auth();
+    visitorId = userId ?? cookies().get("visitorId")?.value ?? "";
+  } else {
+    visitorId = cookies().get("visitorId")?.value ?? "";
+  }
+
+  // refresh the page to generate a new visitor id
   if (!visitorId) {
-    // refresh the page to generate a new visitor id
     redirect(headers().get("x-pathname") || "/");
   }
+
   return visitorId;
 }
 

@@ -1,6 +1,28 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
+import {
+  clerkMiddleware,
+  ClerkMiddlewareAuth,
+  createRouteMatcher,
+} from "@clerk/nextjs/server";
+import { NextMiddleware, NextRequest, NextResponse } from "next/server";
+import { v4 } from "uuid";
+
+export const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
+};
+
+type NextMiddlewareRequestParam = Parameters<NextMiddleware>["0"];
+type NextMiddlewareEvtParam = Parameters<NextMiddleware>["1"];
+type NextMiddlewareReturn = ReturnType<NextMiddleware>;
+type ClerkMiddlewareHandler = (
+  auth: ClerkMiddlewareAuth,
+  request: NextMiddlewareRequestParam,
+  event: NextMiddlewareEvtParam,
+) => NextMiddlewareReturn;
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -16,21 +38,25 @@ const isPublicRoute = createRouteMatcher([
   "/embed/(.*)",
 ]);
 
-export default clerkMiddleware((auth, req) => {
-  if (!isPublicRoute(req)) {
-    auth().protect();
-  }
-
+/**
+ * This function ensures the visitorId cookie is set or
+ * removes it if the request has a "removeVisitorId" query param.
+ *
+ * It accepts a getVisitorId function so we can generate the id differently
+ * depending on whether the Clerk provider is present or not.
+ */
+function handleVisitorId(
+  req: NextRequest,
+  res: NextResponse,
+  getVisitorId: () => string,
+) {
   const visitorIdCookie = req.cookies.get("visitorId");
-
-  const res = NextResponse.next();
-
   if (req.nextUrl.searchParams.get("removeVisitorId")) {
     res.cookies.delete("visitorId");
   } else if (!visitorIdCookie) {
     res.cookies.set({
       name: "visitorId",
-      value: auth().userId || uuidv4(),
+      value: getVisitorId(),
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
       sameSite: "none",
@@ -40,13 +66,35 @@ export default clerkMiddleware((auth, req) => {
   }
 
   return res;
-});
+}
 
-export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
-  ],
+const clerkHandler: ClerkMiddlewareHandler = (auth, req, event) => {
+  // If not a public route, ensure user is authenticated
+  if (!isPublicRoute(req)) {
+    auth().protect();
+  }
+
+  const res = NextResponse.next();
+
+  handleVisitorId(req, res, () => auth().userId || v4());
+
+  return res;
 };
+
+function isEmbedRoute(request: NextRequest) {
+  return request.nextUrl.pathname.startsWith("/embed");
+}
+
+export default function middleware(
+  request: NextRequest,
+  event: NextMiddlewareEvtParam,
+) {
+  // If on the embed route, create visitorId without clerk
+  if (isEmbedRoute(request)) {
+    const res = NextResponse.next();
+    handleVisitorId(request, res, () => v4());
+    return res;
+  }
+
+  return clerkMiddleware(clerkHandler)(request, event);
+}

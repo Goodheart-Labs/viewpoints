@@ -2,12 +2,14 @@ import { getPoll } from "@/lib/getPoll";
 
 import { Poll } from "@/components/Poll";
 
+export const revalidate = 0;
+
 export default async function Page({
   params: { slug },
 }: {
   params: { slug: string };
 }) {
-  const data = await getPoll(slug);
+  const data = await getPoll(slug, false);
   return (
     <div className="min-h-[100dvh] grid place-items-center">
       <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">

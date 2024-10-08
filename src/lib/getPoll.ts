@@ -5,8 +5,8 @@ import { getVisitorId } from "./actions";
 /**
  * Gets the data for the page where a visitor can respond to a poll
  */
-export async function getPoll(slug: string) {
-  const visitorId = await getVisitorId();
+export async function getPoll(slug: string, clerkAllowed = true) {
+  const visitorId = await getVisitorId(clerkAllowed);
 
   const poll = await db
     .selectFrom("polls")
