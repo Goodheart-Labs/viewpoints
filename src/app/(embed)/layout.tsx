@@ -5,7 +5,6 @@ import { cn } from "@/ui/cn";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryProvider } from "@/components/QueryProvider";
-import { ClerkProvider } from "@clerk/nextjs";
 import { SEO } from "@/lib/copy";
 
 const inter = Inter({
@@ -25,27 +24,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <QueryProvider>
-        <html lang="en" suppressHydrationWarning>
-          <body
-            className={cn(
-              inter.variable,
-              "bg-neutral-50 text-foreground dark:bg-foreground dark:text-background antialiased overflow-hidden",
-            )}
+    <QueryProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={cn(
+            inter.variable,
+            "bg-neutral-50 text-foreground dark:bg-foreground dark:text-background antialiased overflow-hidden",
+          )}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-            </ThemeProvider>
-          </body>
-        </html>
-      </QueryProvider>
-    </ClerkProvider>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </body>
+      </html>
+    </QueryProvider>
   );
 }

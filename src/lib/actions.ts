@@ -149,11 +149,13 @@ async function createAuthorIfNeeded(user: User) {
  */
 export async function getVisitorId() {
   const { userId } = auth();
-  const visitorId = userId || cookies().get("visitorId")?.value;
+  const visitorId = userId ?? cookies().get("visitorId")?.value ?? "";
+
+  // refresh the page to generate a new visitor id
   if (!visitorId) {
-    // refresh the page to generate a new visitor id
     redirect(headers().get("x-pathname") || "/");
   }
+
   return visitorId;
 }
 
@@ -258,18 +260,30 @@ export async function createResponse({
   pollId,
   choice,
   optionId,
+  embedVisitorId,
 }: {
   statementId: number;
   pollId: number;
   choice?: ChoiceEnum;
   optionId?: number;
+  embedVisitorId?: string;
 }) {
+  console.log("createResponse", embedVisitorId);
+
   if (!choice && !optionId) {
     throw new Error("Either choice or optionId must be provided");
   }
 
-  const user = await currentUser();
-  const visitorId = getVisitorIdOrThrow();
+  let user: User | null = null;
+  let visitorId: string | null = null;
+
+  // In the case of embeds, don't lookup user because Clerk is not initialized
+  if (embedVisitorId) {
+    visitorId = embedVisitorId;
+  } else {
+    user = await currentUser();
+    visitorId = getVisitorIdOrThrow();
+  }
 
   await db
     .insertInto("responses")
