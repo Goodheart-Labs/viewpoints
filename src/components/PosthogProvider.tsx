@@ -6,6 +6,8 @@ import { useEffect } from "react";
 
 export function PosthogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV !== "production") return;
+
     if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) {
       throw new Error("NEXT_PUBLIC_POSTHOG_KEY is not set");
     }

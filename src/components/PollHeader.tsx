@@ -28,6 +28,7 @@ import { usePathname } from "next/navigation";
 import { usePendingAction } from "@/lib/usePendingAction";
 import { getCSV } from "@/lib/getCsv";
 import AddStatementDialog from "./AddStatementDialog";
+import { usePostHog } from "posthog-js/react";
 
 export function PollHeader({
   slug,
@@ -51,6 +52,7 @@ export function PollHeader({
       URL.revokeObjectURL(url);
     },
   });
+  const posthog = usePostHog();
   const copyEmbedCode = useCallback(() => {
     const embedCode = `<iframe src="${getBaseUrl()}/embed/polls/${slug}" 
         frameborder="0" 
@@ -58,8 +60,12 @@ export function PollHeader({
         allowfullscreen 
         style="width: 100%; height: 500px; border: none; overflow: hidden;">
     </iframe>`;
+    posthog.capture("Share Poll Link", {
+      poll_slug: slug,
+      type: "embed",
+    });
     copyText(embedCode, "Embed code copied to clipboard");
-  }, [slug]);
+  }, [posthog, slug]);
 
   return (
     <div className="flex gap-1 items-center mb-3 justify-end">
@@ -88,6 +94,10 @@ export function PollHeader({
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             onSelect={() => {
+              posthog.capture("Share Poll Link", {
+                poll_slug: slug,
+                type: "vote",
+              });
               copyText(
                 `${getBaseUrl()}/polls/${slug}`,
                 "Poll link copied to clipboard",
@@ -99,6 +109,10 @@ export function PollHeader({
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => {
+              posthog.capture("Share Poll Link", {
+                poll_slug: slug,
+                type: "results",
+              });
               copyText(
                 `${getBaseUrl()}/polls/${slug}/results`,
                 "Results link copied to clipboard",
@@ -109,7 +123,14 @@ export function PollHeader({
             Copy link to results
           </DropdownMenuItem>
           <QRCodeDialog link={`${getBaseUrl()}/polls/${slug}`}>
-            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                posthog.capture("Share Poll Link", {
+                  poll_slug: slug,
+                });
+              }}
+            >
               <LuQrCode className="w-4 h-4 mr-2" />
               Show QR code
             </DropdownMenuItem>
