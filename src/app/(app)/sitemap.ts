@@ -17,6 +17,10 @@ export default async function Sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 1,
         lastModified: mostRecentPoll?.created_at,
       },
+      {
+        url: `${getBaseUrl()}/how-it-works`,
+        priority: 1,
+      },
     ];
     return [...pollPages, ...staticPages];
   } catch (e) {

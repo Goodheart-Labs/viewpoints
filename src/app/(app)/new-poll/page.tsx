@@ -5,6 +5,8 @@ import { getVisitorId } from "@/lib/actions";
 import { isUserPro, MAX_POLLS } from "@/lib/isUserPro";
 import { auth } from "@clerk/nextjs/server";
 
+export const revalidate = 0;
+
 export default async function NewPoll() {
   const isPro = await isUserPro();
   const { userId } = auth();
