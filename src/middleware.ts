@@ -36,6 +36,7 @@ const isPublicRoute = createRouteMatcher([
   "/sitemap.xml",
   "/success",
   "/embed/(.*)",
+  "/how-it-works",
 ]);
 
 /**

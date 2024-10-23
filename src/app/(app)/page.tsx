@@ -77,7 +77,7 @@ function CreatePoll() {
         </h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-300 text-pretty">
           It only takes a few minutes to create a poll, and you can create
-          public or private polls.
+          public or private polls.{" "}
         </p>
       </div>
       <div className="flex items-center gap-2 font-medium">
