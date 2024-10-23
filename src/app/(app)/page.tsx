@@ -1,5 +1,6 @@
 import { Banner } from "@/components/Banner";
 import { getIndexPolls } from "@/lib/getIndexPolls";
+import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import Link from "next/link";
 import { FiCalendar, FiPlus } from "react-icons/fi";
 
@@ -49,13 +50,10 @@ function Poll({
       </div>
       <div className="flex items-center mt-2">
         {author_avatar_url && (
-          <img
-            src={author_avatar_url}
-            alt={author_name ?? ""}
-            className="rounded-full mr-2"
-            width={24}
-            height={24}
-          />
+          <Avatar className="mr-2">
+            <AvatarImage src={author_avatar_url} alt={author_name ?? ""} />
+            <AvatarFallback>{author_name?.[0] ?? ""}</AvatarFallback>
+          </Avatar>
         )}
         <span className="text-sm text-neutral-700 dark:text-neutral-300">
           {author_name}
