@@ -4,6 +4,7 @@ import Link, { LinkProps } from "next/link";
 import Image from "next/image";
 import {
   FiGrid,
+  FiHelpCircle,
   FiHome,
   FiLogIn,
   FiMenu,
@@ -64,6 +65,13 @@ export function Header() {
               data-testid="create-poll-button"
             >
               Create a Poll
+            </NavLink>
+            <NavLink
+              href="/how-it-works"
+              icon={FiHelpCircle}
+              data-testid="how-it-works"
+            >
+              How it Works
             </NavLink>
             <AuthLink />
           </div>

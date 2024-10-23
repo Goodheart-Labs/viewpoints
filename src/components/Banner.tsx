@@ -14,6 +14,13 @@ export function Banner() {
               Viewpoints.xyz is a tool that lets you gauge opinions on any
               topic. Create a poll, get a link, and find out what your community
               is thinking.
+              <br />
+              <Link
+                href="/how-it-works"
+                className="text-orange-600 hover:underline"
+              >
+                Learn how it works.
+              </Link>
             </p>
           </div>
           <Link
