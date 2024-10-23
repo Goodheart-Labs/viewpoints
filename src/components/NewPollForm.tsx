@@ -19,21 +19,33 @@ import { CreatePoll, createPollSchema } from "@/lib/schemas";
 import { usePendingAction } from "@/lib/usePendingAction";
 import { FormField } from "./FormField";
 import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
+import {
+  getStoredState,
+  resetStore,
+  saveStore,
+} from "@/lib/useCreatePollStore";
+import { useEffect } from "react";
 
 export function NewPollForm() {
-  const [isPending, handleAction] = usePendingAction(createPoll);
+  const [isPending, handleAction] = usePendingAction(createPoll, {
+    after() {
+      resetStore();
+    },
+  });
+  // load default values from store on init
   const form = useForm<CreatePoll>({
     mode: "onChange",
     resolver: zodResolver(createPollSchema),
-    defaultValues: {
-      statements: "",
-      with_demographic_questions: false,
-      new_statements_visible_by_default: true,
-      poll_type: "public",
-      question: DEFAULT_CORE_QUESTION,
-    },
+    defaultValues: getStoredState(),
     disabled: isPending,
   });
+
+  // watch values and save to store and set expiration date in the future
+  useEffect(() => {
+    form.watch((values) => {
+      saveStore(values);
+    });
+  }, [form]);
 
   return (
     <form
