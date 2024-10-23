@@ -13,19 +13,19 @@ import Link from "next/link";
 
 export default function HowItWorksPage() {
   return (
-    <main className="px-4 w-full max-w-5xl mx-auto">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mt-12 mb-4 text-neutral-800 dark:text-neutral-100">
+    <main className="px-4 w-full max-w-4xl mx-auto">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold mt-10 mb-3 text-neutral-800 dark:text-neutral-100">
           How It Works
         </h1>
-        <p className="text-lg text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto text-balance">
+        <p className="text-lg text-neutral-400 dark:text-neutral-500 max-w-2xl mx-auto text-balance">
           Viewpoints.xyz is designed to make opinion gathering and consensus
           building easy and efficient. Follow these simple steps to create,
           share, and analyze your polls.
         </p>
       </div>
 
-      <div className="grid gap-8">
+      <div className="grid gap-6">
         <StepCard
           icon={FiUser}
           title="Sign Up"
@@ -53,7 +53,7 @@ export default function HowItWorksPage() {
         />
       </div>
 
-      <h2 className="text-2xl font-bold mt-12 mb-6 text-neutral-800 dark:text-neutral-100">
+      <h2 className="text-xl font-bold mt-10 mb-5 text-neutral-800 dark:text-neutral-100">
         Why Choose Viewpoints.xyz?
       </h2>
 
@@ -75,14 +75,14 @@ export default function HowItWorksPage() {
         />
       </div>
 
-      <div className="mt-12 text-center">
-        <p className="text-lg mb-4 text-neutral-700 dark:text-neutral-300">
+      <div className="mt-10 text-center">
+        <p className="text-base mb-4 text-neutral-500 dark:text-neutral-400">
           Join Viewpoints.xyz today and start engaging with your audience like
           never before!
         </p>
         <Link
           href="/new-poll"
-          className="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold text-white bg-purple-600 rounded-full hover:bg-purple-700 transition duration-300"
+          className="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold text-white bg-orange-600 rounded-full hover:bg-orange-700 transition duration-300"
         >
           Get Started
           <FiArrowRight />
@@ -102,15 +102,15 @@ function StepCard({
   description: string;
 }) {
   return (
-    <div className="grid grid-cols-[auto,1fr] gap-6 p-8 bg-white dark:bg-neutral-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div className="text-purple-600 dark:text-purple-400">
-        <Icon className="w-10 h-10" />
+    <div className="grid grid-cols-[auto,1fr] gap-4 p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 items-center">
+      <div className="bg-orange-100 dark:bg-orange-600/70 rounded-full p-4 aspect-square flex items-center justify-center">
+        <Icon className="w-6 h-6 text-orange-600 dark:text-white" />
       </div>
       <div>
-        <h3 className="text-2xl font-semibold mb-3 text-neutral-800 dark:text-neutral-100">
+        <h3 className="text-xl font-semibold mb-1 text-neutral-800 dark:text-neutral-100">
           {title}
         </h3>
-        <p className="text-neutral-600 dark:text-neutral-300 text-lg">
+        <p className="text-neutral-500 dark:text-neutral-400 text-base">
           {description}
         </p>
       </div>
@@ -128,14 +128,16 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="p-6 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
-      <div className="text-purple-600 dark:text-purple-400 mb-3">
+    <div className="p-5 bg-gradient-to-tr border from-neutral-50 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 rounded-lg grid content-start shadow-sm">
+      <div className="text-orange-600 dark:text-orange-400 mb-4 justify-self-start">
         <Icon className="w-8 h-8" />
       </div>
-      <h3 className="text-lg font-semibold mb-2 text-neutral-800 dark:text-neutral-100">
+      <h3 className="text-lg font-semibold mb-1 text-neutral-800 dark:text-neutral-100">
         {title}
       </h3>
-      <p className="text-neutral-600 dark:text-neutral-300">{description}</p>
+      <p className="text-neutral-500 dark:text-neutral-400 text-sm text-balance">
+        {description}
+      </p>
     </div>
   );
 }
