@@ -23,6 +23,9 @@ function MobileNavLinks({ onClose }: { onClose: () => void }) {
       <NavLink href="/new-poll" icon={FiPlus} onClick={onClose}>
         Create a Poll
       </NavLink>
+      <NavLink href="/how-it-works" icon={FiHelpCircle} onClick={onClose}>
+        How it Works
+      </NavLink>
       <AuthLink isMobile onClose={onClose} />
       <UserButton userProfileMode="modal" />
     </div>
