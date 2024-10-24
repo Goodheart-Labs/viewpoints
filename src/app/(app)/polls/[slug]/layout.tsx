@@ -1,6 +1,5 @@
 import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 import { getPoll } from "@/lib/getPoll";
-import { auth } from "@clerk/nextjs/server";
 
 import { PollHeader } from "@/components/PollHeader";
 import { BackToSouthGlos } from "@/components/BackToSouthGlos";
@@ -14,16 +13,19 @@ export default async function PollLayout({
     slug: string;
   };
 }) {
-  const session = auth();
   const results = await getPoll(slug);
-  const isOwner = results.poll.user_id === session.userId;
+
   const isCouncilPoll = slug.includes("council");
 
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
       {isCouncilPoll ? <BackToSouthGlos /> : null}
       <div className="grid gap-1">
-        <PollHeader slug={slug} isOwner={isOwner} pollId={results.poll.id} />
+        <PollHeader
+          slug={slug}
+          isOwner={results.isOwner}
+          pollId={results.poll.id}
+        />
         <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
           {results.poll.title}
         </h1>

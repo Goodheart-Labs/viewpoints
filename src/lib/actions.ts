@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { getVisitorIdOrThrow } from "./getVisitorIdOrThrow";
 import { createDemoQuestions } from "./createDemoQuestions";
 import { ChoiceEnum } from "kysely-codegen";
+import { checkIsBot } from "./checkIsBot";
 
 /**
  * Checks if a slug exists in the database
@@ -148,6 +149,12 @@ async function createAuthorIfNeeded(user: User) {
  * Returns the unique visitor id for the current user or generates a new one if none is found.
  */
 export async function getVisitorId() {
+  const userAgent = headers().get("user-agent");
+  const isBot = checkIsBot(userAgent);
+
+  // If it's a bot, return a constant value, and avoid auth()
+  if (isBot) return "bot";
+
   const { userId } = auth();
   const visitorId = userId ?? cookies().get("visitorId")?.value ?? "";
 

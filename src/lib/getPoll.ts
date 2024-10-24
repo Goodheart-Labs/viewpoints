@@ -86,7 +86,9 @@ export async function getPoll(slug: string, _visitorId?: string) {
       return !flagged;
     });
 
-  return { poll, statements, responses, count, options };
+  const isOwner = poll.user_id === visitorId;
+
+  return { poll, statements, responses, count, options, isOwner };
 }
 
 /**

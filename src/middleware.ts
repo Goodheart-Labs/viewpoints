@@ -5,6 +5,7 @@ import {
 } from "@clerk/nextjs/server";
 import { NextMiddleware, NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";
+import { checkIsBot } from "./lib/checkIsBot";
 
 export const config = {
   matcher: [
@@ -90,7 +91,14 @@ export default function middleware(
   request: NextRequest,
   event: NextMiddlewareEvtParam,
 ) {
-  // If on the embed route, the visitorId will be handled on the client side
+  const isBot = checkIsBot(request.headers.get("user-agent"));
+
+  // If it's a bot, avoid the clerk middleware
+  if (isBot) {
+    return NextResponse.next();
+  }
+
+  // If it's an embed route, avoid the clerk middleware
   if (isEmbedRoute(request)) {
     return NextResponse.next();
   }
