@@ -7,8 +7,8 @@ export default async function Sitemap(): Promise<MetadataRoute.Sitemap> {
     const polls = await getIndexPolls();
     const mostRecentPoll = polls[0];
     const pollPages = polls.map((poll) => ({
-      url: `${getBaseUrl()}/poll/${poll.slug}`,
-      priority: 0.5,
+      url: `${getBaseUrl()}/polls/${poll.slug}`,
+      priority: 0.25,
       lastModified: new Date(poll.created_at!),
     }));
     const staticPages = [
