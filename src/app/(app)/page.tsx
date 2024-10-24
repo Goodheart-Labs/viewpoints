@@ -39,9 +39,9 @@ function Poll({
       className="rounded-lg p-6 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] shadow-sm bg-white hover:bg-white/30 dark:bg-neutral-800 dark:hover:bg-neutral-800/80"
     >
       <div className="grid gap-1">
-        <h2 className="text-lg font-semibold leading-tight text-pretty text-neutral-700 dark:text-neutral-100">
+        <p className="text-lg font-semibold leading-tight text-pretty text-neutral-700 dark:text-neutral-100">
           {title}
-        </h2>
+        </p>
         <div className="flex items-center space-x-2 text-neutral-400 text-[15px]">
           <span>{statementCount} statements</span>
           <span>•</span>
