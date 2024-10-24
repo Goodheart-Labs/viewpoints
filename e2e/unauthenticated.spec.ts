@@ -1,10 +1,11 @@
+import { SEO } from "@/lib/copy";
 import { expect, test } from "@playwright/test";
 
 test("has title", async ({ page }) => {
   await page.goto("/");
 
   // Expect a title "to contain" a substring.
-  await expect(page.getByTestId("site-title")).toHaveText("viewpoints.xyz");
+  await expect(page.getByTestId("site-title")).toHaveText(SEO.title);
 });
 
 test("attempting to create a poll redirects to sign in", async ({ page }) => {
