@@ -28,7 +28,7 @@ export const CHOICE_ICON: Record<ChoiceEnum, typeof FiThumbsUp> = {
 };
 
 export const SEO = {
-  title: "viewpoints.xyz",
+  title: "Viewpoints: Effortless Poll Creation & Consensus Building",
   description:
-    "Viewpoints is a platform for collecting the opinions of others.",
+    "Create and share polls with Viewpoints.xyz. Use our intuitive platform to collect opinions, build consensus, and analyze results in real-time. Start free, upgrade for pro features.",
 };

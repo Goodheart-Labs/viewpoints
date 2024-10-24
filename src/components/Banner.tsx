@@ -7,9 +7,9 @@ export function Banner() {
       <div className="py-12">
         <div className="grid gap-6 md:grid-cols-[1fr_auto] items-center">
           <div className="grid gap-4 pl-1">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight dark:from-white dark:to-neutral-300">
+            <p className="text-3xl md:text-4xl font-extrabold tracking-tight dark:from-white dark:to-neutral-300">
               What on earth are you thinking?
-            </h2>
+            </p>
             <p className="text-lg md:text-xl text-neutral-400 dark:text-neutral-400 text-balance font-medium">
               Viewpoints.xyz is a tool that lets you gauge opinions on any
               topic. Create a poll, get a link, and find out what your community
