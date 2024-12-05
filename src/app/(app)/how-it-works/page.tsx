@@ -10,10 +10,12 @@ import {
   FiUser,
 } from "react-icons/fi";
 import Link from "next/link";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 
 export default function HowItWorksPage() {
   return (
     <main className="px-4 w-full max-w-4xl mx-auto">
+      <link rel="canonical" href={`${getBaseUrl()}/how-it-works`} />
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold mt-10 mb-3 text-neutral-800 dark:text-neutral-100">
           How It Works
