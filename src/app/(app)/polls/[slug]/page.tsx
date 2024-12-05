@@ -9,15 +9,21 @@ export default async function PollPage({
   params: { slug: string };
 }) {
   const data = await getPoll(slug);
-  const url = `${getBaseUrl()}/polls/${data.poll.slug}`;
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}/polls/${data.poll.slug}`;
   const twitterShareUrl = `${url}?utm_source=twitter&utm_medium=social&utm_campaign=share&utm_content=${data.poll.id}`;
+
+  if (!baseUrl || !data.poll.slug) {
+    console.error("Invalid base URL or poll slug");
+  }
+
   return (
     <>
       <title>{data.poll.title}</title>
       <meta name="description" content={data.poll.core_question} />
       <meta property="og:title" content={data.poll.title} />
       <meta property="og:description" content={data.poll.core_question} />
-      <meta property="og:url" content={twitterShareUrl} />
+      <meta property="og:url" content={url} />
       <meta property="og:type" content="website" />
       <meta property="og:image" content={`${getBaseUrl()}/open-graph.png`} />
       <meta property="twitter:card" content="summary" />
