@@ -3,7 +3,6 @@ import { PollList } from "@/components/PollList";
 import { getBaseUrl } from "@/lib/getBaseUrl";
 import { getIndexPolls } from "@/lib/getIndexPolls";
 import Link from "next/link";
-import { Suspense } from "react";
 import { FiCalendar, FiPlus } from "react-icons/fi";
 
 export default async function Home() {
@@ -21,9 +20,7 @@ export default async function Home() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
         <CreatePoll />
-        <Suspense>
-          <PollList polls={polls} />
-        </Suspense>
+        <PollList polls={polls} />
       </div>
     </main>
   );
