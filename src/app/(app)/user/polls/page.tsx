@@ -2,7 +2,7 @@ import Link from "next/link";
 import { db } from "@/db/client";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import { FiArrowRight, FiEdit, FiPlus } from "react-icons/fi";
+import { FiArrowRight, FiEdit, FiPlus, FiPlusCircle } from "react-icons/fi";
 import { Button } from "@/ui/button";
 import { isUserPro } from "@/lib/isUserPro";
 import { UpgradeLink } from "@/components/UpgradeLink";
@@ -21,7 +21,7 @@ export default async function Page() {
   const userPolls = await getUserPolls(userId);
 
   return (
-    <div className="w-full max-w-5xl mx-auto grid gap-4 content-start p-4 py-8">
+    <div className="w-full max-w-5xl mx-auto grid gap-8 content-start p-4 py-8">
       <header className="flex items-center justify-between">
         <h1
           className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50"
@@ -29,19 +29,41 @@ export default async function Page() {
         >
           Your Polls
         </h1>
-        <Button variant="highlight" asChild>
+        <Button variant="outline" asChild>
           <Link href="/new-poll">
             <FiPlus className="w-4 h-4 mr-2" />
             Create Poll
           </Link>
         </Button>
       </header>
-      <div className="grid gap-2">
-        {userPolls.map((poll) => (
-          <UserPoll key={poll.id} {...poll} />
-        ))}
-        {!isPro ? <UpgradeLink>Want unlimited polls?</UpgradeLink> : null}
-      </div>
+
+      {userPolls.length === 0 ? (
+        <div className="grid place-items-center gap-4 py-12 text-center">
+          <FiPlusCircle className="w-12 h-12 text-neutral-400" />
+          <div className="grid gap-2">
+            <h2 className="text-xl font-medium text-neutral-900 dark:text-neutral-50">
+              Create your first poll
+            </h2>
+            <p className="text-neutral-600 dark:text-neutral-400 max-w-md">
+              Get started by creating a poll. You&apos;ll be able to share it
+              with others and collect responses in no time.
+            </p>
+          </div>
+          <Button variant="outline" asChild>
+            <Link href="/new-poll">
+              <FiPlus className="w-4 h-4 mr-2" />
+              Create Your First Poll
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-3">
+          {userPolls.map((poll) => (
+            <UserPoll key={poll.id} {...poll} />
+          ))}
+          {!isPro ? <UpgradeLink>Want unlimited polls?</UpgradeLink> : null}
+        </div>
+      )}
     </div>
   );
 }

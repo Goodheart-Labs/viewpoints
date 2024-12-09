@@ -49,6 +49,7 @@
     "@radix-ui/react-tooltip": "latest",
     "@react-spring/web": "^9.7.4",
     "@tanstack/react-query": "^5.55.4",
+    "@types/bun": "^1.1.14",
     "@types/express-useragent": "^1.0.5",
     "@types/pg": "^8.11.6",
     "@types/semver": "^7.5.8",

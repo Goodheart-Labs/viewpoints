@@ -23,6 +23,15 @@ function MobileNavLinks({ onClose }: { onClose: () => void }) {
       <NavLink href="/how-it-works" onClick={onClose}>
         How it Works
       </NavLink>
+      <NavLink href="/features/rapid-ai-poll-creation" onClick={onClose}>
+        Rapid AI Poll Creation
+      </NavLink>
+      <NavLink href="/features/realtime-consensus-analytics" onClick={onClose}>
+        Realtime Consensus Analytics
+      </NavLink>
+      <NavLink href="/features/integration-ready-api" onClick={onClose}>
+        Integration-Ready API
+      </NavLink>
       <AuthLink isMobile onClose={onClose} />
       <UserButton userProfileMode="modal" />
     </div>
@@ -80,13 +89,22 @@ export function Header() {
                   sideOffset={5}
                 >
                   <div className="grid gap-3">
-                    <Link href="/features/rapid-ai-poll-creation" className={linkStyles}>
+                    <Link
+                      href="/features/rapid-ai-poll-creation"
+                      className={linkStyles}
+                    >
                       Rapid AI Poll Creation
                     </Link>
-                    <Link href="/features/realtime-consensus-analytics" className={linkStyles}>
+                    <Link
+                      href="/features/realtime-consensus-analytics"
+                      className={linkStyles}
+                    >
                       Realtime Consensus Analytics
                     </Link>
-                    <Link href="/features/integration-ready-api" className={linkStyles}>
+                    <Link
+                      href="/features/integration-ready-api"
+                      className={linkStyles}
+                    >
                       Integration-Ready API
                     </Link>
                   </div>

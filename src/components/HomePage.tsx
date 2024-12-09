@@ -6,12 +6,10 @@ import {
   FiBarChart2,
   FiCheck,
   FiHelpCircle,
-  FiPlus,
   FiShare2,
   FiSmartphone,
   FiZap,
 } from "react-icons/fi";
-import { motion } from "framer-motion";
 import { PollList } from "@/components/PollList";
 import { getIndexPolls } from "@/lib/getIndexPolls";
 
@@ -21,65 +19,67 @@ export function HomePage({
   polls: Awaited<ReturnType<typeof getIndexPolls>>;
 }) {
   return (
-    <main className="w-full md:pt-16">
-      {/* Hero Section */}
-      <section className="max-w-5xl mx-auto px-4 py-16 grid gap-8">
-        <div className="grid gap-6 mb-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-balance">
-            Three-click polls for meetings and conferences using{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-orange-700 dark:from-orange-400 dark:to-orange-600 text-transparent bg-clip-text">
+    <main className="w-full">
+      <div className="bg-gradient-to-b from-neutral-50/0 to-neutral-100/80 dark:from-neutral-900/0 dark:to-neutral-900/50">
+        {/* Hero Section */}
+        <section className="max-w-6xl mx-auto p-8 md:px-4 md:py-20 grid gap-8 justify-center">
+          {/* Hero Text */}
+
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight !leading-tight text-center text-balance">
+            Instant polls for meetings and conferences using{" "}
+            <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-transparent bg-clip-text text-center">
               AI
             </span>
           </h1>
-          <p className="text-2xl md:text-3xl font-bold tracking-tight text-transparent bg-gradient-to-b from-neutral-400 to-neutral-500/50 dark:from-neutral-400 dark:to-neutral-300 bg-clip-text">
-            Discover what your community is thinking with Viewpoints
+          <p className="text-balance text-lg md:text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto text-center">
+            Discover what your community is thinking with intelligent polling
+            that adapts to your needs
           </p>
-          <p className="text-lg md:text-xl font-medium text-neutral-500 dark:text-neutral-300 max-w-2xl text-balance">
-            Viewpoints.xyz is your go-to tool for quick, intelligent polling.
-            Create, share, and analyze polls effortlessly to gauge opinions on
-            any topic.
-          </p>
-        </div>
 
-        {/* Quick Start Steps */}
-        <motion.div
-          className="grid gap-4 p-8 max-w-2xl w-full mx-auto bg-white dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-600 rounded-xl shadow-sm"
-          initial={{ opacity: 0, y: 20, filter: "blur(10px)", rotate: 2 }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: 0 }}
-          transition={{
-            y: { type: "spring", stiffness: 100, damping: 15 },
-            rotate: { type: "spring", stiffness: 150, damping: 10 },
-            filter: { duration: 0.2 },
-          }}
-        >
-          <h2 className="text-2xl font-extrabold text-neutral-800 dark:text-neutral-100">
-            Create your own poll in seconds!
-          </h2>
-          <div className="grid gap-4 mb-4">
-            {[
-              "Enter your poll topic or idea",
-              "Let AI craft your statements",
-              "Review and launch your poll",
-            ].map((step, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center text-orange-600 dark:text-orange-400">
-                  {i + 1}
-                </div>
-                <p className="text-lg md:text-xl">{step}</p>
-              </div>
-            ))}
-          </div>
-          <Link
-            href="/new-poll"
-            className="inline-flex items-center justify-center px-6 py-4 text-lg font-medium rounded-lg text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-colors duration-300"
+          {/* Quick Start Card */}
+          {/* <motion.div
+            className="grid gap-8 p-8 max-w-xl mx-auto w-full bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-neutral-200/50 dark:border-neutral-800"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <FiPlus className="mr-2" />
-            Create Your Poll Now
-          </Link>
-        </motion.div>
+            <div className="grid gap-6">
+              <h2 className="text-xl font-semibold">
+                Create your poll in seconds
+              </h2>
 
-        {/* Features Grid */}
-        <section className="py-12">
+              <div className="grid gap-4">
+                {[
+                  "Enter your topic or question",
+                  "AI generates targeted statements",
+                  "Review and launch instantly",
+                ].map((step, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-orange-50 dark:bg-orange-950 flex items-center justify-center text-sm font-medium text-orange-600 dark:text-orange-400">
+                      {i + 1}
+                    </div>
+                    <p className="text-neutral-700 dark:text-neutral-200">
+                      {step}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              href="/new-poll"
+              className="flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-lg text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-colors duration-300"
+            >
+              <FiPlus className="w-4 h-4" />
+              Create Your Poll
+            </Link>
+          </motion.div> */}
+        </section>
+      </div>
+
+      {/* Features Grid */}
+      <div className="bg-white dark:bg-neutral-900 border-y">
+        <section className="max-w-6xl mx-auto px-4 py-12">
           <h2 className="text-3xl font-bold mb-12 tracking-tight">
             Why choose Viewpoints?
           </h2>
@@ -115,6 +115,12 @@ export function HomePage({
                 description:
                   "Watch as responses stream in and opinions take shape before your eyes.",
               },
+              {
+                icon: FiCheck,
+                title: "Statement-Based Polling",
+                description:
+                  "Get to the heart of issues faster with direct agree/disagree responses to clear statements, providing deeper insights than traditional questions.",
+              },
             ].map(({ icon: Icon, ...feature }) => (
               <div key={feature.title}>
                 <div className="flex items-start gap-3">
@@ -133,58 +139,67 @@ export function HomePage({
             ))}
           </div>
         </section>
+      </div>
 
-        {/* How it Works */}
-        <section className="py-12 border-t border-neutral-200 dark:border-neutral-800">
-          <h2 className="text-3xl font-bold mb-8">How It Works</h2>
-          <div className="grid gap-6">
-            {[
-              "Choose your topic - Tell us what you want to ask about",
-              "AI drafts your poll - Our AI suggests questions based on your topic",
-              "Approve and customize - Tweak the questions to fit your needs",
-              "Share with your audience - Send a link or display a QR code",
-              "Collect insights - Get real-time results as people respond",
-            ].map((step, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                  <FiCheck className="w-4 h-4 text-orange-500" />
-                </div>
-                <p className="text-lg">
-                  <span className="font-bold">{step.split(" - ")[0]}</span> -{" "}
-                  <span className="text-neutral-500 dark:text-neutral-400">
-                    {step.split(" - ")[1]}
-                  </span>
-                </p>
+      {/* How it Works */}
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-8">How It Works</h2>
+        <div className="grid gap-6">
+          {[
+            "Choose your topic - Tell us what you want to ask about",
+            "AI drafts your poll - Our AI suggests questions based on your topic",
+            "Approve and customize - Tweak the questions to fit your needs",
+            "Share with your audience - Send a link or display a QR code",
+            "Collect insights - Get real-time results as people respond",
+          ].map((step, i) => (
+            <div key={i} className="flex items-start gap-4">
+              <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+                <FiCheck className="w-4 h-4 text-orange-500" />
               </div>
-            ))}
-          </div>
-        </section>
+              <p>
+                <span className="font-medium text-xl">
+                  {step.split(" - ")[0]}
+                </span>{" "}
+                -{" "}
+                <span className="text-neutral-500 dark:text-neutral-400">
+                  {step.split(" - ")[1]}
+                </span>
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="py-12 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Ready to uncover what your community is thinking?
+      {/* CTA Section */}
+      <section className="max-w-4xl mx-auto px-4 py-12 text-center">
+        <div className="grid gap-4">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight text-balance !leading-tight">
+            Discover what your community
+            <br />
+            is thinking today
           </h2>
-          <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-8">
-            Join Viewpoints.xyz today and start engaging with your audience like
-            never before.
+          <p className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto text-balance !leading-normal">
+            Create your first AI-powered poll and start gathering insights in
+            seconds
           </p>
-          <Link
-            href="/new-poll"
-            className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-colors duration-300"
-          >
-            Create Your Free Poll Now
-            <FiArrowRight className="ml-2" />
-          </Link>
-        </section>
+        </div>
+        <Link
+          href="/new-poll"
+          className="mt-8 inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-colors duration-300"
+        >
+          Create Your Free Poll Now
+          <FiArrowRight className="ml-2" />
+        </Link>
+      </section>
 
-        {/* Latest Polls */}
-        <section className="py-12 border-t border-neutral-200 dark:border-neutral-800">
-          <h2 className="text-2xl font-bold mb-8">Latest Polls</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <PollList polls={polls} />
-          </div>
-        </section>
+      {/* Latest Polls */}
+      <section className="max-w-6xl mx-auto px-4 py-12 border-t border-neutral-200 dark:border-neutral-800">
+        <h2 className="text-3xl font-bold mb-12 tracking-tight">
+          Latest Polls
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <PollList polls={polls} />
+        </div>
       </section>
     </main>
   );
