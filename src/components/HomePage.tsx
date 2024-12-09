@@ -5,7 +5,10 @@ import {
   FiArrowRight,
   FiBarChart2,
   FiCheck,
+  FiCpu,
+  FiEdit3,
   FiHelpCircle,
+  FiSettings,
   FiShare2,
   FiSmartphone,
   FiZap,
@@ -16,16 +19,16 @@ export function HomePage() {
     <main className="w-full">
       <div className="bg-gradient-to-b from-neutral-50/0 to-neutral-100/80 dark:from-neutral-900/0 dark:to-neutral-900/50">
         {/* Hero Section */}
-        <section className="max-w-6xl mx-auto p-8 md:px-4 md:py-20 grid gap-6 justify-center">
+        <section className="max-w-6xl mx-auto p-8 md:px-4 md:py-20 grid gap-4 justify-center">
           {/* Hero Text */}
 
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight !leading-tighter text-center text-balance">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight !leading-[1.1] text-center text-balance">
             Instant polls for meetings and conferences using{" "}
             <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-transparent bg-clip-text text-center">
               AI
             </span>
           </h1>
-          <p className="text-balance text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-center">
+          <p className="text-balance text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-center !leading-normal">
             Discover what your community is thinking with intelligent polling
             that adapts to your needs
           </p>
@@ -140,23 +143,38 @@ export function HomePage() {
         <h2 className="text-3xl font-bold mb-8 text-center">How It Works</h2>
         <div className="grid gap-6 justify-center">
           {[
-            "Choose your topic - Tell us what you want to ask about",
-            "AI drafts your poll - Our AI suggests questions based on your topic",
-            "Approve and customize - Tweak the questions to fit your needs",
-            "Share with your audience - Send a link or display a QR code",
-            "Collect insights - Get real-time results as people respond",
-          ].map((step, i) => (
+            {
+              icon: FiEdit3,
+              text: "Choose your topic - Tell us what you want to ask about",
+            },
+            {
+              icon: FiCpu,
+              text: "AI drafts your poll - Our AI suggests questions based on your topic",
+            },
+            {
+              icon: FiSettings,
+              text: "Approve and customize - Tweak the questions to fit your needs",
+            },
+            {
+              icon: FiShare2,
+              text: "Share with your audience - Send a link or display a QR code",
+            },
+            {
+              icon: FiBarChart2,
+              text: "Collect insights - Get real-time results as people respond",
+            },
+          ].map(({ text, icon: Icon }, i) => (
             <div key={i} className="flex items-start gap-4 text-pretty">
               <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                <FiCheck className="w-4 h-4 text-orange-500" />
+                <Icon className="w-4 h-4 text-orange-500" />
               </div>
               <p>
                 <span className="font-medium text-xl">
-                  {step.split(" - ")[0]}
+                  {text.split(" - ")[0]}
                 </span>{" "}
                 -{" "}
                 <span className="text-neutral-500 dark:text-neutral-400">
-                  {step.split(" - ")[1]}
+                  {text.split(" - ")[1]}
                 </span>
               </p>
             </div>
@@ -167,7 +185,7 @@ export function HomePage() {
       {/* CTA Section */}
       <section className="max-w-4xl mx-auto px-4 py-12 text-center">
         <div className="grid gap-4">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight text-balance !leading-[1.2]">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight text-balance !leading-[1.1]">
             Discover what your community is thinking today
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-balance !leading-normal">
