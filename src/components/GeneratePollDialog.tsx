@@ -35,7 +35,10 @@ export function GeneratePollDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle
+            className="flex items-center gap-2"
+            data-testid="create-with-ai-title"
+          >
             <FiZap className="h-5 w-5" fill="currentColor" />
             Create with AI
           </DialogTitle>

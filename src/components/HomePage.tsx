@@ -10,14 +10,8 @@ import {
   FiSmartphone,
   FiZap,
 } from "react-icons/fi";
-import { PollList } from "@/components/PollList";
-import { getIndexPolls } from "@/lib/getIndexPolls";
 
-export function HomePage({
-  polls,
-}: {
-  polls: Awaited<ReturnType<typeof getIndexPolls>>;
-}) {
+export function HomePage() {
   return (
     <main className="w-full">
       <div className="bg-gradient-to-b from-neutral-50/0 to-neutral-100/80 dark:from-neutral-900/0 dark:to-neutral-900/50">
@@ -190,16 +184,6 @@ export function HomePage({
           Create Your Free Poll Now
           <FiArrowRight className="ml-2" />
         </Link>
-      </section>
-
-      {/* Latest Polls */}
-      <section className="max-w-6xl mx-auto px-4 py-12 border-t border-neutral-200 dark:border-neutral-800">
-        <h2 className="text-3xl font-bold mb-12 tracking-tight">
-          Latest Polls
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <PollList polls={polls} />
-        </div>
       </section>
     </main>
   );

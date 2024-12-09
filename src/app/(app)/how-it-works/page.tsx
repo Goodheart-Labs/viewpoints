@@ -105,8 +105,8 @@ function StepCard({
 }) {
   return (
     <div className="grid grid-cols-[auto,1fr] gap-4 p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 items-center">
-      <div className="bg-orange-100 dark:bg-orange-600/70 rounded-full p-4 aspect-square flex items-center justify-center">
-        <Icon className="w-6 h-6 text-orange-600 dark:text-white" />
+      <div className="bg-orange-100 dark:bg-orange-600/70 rounded-xl p-3 aspect-square flex items-center justify-center">
+        <Icon className="w-5 h-5 text-orange-600 dark:text-white" />
       </div>
       <div>
         <h3 className="text-xl font-semibold mb-1 text-neutral-800 dark:text-neutral-100">

@@ -113,6 +113,7 @@ export function NewPollForm() {
             size="sm"
             disabled={isGenerating}
             type="button"
+            data-testid="create-with-ai-button"
           >
             {isGenerating ? (
               <FiLoader className="animate-spin mr-2" />

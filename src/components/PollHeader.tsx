@@ -88,7 +88,7 @@ export function PollHeader({
         <PollButton icon={FiPlus}>Add Statement</PollButton>
       </AddStatementDialog>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger data-testid="poll-share-button" asChild>
           <PollButton icon={FiShare2}>Share</PollButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
@@ -130,6 +130,7 @@ export function PollHeader({
                   poll_slug: slug,
                 });
               }}
+              data-testid="poll-share-qr-code"
             >
               <LuQrCode className="w-4 h-4 mr-2" />
               Show QR code
