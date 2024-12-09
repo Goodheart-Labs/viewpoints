@@ -87,7 +87,7 @@ export default function HowItWorksPage() {
         />
       </div>
 
-      <div className="mt-10 text-center">
+      <div className="mt-10 text-center my-12">
         <p className="text-base mb-4 text-neutral-500 dark:text-neutral-400">
           Join Viewpoints.xyz today and start engaging with your audience like
           never before!
