@@ -1,12 +1,21 @@
 import { FiCpu, FiGrid, FiZap } from "react-icons/fi";
 import { FeaturePage } from "@/components/FeaturePage";
+import { Metadata } from "next";
+
+const title = "Rapid AI Poll Creation";
+const description =
+  "Create consensus-building polls in minutes with our intuitive, AI-powered tool.";
+
+export const metadata: Metadata = {
+  title: "Viewpoints: " + title,
+  description,
+};
 
 export default function RapidAIPollCreation() {
   return (
     <FeaturePage
-      title="Rapid AI Poll Creation"
-      description="Create consensus-building polls in minutes with our intuitive,
-            AI-powered tool."
+      title={title}
+      description={description}
       features={[
         {
           title: "Instant Poll Creation",

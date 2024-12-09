@@ -1,5 +1,15 @@
 import { FiLock, FiPieChart, FiZap } from "react-icons/fi";
 import { FeaturePage } from "@/components/FeaturePage";
+import { Metadata } from "next";
+
+const title = "Realtime Consensus Analytics";
+const description =
+  "Watch opinions unfold and consensus form in real-time with our powerful analytics tool.";
+
+export const metadata: Metadata = {
+  title: "Viewpoints: " + title,
+  description,
+};
 
 export default function RealtimeConsensusAnalytics() {
   return (

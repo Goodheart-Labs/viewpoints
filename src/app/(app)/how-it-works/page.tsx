@@ -11,6 +11,16 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import { getBaseUrl } from "@/lib/getBaseUrl";
+import { Metadata } from "next";
+
+const title = "How It Works";
+const description =
+  "Viewpoints.xyz is designed to make opinion gathering and consensus building easy and efficient. Follow these simple steps to create, share, and analyze your polls.";
+
+export const metadata: Metadata = {
+  title: "Viewpoints: " + title,
+  description,
+};
 
 export default function HowItWorksPage() {
   return (

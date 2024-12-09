@@ -1,12 +1,21 @@
 import { FiBook, FiBox, FiLayers } from "react-icons/fi";
 import { FeaturePage } from "@/components/FeaturePage";
+import { Metadata } from "next";
+
+const title = "Integration-Ready API";
+const description =
+  "Unlock the full potential of your poll data with our powerful, easy-to-use API.";
+
+export const metadata: Metadata = {
+  title: "Viewpoints: " + title,
+  description,
+};
 
 export default function IntegrationReadyAPI() {
   return (
     <FeaturePage
-      title="Integration-Ready API"
-      description="Unlock the full potential of your poll data with our powerful,
-            easy-to-use API."
+      title={title}
+      description={description}
       features={[
         {
           title: "Seamless Data Access",
