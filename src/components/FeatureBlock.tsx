@@ -18,9 +18,11 @@ export function FeatureBlock({
 }: FeatureBlockProps) {
   return (
     <section className="grid md:grid-cols-2 gap-12 items-center">
-      <div className="grid gap-6">
+      <div className="grid gap-4">
         <h2 className="text-3xl font-bold">{title}</h2>
-        <p className="text-neutral-600">{description}</p>
+        <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+          {description}
+        </p>
         <ul className="grid gap-4">
           {features.map((item) => (
             <li key={item} className="flex gap-3">

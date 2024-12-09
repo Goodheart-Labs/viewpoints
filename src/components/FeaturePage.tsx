@@ -26,11 +26,11 @@ export function FeaturePage({
     <div className="py-12">
       {/* Header Section */}
       <div className="grid gap-4 text-center mb-16 max-w-6xl mx-auto px-4">
-        <span className="text-sm font-medium text-neutral-500 uppercase tracking-wider">
+        <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
           Feature
         </span>
         <h1 className="text-4xl font-bold">{title}</h1>
-        <p className="text-xl text-neutral-600 max-w-2xl mx-auto text-balance">
+        <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-balance">
           {description}
         </p>
       </div>
@@ -59,9 +59,9 @@ export function FeaturePage({
         </blockquote> */}
 
         {/* CTA Section */}
-        <section className="grid gap-6 text-center my-8">
+        <section className="grid gap-4 text-center my-8">
           <h2 className="text-3xl font-bold">{cta.title}</h2>
-          <p className="text-neutral-600 max-w-2xl mx-auto">
+          <p className="text-neutral-600 dark:text-neutral-400 text-lg max-w-2xl mx-auto mb-4">
             {cta.description}
           </p>
           <div className="flex justify-center gap-4">

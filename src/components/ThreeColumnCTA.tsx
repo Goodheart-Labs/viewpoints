@@ -8,7 +8,7 @@ export type ThreeColumnCTAProps = {
 
 export function ThreeColumnCTA({ title, items }: ThreeColumnCTAProps) {
   return (
-    <section className="text-center bg-white py-12 border-y border-neutral-200 my-12 shadow-lg shadow-neutral-100">
+    <section className="text-center bg-white dark:bg-slate-500/10 py-12 border-y border-neutral-200 dark:border-neutral-700 my-12 shadow-lg shadow-neutral-100 dark:shadow-none">
       <div className="max-w-6xl mx-auto px-4 grid gap-10">
         <h2 className="text-3xl font-bold">{title}</h2>
         <div className="grid md:grid-cols-3 gap-4">
@@ -29,14 +29,16 @@ export function ThreeColumnCTA({ title, items }: ThreeColumnCTAProps) {
               >
                 <div
                   className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-1",
+                    "w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-2",
                     bgColor,
                   )}
                 >
                   <Icon className={cn("text-xl", textColor)} />
                 </div>
                 <h3 className="text-xl font-semibold">{item.title}</h3>
-                <p className="text-neutral-600 text-balance">{item.desc}</p>
+                <p className="text-neutral-600 text-balance dark:text-neutral-400">
+                  {item.desc}
+                </p>
               </div>
             );
           })}
