@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getPollResults } from "@/lib/getPollResults";
 import { StatementReview } from "@/lib/schemas";
@@ -10,10 +10,14 @@ import { cn } from "@/ui/cn";
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { ChoiceEnum } from "kysely-codegen";
 import Link from "next/link";
-import { FiList, FiMessageCircle, FiUsers } from "react-icons/fi";
+import { FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
 import { CreatePollCallout } from "./CreatePollCallout";
 import { AnimatePresence, motion } from "framer-motion";
+
+type Data = Awaited<ReturnType<typeof getPollResults>>;
+type Statement = Data["statements"][number];
+type Row = { type: "statement"; statement: Statement } | { type: "cta" };
 
 export function ResultsPage({
   slug,
@@ -38,7 +42,7 @@ export function ResultsPage({
     queryKey: ["results", slug, sort],
     queryFn: async () => {
       const res = await fetch(`/api/polls/${slug}/results?sort=${sort}`);
-      return res.json() as Promise<Awaited<ReturnType<typeof getPollResults>>>;
+      return res.json() as ReturnType<typeof getPollResults>;
     },
     initialData,
     refetchInterval: 10_000,
@@ -69,25 +73,35 @@ export function ResultsPage({
   const [ctaShowing, setCtaShowing] = useState(true);
   const closeCta = () => setCtaShowing(false);
 
+  const rows: Row[] = data.statements.reduce((acc, statement, index) => {
+    if (statement.question_type === "default") {
+      acc.push({ type: "statement", statement });
+    }
+    if (index === ctaPosition) acc.push({ type: "cta" });
+    return acc;
+  }, [] as Row[]);
+
   return (
-    <div className="grid gap-4">
-      <p className="text-center text-sm sm:text-base p-4 rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100 border-2">
-        <FiUsers className="inline-block -mt-1 mr-2" size={20} />
-        <strong>
-          {data.uniqueRespondentsCount}{" "}
-          {isSingleRespondent ? "person" : "people"}
-        </strong>{" "}
-        {isSingleRespondent ? "has" : "have"} given{" "}
-        <strong>
-          {data.responsesCount}{" "}
-          {data.responsesCount === 1 ? "response" : "responses"}
-        </strong>
-        <FiMessageCircle className="inline-block -mt-1 mx-1" size={20} />
+    <div className="grid gap-12 -mt-2">
+      <p className="flex items-center gap-2 text-sm rounded-lg text-neutral-600 dark:text-neutral-300">
+        <FiUsers size={16} />
+        <span>
+          <strong>
+            {data.uniqueRespondentsCount}{" "}
+            {isSingleRespondent ? "person" : "people"}
+          </strong>{" "}
+          {isSingleRespondent ? "has" : "have"} given{" "}
+          <strong>
+            {data.responsesCount}{" "}
+            {data.responsesCount === 1 ? "response" : "responses"}
+          </strong>
+        </span>
+        <FiMessageCircle size={16} />
       </p>
-      <div className="grid gap-4 mt-6">
-        <div className="grid gap-2">
+      <div className="grid gap-4">
+        <div className="grid">
           <Tabs value={sort} className="w-full">
-            <TabsList className="bg-transparent dark:bg-transparent flex gap-2 justify-center">
+            <TabsList className="bg-transparent dark:bg-transparent flex flex-wrap gap-2 justify-center pt-0 pb-2 sm:py-0">
               <CustomTabTrigger value="agree" asChild>
                 <Link
                   href={`/polls/${slug}/results?sort=agree${
@@ -144,63 +158,67 @@ export function ResultsPage({
               </CustomTabTrigger>
             </TabsList>
           </Tabs>
-          <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center gap-3 max-w-lg mx-auto">
-            <FiList className="flex-shrink-0 opacity-50" size={20} />
-            <p className="text-sm font-medium text-pretty text-neutral-700 dark:text-neutral-200">
+          <div className="text-neutral-800 bg-neutral-100 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center w-full h-[80px]">
+            <p className="w-full text-sm text-neutral-700 dark:text-neutral-200 text-center text-balance leading-relaxed">
               {SORT_EXPLANATIONS[sort]}
             </p>
           </div>
         </div>
         <div className="grid gap-4">
-          {data.statements
-            .filter((s) => s.question_type === "default")
-            .map((statement, index) => (
-              <Fragment key={statement.id}>
-                <div
-                  className="bg-white p-4 rounded-lg shadow dark:bg-neutral-800"
-                  data-id={statement.id}
-                >
-                  <p className="font-medium mb-2">{statement.text}</p>
-                  <div className="flex gap-2">
-                    <Chip variant="agree">
-                      {Math.round(
-                        data.choicePercentage[statement.id].agree * 100,
-                      )}
-                      %
-                    </Chip>
-                    <Chip variant="disagree">
-                      {Math.round(
-                        data.choicePercentage[statement.id].disagree * 100,
-                      )}
-                      %
-                    </Chip>
-                    {data.choicePercentage[statement.id].skip > 0 && (
-                      <Chip variant="skip">
+          <AnimatePresence key="only-once">
+            {rows.map((row, index) => {
+              if (row.type === "statement") {
+                return (
+                  <motion.div
+                    layout
+                    key={row.statement.id}
+                    className="bg-white p-4 rounded-lg shadow dark:bg-neutral-800"
+                    data-id={row.statement.id}
+                  >
+                    <p className="font-medium mb-2">{row.statement.text}</p>
+                    <div className="flex gap-2">
+                      <Chip variant="agree">
                         {Math.round(
-                          data.choicePercentage[statement.id].skip * 100,
+                          data.choicePercentage[row.statement.id].agree * 100,
                         )}
                         %
                       </Chip>
-                    )}
-                  </div>
-                </div>
-                <AnimatePresence>
-                  {index === ctaPosition && ctaShowing && (
-                    <motion.div
-                      initial={{ opacity: 1, scale: 1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{
-                        duration: 0.5,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <CreatePollCallout closeCta={closeCta} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Fragment>
-            ))}
+                      <Chip variant="disagree">
+                        {Math.round(
+                          data.choicePercentage[row.statement.id].disagree *
+                            100,
+                        )}
+                        %
+                      </Chip>
+                      {data.choicePercentage[row.statement.id].skip > 0 && (
+                        <Chip variant="skip">
+                          {Math.round(
+                            data.choicePercentage[row.statement.id].skip * 100,
+                          )}
+                          %
+                        </Chip>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              } else {
+                return (
+                  <motion.div
+                    key="cta"
+                    initial={{ opacity: 1, scale: 1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <CreatePollCallout closeCta={closeCta} />
+                  </motion.div>
+                );
+              }
+            })}
+          </AnimatePresence>
         </div>
       </div>
     </div>
@@ -232,7 +250,20 @@ function Chip({
 function CustomTabTrigger(props: TabsTriggerProps) {
   return (
     <TabsTrigger
-      className="p-2 text-center text-base font-medium border-b-2 border-transparent transition-colors duration-200 hover:text-neutral-800 dark:hover:text-neutral-200 data-[state=active]:border-neutral-800 dark:data-[state=active]:border-neutral-800 dark:data-[state=active]:text-neutral-800 dark:data-[state=active]:text-neutral-200 bg-transparent data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent"
+      className={cn(
+        "p-2 text-center text-base text-sm transition-colors duration-200",
+        // Mobile styles (default)
+        "bg-neutral-100 dark:bg-neutral-700 rounded-md",
+        "data-[state=active]:bg-neutral-200 dark:data-[state=active]:bg-neutral-600",
+        // Desktop styles
+        "sm:bg-transparent sm:dark:bg-transparent",
+        "sm:border-b-2 sm:border-transparent sm:rounded-none",
+        "sm:data-[state=active]:bg-transparent sm:dark:data-[state=active]:bg-transparent",
+        "sm:data-[state=active]:border-neutral-800 sm:dark:data-[state=active]:border-neutral-200",
+        // Hover states
+        "hover:text-neutral-800 dark:hover:text-neutral-200",
+        "!shadow-none",
+      )}
       {...props}
     >
       {props.children}
