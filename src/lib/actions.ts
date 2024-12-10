@@ -12,6 +12,9 @@ import { getVisitorIdOrThrow } from "./getVisitorIdOrThrow";
 import { createDemoQuestions } from "./createDemoQuestions";
 import { ChoiceEnum } from "kysely-codegen";
 import { checkIsBot } from "./checkIsBot";
+import { generateObject } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { z } from "zod";
 
 /**
  * Checks if a slug exists in the database
@@ -394,4 +397,54 @@ export async function addStatement({
     .execute();
 
   revalidatePath(`/polls/${slug}`);
+}
+
+const generatePollSchema = z.object({
+  title: z.string(),
+  main_question: z.string().optional(),
+  statements: z.array(z.string()),
+  show_demographic_questions: z.boolean().optional(),
+});
+
+type GeneratedPoll = z.infer<typeof generatePollSchema>;
+
+/**
+ * This is a function which creates a poll's title, main question and statements
+ * using AI, given guidance in the prompt.
+ */
+export async function generatePollWithAI({
+  description,
+}: {
+  description: string;
+}): Promise<
+  { success: true; poll: GeneratedPoll } | { success: false; error: string }
+> {
+  const basePrompt = `You are a poll creation expert. You create polls in which all statements can be answered with "agree" or "disagree". When given a description of a poll, you generate a title, main question and between 5 and 25 statements for the poll.
+
+  For example, if the description is "I want to learn how people feel about the environment", you could generate a poll with the title "Climate Change Opinion Poll", the main question "Do you think climate change is happening?", and statements like "I think we should invest more in renewable energy" and "I think we should reduce our carbon footprint".
+  
+  If left blank, the main question will be "What do you think of the following statements?" 
+  You can also declare whether this poll would benefit from demographic questions.
+
+  Create a poll based on the following request:
+
+  """
+  ${description}
+  """
+  `;
+
+  try {
+    const { object } = await generateObject({
+      model: openai("gpt-4o"),
+      schema: generatePollSchema,
+      prompt: basePrompt,
+    });
+
+    return { success: true, poll: object };
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message || "An error occurred",
+    };
+  }
 }

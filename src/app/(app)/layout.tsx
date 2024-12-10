@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/ui/cn";
@@ -8,29 +7,15 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/ui/toaster";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryProvider } from "@/components/QueryProvider";
-import { SEO } from "@/lib/copy";
-import { getBaseUrl } from "@/lib/getBaseUrl";
 import { PosthogProvider } from "@/components/PosthogProvider";
 import { TrackPageView } from "@/components/TrackPageView";
+export { metadata } from "@/lib/copy";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "600", "700", "800"],
 });
-
-export const metadata: Metadata = {
-  title: SEO.title,
-  description: SEO.description,
-  metadataBase: new URL(getBaseUrl()),
-  openGraph: {
-    images: [
-      {
-        url: `${getBaseUrl()}/open-graph.png`,
-      },
-    ],
-  },
-};
 
 export default function RootLayout({
   children,

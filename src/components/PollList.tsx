@@ -17,7 +17,14 @@ export function PollList({
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null;
+  if (!isClient)
+    return (
+      <>
+        {Array.from({ length: polls.length }).map((_, i) => (
+          <PollSkeleton key={i} />
+        ))}
+      </>
+    );
 
   return (
     <>
@@ -63,5 +70,11 @@ function Poll({
         </span>
       </div>
     </Link>
+  );
+}
+
+export function PollSkeleton() {
+  return (
+    <div className="rounded-lg p-6 grid gap-2 content-between min-h-[140px] lg:min-h-[180px] bg-white/60 dark:bg-neutral-800 animate-pulse"></div>
   );
 }

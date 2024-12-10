@@ -11,6 +11,16 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import { getBaseUrl } from "@/lib/getBaseUrl";
+import { Metadata } from "next";
+
+const title = "How It Works";
+const description =
+  "Viewpoints.xyz is designed to make opinion gathering and consensus building easy and efficient. Follow these simple steps to create, share, and analyze your polls.";
+
+export const metadata: Metadata = {
+  title: "Viewpoints: " + title,
+  description,
+};
 
 export default function HowItWorksPage() {
   return (
@@ -77,7 +87,7 @@ export default function HowItWorksPage() {
         />
       </div>
 
-      <div className="mt-10 text-center">
+      <div className="mt-10 text-center my-12">
         <p className="text-base mb-4 text-neutral-500 dark:text-neutral-400">
           Join Viewpoints.xyz today and start engaging with your audience like
           never before!
@@ -105,8 +115,8 @@ function StepCard({
 }) {
   return (
     <div className="grid grid-cols-[auto,1fr] gap-4 p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 items-center">
-      <div className="bg-orange-100 dark:bg-orange-600/70 rounded-full p-4 aspect-square flex items-center justify-center">
-        <Icon className="w-6 h-6 text-orange-600 dark:text-white" />
+      <div className="bg-orange-100 dark:bg-orange-600/70 rounded-xl p-3 aspect-square flex items-center justify-center">
+        <Icon className="w-5 h-5 text-orange-600 dark:text-white" />
       </div>
       <div>
         <h3 className="text-xl font-semibold mb-1 text-neutral-800 dark:text-neutral-100">

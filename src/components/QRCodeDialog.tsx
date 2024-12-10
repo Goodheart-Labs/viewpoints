@@ -25,7 +25,7 @@ export default function QRCodeDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>QR Code</DialogTitle>
+          <DialogTitle data-testid="qr-code-dialog-title">QR Code</DialogTitle>
         </DialogHeader>
         <div className="grid place-items-center py-4">
           <QRCode value={link} size={256} />
