@@ -18,7 +18,10 @@ export default async function PollLayout({
   const isCouncilPoll = slug.includes("council");
 
   return (
-    <div className="max-w-4xl w-full mx-auto px-4 py-8 grid content-center gap-6">
+    <div
+      className="max-w-4xl w-full mx-auto p-4 mt-4 grid content-center gap-6"
+      data-testid="poll-layout"
+    >
       {isCouncilPoll ? <BackToSouthGlos /> : null}
       <div className="grid gap-1">
         <PollHeader

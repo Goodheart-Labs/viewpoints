@@ -39,6 +39,8 @@ const isPublicRoute = createRouteMatcher([
   "/success",
   "/embed/(.*)",
   "/how-it-works",
+  "/features/(.*)",
+  "/(.*).png",
 ]);
 
 /**
