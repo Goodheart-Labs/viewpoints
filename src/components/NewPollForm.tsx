@@ -168,35 +168,6 @@ export function NewPollForm() {
               >
                 <Input {...form.register("slug")} />
               </FormField>
-              <FormField
-                title="Poll Type"
-                description="Choose the visibility of your poll"
-                errors={form.formState.errors.poll_type}
-              >
-                <Controller
-                  name="poll_type"
-                  control={form.control}
-                  render={({ field }) => (
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      {[
-                        { value: "public", label: "Public" },
-                        { value: "hidden", label: "Private" },
-                      ].map(({ value, label }) => (
-                        <div
-                          key={value}
-                          className="flex items-center space-x-2"
-                        >
-                          <RadioGroupItem value={value} id={value} />
-                          <Label htmlFor={value}>{label}</Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
-              </FormField>
 
               <FormField
                 title="New Statements"

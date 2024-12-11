@@ -58,7 +58,6 @@ export async function createPoll({
   new_statements_visible_by_default,
   title,
   slug,
-  poll_type: visibility,
   question,
   with_demographic_questions,
   statements: statementsInput,
@@ -85,7 +84,7 @@ export async function createPoll({
         title,
         slug,
         core_question: question,
-        visibility,
+        visibility: 'private',
         new_statements_visible_by_default,
         analytics_filters: {},
       })

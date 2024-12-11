@@ -1,4 +1,4 @@
-import { FiCpu, FiGrid, FiZap } from "react-icons/fi";
+import { FiCpu, FiLock, FiZap } from "react-icons/fi";
 import { FeaturePage } from "@/components/FeaturePage";
 import { Metadata } from "next";
 
@@ -58,9 +58,9 @@ export default function RapidAIPollCreation() {
             icon: FiCpu,
           },
           {
-            title: "Flexibility",
-            desc: "Multiple sharing options to suit any scenario",
-            icon: FiGrid,
+            title: "Privacy",
+            desc: "Control exactly who can participate in your polls",
+            icon: FiLock,
           },
         ],
       }}

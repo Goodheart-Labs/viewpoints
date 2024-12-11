@@ -47,7 +47,6 @@ export function EditPollForm({
         <FormField title="Question">
           <Input value={poll.core_question || DEFAULT_CORE_QUESTION} disabled />
         </FormField>
-        <EditVisibility pollId={poll.id} defaultValue={poll.visibility} />
         <EditNewStatementsVisibility
           pollId={poll.id}
           defaultValue={poll.new_statements_visible_by_default || false}
@@ -69,55 +68,6 @@ export function EditPollForm({
   );
 }
 
-function EditVisibility({
-  pollId,
-  defaultValue,
-}: {
-  pollId: number;
-  defaultValue: string;
-}) {
-  const [loading, handler] = usePendingAction(changePollVisibility, {
-    after: () => {
-      toast.success("Poll visibility updated");
-    },
-  });
-  const handleVisibilityChange = (value: "public" | "hidden" | "private") => {
-    handler({ pollId, visibility: value });
-  };
-  return (
-    <FormField
-      title="Visibility"
-      description="Who can see the poll?"
-      loading={loading}
-    >
-      <RadioGroup
-        defaultValue={defaultValue}
-        onValueChange={handleVisibilityChange}
-        className="text-sm"
-        disabled={loading}
-      >
-        <div className="flex items-center">
-          <RadioGroupItem value="public" id="public" />
-          <label htmlFor="public" className="flex items-center ml-2">
-            <FiGlobe className="mr-1" /> Public
-          </label>
-        </div>
-        <div className="flex items-center">
-          <RadioGroupItem value="hidden" id="private-link" />
-          <label htmlFor="private-link" className="flex items-center ml-2">
-            <FiLink className="mr-1" /> Private Link
-          </label>
-        </div>
-        <div className="flex items-center">
-          <RadioGroupItem value="private" id="closed" />
-          <label htmlFor="closed" className="flex items-center ml-2">
-            <FiLock className="mr-1" /> Closed
-          </label>
-        </div>
-      </RadioGroup>
-    </FormField>
-  );
-}
 
 function EditNewStatementsVisibility({
   pollId,
