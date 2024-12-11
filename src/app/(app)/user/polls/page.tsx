@@ -23,7 +23,7 @@ export default async function Page() {
 
   return (
     <div className="w-full max-w-5xl mx-auto grid gap-8 content-start p-4 py-8">
-      <header className="flex items-center justify-between">
+      <header className="grid gap-4 md:flex md:items-center md:justify-between">
         <div className="grid gap-1">
           <h1
             className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50"
@@ -44,7 +44,7 @@ export default async function Page() {
           )}
         </div>
         {userPolls.length > 0 && (
-          <Button variant="outline" asChild>
+          <Button variant="outline" asChild className="w-full md:w-auto">
             <Link href="/new-poll">
               <FiPlus className="w-4 h-4 mr-2" />
               Create Poll
@@ -98,15 +98,15 @@ function UserPoll({
 }: Awaited<ReturnType<typeof getUserPolls>>[number]) {
   return (
     <div className="rounded-lg md:flex border shadow-sm bg-white dark:bg-neutral-800">
-      <Link href={`/polls/${slug}`} className="grid p-6 flex-grow">
-        <h2 className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
+      <Link href={`/polls/${slug}`} className="grid gap-2 p-4 md:p-6 flex-grow">
+        <h2 className="text-lg leading-tight font-medium text-neutral-900 dark:text-neutral-50 text-pretty">
           {title}
         </h2>
-        <span className="text-neutral-500 text-sm text-pretty overflow-hidden text-ellipsis whitespace-nowrap dark:text-neutral-400">
+        <span className="text-neutral-400 dark:text-neutral-500 text-sm text-pretty overflow-hidden text-ellipsis whitespace-nowrap">
           {core_question ? core_question : DEFAULT_CORE_QUESTION}
         </span>
       </Link>
-      <div className="flex gap-4 p-4">
+      <div className="flex gap-4 px-4 py-3 md:p-4 border-t md:border-t-0 md:border-l border-neutral-100 dark:border-neutral-700">
         <Link href={`/user/polls/${id}`} className={pollButton}>
           <FiEdit />
           Edit
