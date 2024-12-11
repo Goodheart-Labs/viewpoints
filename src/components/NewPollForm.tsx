@@ -24,7 +24,7 @@ import {
   resetStore,
   saveStore,
 } from "@/lib/useCreatePollStore";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { FiLoader, FiZap } from "react-icons/fi";
 import { toast } from "sonner";
 import { cn } from "@/ui/cn";
@@ -44,17 +44,6 @@ export function NewPollForm() {
     defaultValues: getStoredState(),
     disabled: isPending,
   });
-
-  const clearForm = useCallback(() => {
-    form.reset(
-      { ...getStoredState(), title: "", question: "", statements: "" },
-      {
-        keepDefaultValues: true,
-        keepDirty: false,
-        keepErrors: false,
-      },
-    );
-  }, [form]);
 
   const [isGenerating, generate] = usePendingAction(generatePollWithAI, {
     // before() {
@@ -83,6 +72,11 @@ export function NewPollForm() {
               keepTouched: false,
             },
           );
+
+          // create slug
+          getNewPollSlug(form.getValues("title")).then((slug) => {
+            form.setValue("slug", slug);
+          });
         }, 0);
       } else {
         toast.error(result.error);

@@ -38,7 +38,8 @@ export default async function NewPoll() {
         <NewPollForm />
       ) : (
         <UpgradeLink>
-          You&apos;ve reached the maximum number of polls you can create.
+          You&apos;ve reached the maximum number of polls you can create. Create
+          unlimited polls for £10/month by upgrading to Viewpoints Plus
         </UpgradeLink>
       )}
     </div>

@@ -7,7 +7,6 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "./ModeToggle";
 import { useState } from "react";
 import { cn } from "@/ui/cn";
-import { SEO } from "@/lib/copy";
 import * as HoverCard from "@radix-ui/react-hover-card";
 
 const calloutLinkStyles =
@@ -48,9 +47,6 @@ export function Header() {
     <header>
       <div className="flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center">
-          <h1 className="sr-only" data-testid="site-title">
-            {SEO.title}
-          </h1>
           <Image
             src="/logo.png"
             className="dark:hidden"
@@ -129,7 +125,7 @@ export function Header() {
           "md:hidden px-4 py-1 h-0 overflow-hidden transition-all duration-300 h-auto",
           {
             "max-h-0 opacity-0": !isMenuOpen,
-            "max-h-[300px] opacity-100": isMenuOpen,
+            "max-h-[350px] opacity-100": isMenuOpen,
           },
         )}
       >
