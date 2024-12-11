@@ -1,5 +1,6 @@
 "use client";
 
+import { SEO } from "@/lib/copy";
 import Link from "next/link";
 import {
   FiArrowRight,
@@ -22,7 +23,7 @@ export function HomePage() {
         <section className="max-w-6xl mx-auto p-8 md:px-4 md:py-20 grid gap-4 justify-center">
           {/* Hero Text */}
           <h1 className="sr-only" data-testid="site-title">
-            Viewpoints
+            {SEO.title}
           </h1>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight !leading-[1.1] text-center text-balance">
             Instant polls for meetings and conferences using{" "}
