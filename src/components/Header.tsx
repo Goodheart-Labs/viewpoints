@@ -125,7 +125,7 @@ export function Header() {
           "md:hidden px-4 py-1 h-0 overflow-hidden transition-all duration-300 h-auto",
           {
             "max-h-0 opacity-0": !isMenuOpen,
-            "max-h-[300px] opacity-100": isMenuOpen,
+            "max-h-[350px] opacity-100": isMenuOpen,
           },
         )}
       >
