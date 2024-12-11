@@ -4,20 +4,9 @@ import { Input } from "@/ui/input";
 import { FormField } from "./FormField";
 import type { getPollAdminData } from "@/lib/getPollAdminData";
 import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
-import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
-import {
-  FiEye,
-  FiEyeOff,
-  FiFlag,
-  FiGlobe,
-  FiLink,
-  FiLoader,
-  FiLock,
-  FiTrash,
-} from "react-icons/fi";
+import { FiEye, FiEyeOff, FiFlag, FiLoader, FiTrash } from "react-icons/fi";
 import { usePendingAction } from "@/lib/usePendingAction";
 import {
-  changePollVisibility,
   deleteStatement,
   removeAllFlagsFromStatement,
   toggleStatementVisibility,
@@ -67,7 +56,6 @@ export function EditPollForm({
     </TooltipProvider>
   );
 }
-
 
 function EditNewStatementsVisibility({
   pollId,

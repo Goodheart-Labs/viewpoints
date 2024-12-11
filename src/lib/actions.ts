@@ -84,7 +84,7 @@ export async function createPoll({
         title,
         slug,
         core_question: question,
-        visibility: 'private',
+        visibility: "private",
         new_statements_visible_by_default,
         analytics_filters: {},
       })

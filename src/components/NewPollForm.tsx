@@ -14,7 +14,6 @@ import {
 } from "@/ui/accordion";
 import { Switch } from "@/ui/switch";
 import { Label } from "@/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import { CreatePoll, createPollSchema } from "@/lib/schemas";
 import { usePendingAction } from "@/lib/usePendingAction";
 import { FormField } from "./FormField";
