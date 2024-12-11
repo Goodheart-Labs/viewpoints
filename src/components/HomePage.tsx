@@ -9,9 +9,9 @@ import {
   FiCpu,
   FiEdit3,
   FiHelpCircle,
+  FiLock,
   FiSettings,
   FiShare2,
-  FiSmartphone,
   FiZap,
 } from "react-icons/fi";
 
@@ -98,10 +98,10 @@ export function HomePage() {
                   "Three clicks are all it takes to launch your poll. Perfect for spontaneous meetings or planned conferences.",
               },
               {
-                icon: FiSmartphone,
-                title: "Multi-Device Compatibility",
+                icon: FiLock,
+                title: "Private by Default",
                 description:
-                  "Participants can answer on phones or laptops. Flexibility for every situation.",
+                  "You control who can respond to your polls. Share exclusively with your intended audience.",
               },
               {
                 icon: FiShare2,

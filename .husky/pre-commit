@@ -1,3 +1,6 @@
 bun run check
 bun run lint:fix
 bun run format
+
+# Stage any updated files
+git add -u

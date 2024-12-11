@@ -14,7 +14,6 @@ import {
 } from "@/ui/accordion";
 import { Switch } from "@/ui/switch";
 import { Label } from "@/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import { CreatePoll, createPollSchema } from "@/lib/schemas";
 import { usePendingAction } from "@/lib/usePendingAction";
 import { FormField } from "./FormField";
@@ -167,35 +166,6 @@ export function NewPollForm() {
                 errors={form.formState.errors.slug}
               >
                 <Input {...form.register("slug")} />
-              </FormField>
-              <FormField
-                title="Poll Type"
-                description="Choose the visibility of your poll"
-                errors={form.formState.errors.poll_type}
-              >
-                <Controller
-                  name="poll_type"
-                  control={form.control}
-                  render={({ field }) => (
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      {[
-                        { value: "public", label: "Public" },
-                        { value: "hidden", label: "Private" },
-                      ].map(({ value, label }) => (
-                        <div
-                          key={value}
-                          className="flex items-center space-x-2"
-                        >
-                          <RadioGroupItem value={value} id={value} />
-                          <Label htmlFor={value}>{label}</Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
               </FormField>
 
               <FormField
