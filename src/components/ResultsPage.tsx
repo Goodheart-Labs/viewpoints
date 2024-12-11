@@ -30,6 +30,7 @@ export function ResultsPage({
   visitorId?: string;
   initialData: Awaited<ReturnType<typeof getPollResults>>;
 }) {
+  const isCreator = initialData.poll.user_id === visitorId;
   const searchParams = useSearchParams();
   const [isLive, setIsLive] = useState(false);
 
@@ -70,14 +71,14 @@ export function ResultsPage({
 
   // Show CTA in the 6th position or halfway down, whichever is smaller
   const ctaPosition = Math.min(Math.floor(data.statements.length / 2), 6);
-  const [ctaShowing, setCtaShowing] = useState(true);
+  const [ctaShowing, setCtaShowing] = useState(isCreator ? false : true);
   const closeCta = () => setCtaShowing(false);
 
   const rows: Row[] = data.statements.reduce((acc, statement, index) => {
     if (statement.question_type === "default") {
       acc.push({ type: "statement", statement });
     }
-    if (index === ctaPosition) acc.push({ type: "cta" });
+    if (index === ctaPosition && ctaShowing) acc.push({ type: "cta" });
     return acc;
   }, [] as Row[]);
 

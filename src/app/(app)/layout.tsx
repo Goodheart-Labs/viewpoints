@@ -34,7 +34,7 @@ export default function RootLayout({
       >
         <QueryProvider>
           <html lang="en" suppressHydrationWarning>
-            <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+            <link rel="icon" href="/favicon.ico" sizes="any" />
             <body
               className={cn(
                 inter.variable,

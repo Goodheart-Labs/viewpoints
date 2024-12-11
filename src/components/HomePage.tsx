@@ -21,13 +21,15 @@ export function HomePage() {
         {/* Hero Section */}
         <section className="max-w-6xl mx-auto p-8 md:px-4 md:py-20 grid gap-4 justify-center">
           {/* Hero Text */}
-
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight !leading-[1.1] text-center text-balance">
+          <h1 className="sr-only" data-testid="site-title">
+            Viewpoints
+          </h1>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight !leading-[1.1] text-center text-balance">
             Instant polls for meetings and conferences using{" "}
             <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-transparent bg-clip-text text-center">
               AI
             </span>
-          </h1>
+          </h2>
           <p className="text-balance text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-center !leading-normal">
             Discover what your community is thinking with intelligent polling
             that adapts to your needs
