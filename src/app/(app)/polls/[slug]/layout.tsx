@@ -19,7 +19,7 @@ export default async function PollLayout({
 
   return (
     <div
-      className="max-w-4xl w-full mx-auto p-4 mt-4 grid content-center gap-6"
+      className="max-w-7xl w-full mx-auto p-4 mt-4 grid content-center gap-6"
       data-testid="poll-layout"
     >
       {isCouncilPoll ? <BackToSouthGlos /> : null}

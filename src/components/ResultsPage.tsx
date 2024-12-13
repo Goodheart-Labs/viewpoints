@@ -71,7 +71,7 @@ export function ResultsPage({
 
   // Show CTA in the 6th position or halfway down, whichever is smaller
   const ctaPosition = Math.min(Math.floor(data.statements.length / 2), 6);
-  const [ctaShowing, setCtaShowing] = useState(isCreator ? false : true);
+  const [ctaShowing, setCtaShowing] = useState(false);
   const closeCta = () => setCtaShowing(false);
 
   const rows: Row[] = data.statements.reduce((acc, statement, index) => {
@@ -103,24 +103,6 @@ export function ResultsPage({
         <div className="grid">
           <Tabs value={sort} className="w-full">
             <TabsList className="bg-transparent dark:bg-transparent flex flex-wrap gap-2 justify-center pt-0 pb-2 sm:py-0">
-              <CustomTabTrigger value="agree" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=agree${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Agree
-                </Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="disagree" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=disagree${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Disagree
-                </Link>
-              </CustomTabTrigger>
               <CustomTabTrigger value="consensus" asChild>
                 <Link
                   href={`/polls/${slug}/results?sort=consensus${
@@ -137,6 +119,24 @@ export function ResultsPage({
                   }`}
                 >
                   Conflict
+                </Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="agree" asChild>
+                <Link
+                  href={`/polls/${slug}/results?sort=agree${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Agree
+                </Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="disagree" asChild>
+                <Link
+                  href={`/polls/${slug}/results?sort=disagree${
+                    isLive ? "&live=true" : ""
+                  }`}
+                >
+                  Disagree
                 </Link>
               </CustomTabTrigger>
               <CustomTabTrigger value="confusion" asChild>
@@ -169,15 +169,58 @@ export function ResultsPage({
           <AnimatePresence key="only-once">
             {rows.map((row, index) => {
               if (row.type === "statement") {
+                const hasAgree =
+                  data.choicePercentage[row.statement.id].agree > 0;
+                const hasDisagree =
+                  data.choicePercentage[row.statement.id].disagree > 0;
+                const hasSkip =
+                  data.choicePercentage[row.statement.id].skip > 0;
+                const consensus = data.review[row.statement.id].consensus;
+                const conflict = data.review[row.statement.id].conflict;
                 return (
                   <motion.div
                     layout
                     key={row.statement.id}
-                    className="bg-white p-4 rounded-lg shadow dark:bg-neutral-800"
                     data-id={row.statement.id}
                   >
-                    <p className="font-medium mb-2">{row.statement.text}</p>
-                    <div className="flex gap-2">
+                    <p className="mb-2">{row.statement.text}</p>
+                    <div className="flex items-stretch">
+                      <div className="font-semibold text-[11px] tabular-nums w-[28px] text-center bg-green-500/70 rounded-l-md">
+                        {(consensus * 100).toFixed(0)}
+                      </div>
+
+                      <div className="font-semibold text-[11px] tabular-nums w-[28px] text-center mr-0.5 bg-red-500/70 rounded-r-md">
+                        {(conflict * 100).toFixed(0)}
+                      </div>
+
+                      <div className="h-4 rounded-md flex overflow-hidden gap-0.5 flex-1">
+                        {hasAgree ? (
+                          <div
+                            className="h-full bg-green-500/70"
+                            style={{
+                              width: `${data.choicePercentage[row.statement.id].agree * 100}%`,
+                            }}
+                          />
+                        ) : null}
+                        {hasDisagree ? (
+                          <div
+                            className="h-full bg-red-500/70"
+                            style={{
+                              width: `${data.choicePercentage[row.statement.id].disagree * 100}%`,
+                            }}
+                          />
+                        ) : null}
+                        {hasSkip ? (
+                          <div
+                            className="h-full bg-yellow-500/70"
+                            style={{
+                              width: `${data.choicePercentage[row.statement.id].skip * 100}%`,
+                            }}
+                          />
+                        ) : null}
+                      </div>
+                    </div>
+                    {/* <div className="flex gap-2">
                       <Chip variant="agree">
                         {Math.round(
                           data.choicePercentage[row.statement.id].agree * 100,
@@ -199,7 +242,7 @@ export function ResultsPage({
                           %
                         </Chip>
                       )}
-                    </div>
+                    </div> */}
                   </motion.div>
                 );
               } else {
