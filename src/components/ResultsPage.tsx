@@ -7,8 +7,7 @@ import { StatementReview } from "@/lib/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { SORT_EXPLANATIONS } from "@/lib/copy";
 import { cn } from "@/ui/cn";
-import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
-import Link from "next/link";
+import { TabsTrigger } from "@/ui/tabs";
 import { FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -111,8 +110,6 @@ export function ResultsPage({
   // Ordered statement ids
   const statementIds = data.statements.map((statement) => statement.id);
 
-  console.log(data.segments);
-
   return (
     <div className="grid gap-12 -mt-2">
       <p className="flex items-center gap-2 text-sm rounded-lg text-neutral-600 dark:text-neutral-300">
@@ -131,43 +128,44 @@ export function ResultsPage({
         <FiMessageCircle size={16} />
       </p>
       <div className="grid gap-4">
-        <div className="grid">
-          <Tabs value={sort} className="w-full">
-            <TabsList className="bg-transparent dark:bg-transparent flex flex-wrap gap-2 justify-center pt-0 pb-2 sm:py-0">
-              <CustomTabTrigger value="consensus" asChild>
-                <Link href={getUrl({ _sort: "consensus" })}>Consensus</Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="conflict" asChild>
-                <Link href={getUrl({ _sort: "conflict" })}>Conflict</Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="agree" asChild>
-                <Link href={getUrl({ _sort: "agree" })}>Agree</Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="disagree" asChild>
-                <Link href={getUrl({ _sort: "disagree" })}>Disagree</Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="confusion" asChild>
-                <Link href={getUrl({ _sort: "confusion" })}>Confusion</Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="recent" asChild>
-                <Link href={getUrl({ _sort: "recent" })}>Recent</Link>
-              </CustomTabTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="text-neutral-800 bg-neutral-100 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center w-full h-[80px]">
-            <p className="w-full text-sm text-neutral-700 dark:text-neutral-200 text-center text-balance leading-relaxed">
-              {SORT_EXPLANATIONS[sort]}
-            </p>
-          </div>
-        </div>
-        <div className="justify-self-end">
+        <div className="flex gap-1 justify-start justify-self-start">
+          <Select
+            value={sort}
+            onValueChange={(value) => {
+              router.push(getUrl({ _sort: value as keyof StatementReview }));
+            }}
+          >
+            <SelectTrigger className="h-auto text-left bg-white dark:bg-neutral-800">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(SORT_EXPLANATIONS).map(
+                ([sortKey, explanation]) => (
+                  <SelectItem key={sortKey} value={sortKey}>
+                    <div className="grid gap-0.5">
+                      <div className="font-medium">
+                        {sortKey.charAt(0).toUpperCase() + sortKey.slice(1)}
+                      </div>
+                      <div className="text-neutral-500 dark:text-neutral-400 leading-normal max-w-[300px] text-[13px]">
+                        {explanation}
+                      </div>
+                    </div>
+                  </SelectItem>
+                ),
+              )}
+            </SelectContent>
+          </Select>
           <Select
             value={segment}
             onValueChange={(value) => {
               router.push(getUrl({ _segment: value }));
             }}
           >
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger
+              className={cn("w-[200px] h-auto text-left", {
+                "bg-white dark:bg-neutral-800": segment !== "all",
+              })}
+            >
               <SelectValue placeholder="Select a segment" />
             </SelectTrigger>
             <SelectContent>
@@ -203,7 +201,7 @@ export function ResultsPage({
                   statementIds={statementIds}
                   statements={data.statements}
                   choicePercentage={segment.measures.choicePercentage}
-                  review={data.review}
+                  review={segment.measures.review}
                   animationKey={segment.text}
                 />
               </div>
@@ -265,7 +263,7 @@ function Column({
                       {(conflict * 100).toFixed(0)}
                     </span>
                   </div>
-                  <div className="h-4 rounded-md flex overflow-hidden flex-1">
+                  <div className="h-4 rounded-md flex overflow-hidden flex-1 bg-neutral-100 dark:bg-neutral-800">
                     {hasAgree ? (
                       <div
                         className="h-full bg-green-500/70"
