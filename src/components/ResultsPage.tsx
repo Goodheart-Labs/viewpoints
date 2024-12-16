@@ -12,6 +12,13 @@ import Link from "next/link";
 import { FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
 import { AnimatePresence, motion } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
 
 type Data = Awaited<ReturnType<typeof getPollResults>>;
 type Statement = Data["statements"][number];
@@ -125,55 +132,53 @@ export function ResultsPage({
       </p>
       <div className="grid gap-4">
         <div className="grid">
-          <div className="grid md:flex gap-1">
-            <div className="grid">
-              <span>Segement:</span>
-              <select
-                name="segmentation"
-                id="segmentation"
-                value={segment}
-                onChange={(e) => {
-                  router.push(getUrl({ _segment: e.target.value }));
-                }}
-              >
-                <option value="all">All</option>
-                {segments.map((segment) => (
-                  <option key={segment.id} value={segment.id}>
-                    {segment.text}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="grid">
-              <Tabs value={sort} className="w-full">
-                <TabsList className="bg-transparent dark:bg-transparent flex flex-wrap gap-2 justify-center pt-0 pb-2 sm:py-0">
-                  <CustomTabTrigger value="consensus" asChild>
-                    <Link href={getUrl({ _sort: "consensus" })}>Consensus</Link>
-                  </CustomTabTrigger>
-                  <CustomTabTrigger value="conflict" asChild>
-                    <Link href={getUrl({ _sort: "conflict" })}>Conflict</Link>
-                  </CustomTabTrigger>
-                  <CustomTabTrigger value="agree" asChild>
-                    <Link href={getUrl({ _sort: "agree" })}>Agree</Link>
-                  </CustomTabTrigger>
-                  <CustomTabTrigger value="disagree" asChild>
-                    <Link href={getUrl({ _sort: "disagree" })}>Disagree</Link>
-                  </CustomTabTrigger>
-                  <CustomTabTrigger value="confusion" asChild>
-                    <Link href={getUrl({ _sort: "confusion" })}>Confusion</Link>
-                  </CustomTabTrigger>
-                  <CustomTabTrigger value="recent" asChild>
-                    <Link href={getUrl({ _sort: "recent" })}>Recent</Link>
-                  </CustomTabTrigger>
-                </TabsList>
-              </Tabs>
-              <div className="text-neutral-800 bg-neutral-100 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center w-full h-[80px]">
-                <p className="w-full text-sm text-neutral-700 dark:text-neutral-200 text-center text-balance leading-relaxed">
-                  {SORT_EXPLANATIONS[sort]}
-                </p>
-              </div>
-            </div>
+          <Tabs value={sort} className="w-full">
+            <TabsList className="bg-transparent dark:bg-transparent flex flex-wrap gap-2 justify-center pt-0 pb-2 sm:py-0">
+              <CustomTabTrigger value="consensus" asChild>
+                <Link href={getUrl({ _sort: "consensus" })}>Consensus</Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="conflict" asChild>
+                <Link href={getUrl({ _sort: "conflict" })}>Conflict</Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="agree" asChild>
+                <Link href={getUrl({ _sort: "agree" })}>Agree</Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="disagree" asChild>
+                <Link href={getUrl({ _sort: "disagree" })}>Disagree</Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="confusion" asChild>
+                <Link href={getUrl({ _sort: "confusion" })}>Confusion</Link>
+              </CustomTabTrigger>
+              <CustomTabTrigger value="recent" asChild>
+                <Link href={getUrl({ _sort: "recent" })}>Recent</Link>
+              </CustomTabTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="text-neutral-800 bg-neutral-100 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center w-full h-[80px]">
+            <p className="w-full text-sm text-neutral-700 dark:text-neutral-200 text-center text-balance leading-relaxed">
+              {SORT_EXPLANATIONS[sort]}
+            </p>
           </div>
+        </div>
+        <div className="justify-self-end">
+          <Select
+            value={segment}
+            onValueChange={(value) => {
+              router.push(getUrl({ _segment: value }));
+            }}
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select a segment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              {segments.map((segment) => (
+                <SelectItem key={segment.id} value={segment.id.toString()}>
+                  {segment.text}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         {segment === "all" ? (
           <Column
@@ -184,14 +189,16 @@ export function ResultsPage({
           />
         ) : (
           <div
-            className="grid gap-2"
+            className="grid gap-3"
             style={{
               gridTemplateColumns: `repeat(${data.segments.length}, minmax(0, 1fr))`,
             }}
           >
             {data.segments.map((segment) => (
               <div key={segment.text} className="grid gap-2">
-                <span>{segment.text}</span>
+                <span className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">
+                  {segment.text.charAt(0).toUpperCase() + segment.text.slice(1)}
+                </span>
                 <Column
                   statementIds={statementIds}
                   statements={data.statements}
@@ -233,7 +240,7 @@ function Column({
 
   return (
     <div className="grid gap-4">
-      <AnimatePresence key={animationKey}>
+      <AnimatePresence key={animationKey} mode="sync">
         {rows.map((row, index) => {
           if (row.type === "statement") {
             const hasAgree = choicePercentage[row.statement.id].agree > 0;
@@ -243,8 +250,9 @@ function Column({
             const conflict = review[row.statement.id].conflict;
             return (
               <motion.div
-                layout
                 key={row.statement.id}
+                layout="position"
+                transition={{ duration: 0.3 }}
                 data-id={row.statement.id}
               >
                 <p className="mb-2">{row.statement.text}</p>
