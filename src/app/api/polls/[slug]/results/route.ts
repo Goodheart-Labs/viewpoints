@@ -11,8 +11,8 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const sort = (searchParams.get("sort") ??
     "consensus") as keyof StatementReview;
-
-  const results = await getPollResults(slug, sort, visitorId);
+  const segment = searchParams.get("segment") ?? "all";
+  const results = await getPollResults({ slug, sort, segment, visitorId });
   return Response.json(results, {
     headers: {
       "Access-Control-Allow-Origin": "*",
