@@ -177,7 +177,11 @@ export function ResultsPage({
               <SelectContent>
                 <SelectItem value="all">None</SelectItem>
                 {segments.map((segment) => (
-                  <SelectItem key={segment.id} value={segment.id.toString()}>
+                  <SelectItem
+                    key={segment.id}
+                    value={segment.id.toString()}
+                    className="max-w-[500px] text-pretty"
+                  >
                     {segment.text}
                   </SelectItem>
                 ))}
