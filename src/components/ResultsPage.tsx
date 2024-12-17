@@ -128,55 +128,62 @@ export function ResultsPage({
         <FiMessageCircle size={16} />
       </p>
       <div className="grid gap-4">
-        <div className="flex gap-1 justify-start justify-self-start">
-          <Select
-            value={sort}
-            onValueChange={(value) => {
-              router.push(getUrl({ _sort: value as keyof StatementReview }));
-            }}
-          >
-            <SelectTrigger className="h-auto text-left bg-white dark:bg-neutral-800">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(SORT_EXPLANATIONS).map(
-                ([sortKey, explanation]) => (
-                  <SelectItem key={sortKey} value={sortKey}>
-                    <div className="grid gap-0.5">
-                      <div className="font-medium">
-                        {sortKey.charAt(0).toUpperCase() + sortKey.slice(1)}
-                      </div>
-                      <div className="text-neutral-500 dark:text-neutral-400 leading-normal max-w-[300px] text-[13px]">
-                        {explanation}
-                      </div>
-                    </div>
-                  </SelectItem>
-                ),
-              )}
-            </SelectContent>
-          </Select>
-          <Select
-            value={segment}
-            onValueChange={(value) => {
-              router.push(getUrl({ _segment: value }));
-            }}
-          >
-            <SelectTrigger
-              className={cn("w-[200px] h-auto text-left", {
-                "bg-white dark:bg-neutral-800": segment !== "all",
-              })}
+        <div className="grid md:grid-cols-2 gap-2">
+          <SelectWrapper label="Sort">
+            <Select
+              value={sort}
+              onValueChange={(value) => {
+                router.push(getUrl({ _sort: value as keyof StatementReview }));
+              }}
             >
-              <SelectValue placeholder="Select a segment" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              {segments.map((segment) => (
-                <SelectItem key={segment.id} value={segment.id.toString()}>
-                  {segment.text}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              <SelectTrigger className="h-auto text-left border-none shadow-none bg-neutral-100 dark:bg-neutral-800 min-h-[77px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(SORT_EXPLANATIONS).map(
+                  ([sortKey, explanation]) => (
+                    <SelectItem key={sortKey} value={sortKey}>
+                      <div className="grid gap-0.5">
+                        <div className="font-medium">
+                          {sortKey.charAt(0).toUpperCase() + sortKey.slice(1)}
+                        </div>
+                        <div className="text-neutral-500 dark:text-neutral-400 leading-normal max-w-[500px] text-pretty text-[13px]">
+                          {explanation}
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ),
+                )}
+              </SelectContent>
+            </Select>
+          </SelectWrapper>
+          <SelectWrapper label="Segment">
+            <Select
+              value={segment}
+              onValueChange={(value) => {
+                router.push(getUrl({ _segment: value }));
+              }}
+            >
+              <SelectTrigger
+                className={cn(
+                  "h-auto text-left border-none shadow-none min-h-[77px]",
+                  {
+                    "bg-neutral-100 dark:bg-neutral-800": segment !== "all",
+                  },
+                )}
+              >
+                <SelectValue placeholder="Select a segment" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">None</SelectItem>
+                {segments.map((segment) => (
+                  <SelectItem key={segment.id} value={segment.id.toString()}>
+                    {segment.text}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </SelectWrapper>
         </div>
         {segment === "all" ? (
           <Column
@@ -186,26 +193,32 @@ export function ResultsPage({
             review={data.review}
           />
         ) : (
-          <div
-            className="grid gap-3"
-            style={{
-              gridTemplateColumns: `repeat(${data.segments.length}, minmax(0, 1fr))`,
-            }}
-          >
-            {data.segments.map((segment) => (
-              <div key={segment.text} className="grid gap-2">
-                <span className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">
-                  {segment.text.charAt(0).toUpperCase() + segment.text.slice(1)}
-                </span>
-                <Column
-                  statementIds={statementIds}
-                  statements={data.statements}
-                  choicePercentage={segment.measures.choicePercentage}
-                  review={segment.measures.review}
-                  animationKey={segment.text}
-                />
+          <div className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <div
+                className="grid gap-3"
+                style={{
+                  gridTemplateColumns: `repeat(${data.segments.length}, minmax(0, 1fr))`,
+                  minWidth: data.segments.length * 300,
+                }}
+              >
+                {data.segments.map((segment) => (
+                  <div key={segment.text} className="grid gap-2">
+                    <span className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">
+                      {segment.text.charAt(0).toUpperCase() +
+                        segment.text.slice(1)}
+                    </span>
+                    <Column
+                      statementIds={statementIds}
+                      statements={data.statements}
+                      choicePercentage={segment.measures.choicePercentage}
+                      review={segment.measures.review}
+                      animationKey={segment.text}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         )}
       </div>
@@ -255,7 +268,7 @@ function Column({
               >
                 <p className="mb-2">{row.statement.text}</p>
                 <div className="flex items-stretch">
-                  <div className="flex rounded-md bg-neutral-100 font-semibold text-[11px] tabular-nums">
+                  <div className="flex rounded-md bg-neutral-100 dark:bg-neutral-800 font-semibold text-[11px] tabular-nums">
                     <span className="text-green-600 w-[28px] text-center">
                       {(consensus * 100).toFixed(0)}
                     </span>
@@ -321,5 +334,22 @@ function CustomTabTrigger(props: TabsTriggerProps) {
     >
       {props.children}
     </TabsTrigger>
+  );
+}
+
+function SelectWrapper({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="grid gap-0.5 grid-rows-[auto_minmax(0,1fr)]">
+      <label className="text-sm uppercase text-neutral-400 dark:text-neutral-600">
+        {label}
+      </label>
+      {children}
+    </div>
   );
 }
