@@ -1,19 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getPollResults } from "@/lib/getPollResults";
+import { getPollResults, PollResults } from "@/lib/getPollResults";
 import { StatementReview } from "@/lib/schemas";
 import { useQuery } from "@tanstack/react-query";
-import { CHOICE_ICON, SORT_EXPLANATIONS } from "@/lib/copy";
+import { SORT_EXPLANATIONS } from "@/lib/copy";
 import { cn } from "@/ui/cn";
-import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
-import { ChoiceEnum } from "kysely-codegen";
-import Link from "next/link";
+import { TabsTrigger } from "@/ui/tabs";
 import { FiMessageCircle, FiUsers } from "react-icons/fi";
 import { TabsTriggerProps } from "@radix-ui/react-tabs";
-import { CreatePollCallout } from "./CreatePollCallout";
 import { AnimatePresence, motion } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
 
 type Data = Awaited<ReturnType<typeof getPollResults>>;
 type Statement = Data["statements"][number];
@@ -22,17 +26,26 @@ type Row = { type: "statement"; statement: Statement } | { type: "cta" };
 export function ResultsPage({
   slug,
   sort,
+  segment,
   visitorId,
   initialData,
 }: {
   slug: string;
   sort: keyof StatementReview;
+  segment?: string;
   visitorId?: string;
   initialData: Awaited<ReturnType<typeof getPollResults>>;
 }) {
-  const isCreator = initialData.poll.user_id === visitorId;
   const searchParams = useSearchParams();
   const [isLive, setIsLive] = useState(false);
+
+  const { push } = useRouter();
+
+  const segments: { text: string; id: number }[] =
+    initialData.allStatements.map((statement) => ({
+      text: statement.text,
+      id: statement.id,
+    }));
 
   useEffect(() => {
     const liveParam = searchParams.get("live");
@@ -40,16 +53,22 @@ export function ResultsPage({
   }, [searchParams]);
 
   const { data } = useQuery({
-    queryKey: ["results", slug, sort],
+    queryKey: ["results", slug, sort, segment],
     queryFn: async () => {
-      const res = await fetch(`/api/polls/${slug}/results?sort=${sort}`);
+      const params = new URLSearchParams();
+      params.set("sort", sort);
+      if (segment) params.set("segment", segment);
+
+      const res = await fetch(
+        `/api/polls/${slug}/results?${params.toString()}`,
+      );
       return res.json() as ReturnType<typeof getPollResults>;
     },
     initialData,
     refetchInterval: 10_000,
   });
 
-  const { push } = useRouter();
+  const router = useRouter();
 
   useQuery({
     queryKey: ["live", slug],
@@ -69,18 +88,27 @@ export function ResultsPage({
 
   const isSingleRespondent = data.uniqueRespondentsCount === 1;
 
-  // Show CTA in the 6th position or halfway down, whichever is smaller
-  const ctaPosition = Math.min(Math.floor(data.statements.length / 2), 6);
-  const [ctaShowing, setCtaShowing] = useState(isCreator ? false : true);
-  const closeCta = () => setCtaShowing(false);
+  const getUrl = useCallback(
+    ({
+      _sort = sort,
+      _isLive = isLive,
+      _segment = segment,
+    }: {
+      _sort?: keyof StatementReview;
+      _isLive?: boolean;
+      _segment?: string;
+    }) => {
+      const params = new URLSearchParams();
+      if (_sort) params.set("sort", _sort);
+      if (_segment) params.set("segment", _segment);
+      if (_isLive) params.set("live", "true");
+      return `/polls/${slug}/results?${params.toString()}`;
+    },
+    [sort, segment, isLive, slug],
+  );
 
-  const rows: Row[] = data.statements.reduce((acc, statement, index) => {
-    if (statement.question_type === "default") {
-      acc.push({ type: "statement", statement });
-    }
-    if (index === ctaPosition && ctaShowing) acc.push({ type: "cta" });
-    return acc;
-  }, [] as Row[]);
+  // Ordered statement ids
+  const statementIds = data.statements.map((statement) => statement.id);
 
   return (
     <div className="grid gap-12 -mt-2">
@@ -100,150 +128,191 @@ export function ResultsPage({
         <FiMessageCircle size={16} />
       </p>
       <div className="grid gap-4">
-        <div className="grid">
-          <Tabs value={sort} className="w-full">
-            <TabsList className="bg-transparent dark:bg-transparent flex flex-wrap gap-2 justify-center pt-0 pb-2 sm:py-0">
-              <CustomTabTrigger value="agree" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=agree${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Agree
-                </Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="disagree" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=disagree${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Disagree
-                </Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="consensus" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=consensus${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Consensus
-                </Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="conflict" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=conflict${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Conflict
-                </Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="confusion" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=confusion${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Confusion
-                </Link>
-              </CustomTabTrigger>
-              <CustomTabTrigger value="recent" asChild>
-                <Link
-                  href={`/polls/${slug}/results?sort=recent${
-                    isLive ? "&live=true" : ""
-                  }`}
-                >
-                  Recent
-                </Link>
-              </CustomTabTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="text-neutral-800 bg-neutral-100 dark:bg-neutral-800 dark:text-white p-4 rounded-lg flex items-center w-full h-[80px]">
-            <p className="w-full text-sm text-neutral-700 dark:text-neutral-200 text-center text-balance leading-relaxed">
-              {SORT_EXPLANATIONS[sort]}
-            </p>
+        <div className="grid md:grid-cols-2 gap-2">
+          <SelectWrapper label="Sort">
+            <Select
+              value={sort}
+              onValueChange={(value) => {
+                router.push(getUrl({ _sort: value as keyof StatementReview }));
+              }}
+            >
+              <SelectTrigger className="h-auto text-left border-none shadow-none bg-neutral-100 dark:bg-neutral-800 min-h-[77px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(SORT_EXPLANATIONS).map(
+                  ([sortKey, explanation]) => (
+                    <SelectItem key={sortKey} value={sortKey}>
+                      <div className="grid gap-0.5">
+                        <div className="font-medium">
+                          {sortKey.charAt(0).toUpperCase() + sortKey.slice(1)}
+                        </div>
+                        <div className="text-neutral-500 dark:text-neutral-400 leading-normal max-w-[500px] text-pretty text-[13px]">
+                          {explanation}
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ),
+                )}
+              </SelectContent>
+            </Select>
+          </SelectWrapper>
+          <SelectWrapper label="Segment">
+            <Select
+              value={segment}
+              onValueChange={(value) => {
+                router.push(getUrl({ _segment: value }));
+              }}
+            >
+              <SelectTrigger
+                className={cn(
+                  "h-auto text-left border-none shadow-none min-h-[77px]",
+                  {
+                    "bg-neutral-100 dark:bg-neutral-800": segment !== "all",
+                  },
+                )}
+              >
+                <SelectValue placeholder="Select a segment" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">None</SelectItem>
+                {segments.map((segment) => (
+                  <SelectItem
+                    key={segment.id}
+                    value={segment.id.toString()}
+                    className="max-w-[500px] text-pretty"
+                  >
+                    {segment.text}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </SelectWrapper>
+        </div>
+        {segment === "all" ? (
+          <Column
+            statementIds={statementIds}
+            statements={data.statements}
+            choicePercentage={data.choicePercentage}
+            review={data.review}
+          />
+        ) : (
+          <div className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <div
+                className="grid gap-3"
+                style={{
+                  gridTemplateColumns: `repeat(${data.segments.length}, minmax(0, 1fr))`,
+                  minWidth: data.segments.length * 300,
+                }}
+              >
+                {data.segments.map((segment) => (
+                  <div key={segment.text} className="grid gap-2">
+                    <span className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">
+                      {segment.text.charAt(0).toUpperCase() +
+                        segment.text.slice(1)}
+                    </span>
+                    <Column
+                      statementIds={statementIds}
+                      statements={data.statements}
+                      choicePercentage={segment.measures.choicePercentage}
+                      review={segment.measures.review}
+                      animationKey={segment.text}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="grid gap-4">
-          <AnimatePresence key="only-once">
-            {rows.map((row, index) => {
-              if (row.type === "statement") {
-                return (
-                  <motion.div
-                    layout
-                    key={row.statement.id}
-                    className="bg-white p-4 rounded-lg shadow dark:bg-neutral-800"
-                    data-id={row.statement.id}
-                  >
-                    <p className="font-medium mb-2">{row.statement.text}</p>
-                    <div className="flex gap-2">
-                      <Chip variant="agree">
-                        {Math.round(
-                          data.choicePercentage[row.statement.id].agree * 100,
-                        )}
-                        %
-                      </Chip>
-                      <Chip variant="disagree">
-                        {Math.round(
-                          data.choicePercentage[row.statement.id].disagree *
-                            100,
-                        )}
-                        %
-                      </Chip>
-                      {data.choicePercentage[row.statement.id].skip > 0 && (
-                        <Chip variant="skip">
-                          {Math.round(
-                            data.choicePercentage[row.statement.id].skip * 100,
-                          )}
-                          %
-                        </Chip>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              } else {
-                return (
-                  <motion.div
-                    key="cta"
-                    initial={{ opacity: 1, scale: 1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{
-                      duration: 0.5,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <CreatePollCallout closeCta={closeCta} />
-                  </motion.div>
-                );
-              }
-            })}
-          </AnimatePresence>
-        </div>
+        )}
       </div>
     </div>
   );
 }
 
-function Chip({
-  variant,
-  children,
+function Column({
+  statementIds,
+  statements,
+  choicePercentage,
+  review,
+  animationKey = "only-once",
 }: {
-  variant: ChoiceEnum;
-  children: React.ReactNode;
+  statementIds: number[];
+  statements: PollResults["statements"];
+  choicePercentage: PollResults["choicePercentage"];
+  review: PollResults["review"];
+  animationKey?: string;
 }) {
-  const Icon = CHOICE_ICON[variant];
+  const rows: Row[] = statementIds.reduce((acc, statementId, index) => {
+    const statement = statements.find(
+      (statement) => statement.id === statementId,
+    );
+    if (statement?.question_type === "default") {
+      acc.push({ type: "statement", statement });
+    }
+    return acc;
+  }, [] as Row[]);
+
   return (
-    <div
-      className={cn("px-2 py-1 rounded-md text-sm flex items-center", {
-        "bg-green-500/50": variant === "agree",
-        "bg-red-500/50": variant === "disagree",
-        "bg-yellow-500/50": variant === "skip",
-      })}
-    >
-      <Icon className="mr-1" size={14} />
-      {children}
+    <div className="grid gap-4">
+      <AnimatePresence key={animationKey} mode="sync">
+        {rows.map((row, index) => {
+          if (row.type === "statement") {
+            const hasAgree = choicePercentage[row.statement.id].agree > 0;
+            const hasDisagree = choicePercentage[row.statement.id].disagree > 0;
+            const hasSkip = choicePercentage[row.statement.id].skip > 0;
+            const consensus = review[row.statement.id].consensus;
+            const conflict = review[row.statement.id].conflict;
+            return (
+              <motion.div
+                key={row.statement.id}
+                layout="position"
+                transition={{ duration: 0.3 }}
+                data-id={row.statement.id}
+              >
+                <p className="mb-2">{row.statement.text}</p>
+                <div className="flex items-stretch">
+                  <div className="flex rounded-md bg-neutral-100 dark:bg-neutral-800 font-semibold text-[11px] tabular-nums">
+                    <span className="text-green-600 w-[28px] text-center">
+                      {(consensus * 100).toFixed(0)}
+                    </span>
+                    <span className="text-red-600 w-[28px] text-center">
+                      {(conflict * 100).toFixed(0)}
+                    </span>
+                  </div>
+                  <div className="h-4 rounded-md flex overflow-hidden flex-1 bg-neutral-100 dark:bg-neutral-800">
+                    {hasAgree ? (
+                      <div
+                        className="h-full bg-green-500/70"
+                        style={{
+                          width: `${choicePercentage[row.statement.id].agree * 100}%`,
+                        }}
+                      />
+                    ) : null}
+                    {hasDisagree ? (
+                      <div
+                        className="h-full bg-red-500/70"
+                        style={{
+                          width: `${choicePercentage[row.statement.id].disagree * 100}%`,
+                        }}
+                      />
+                    ) : null}
+                    {hasSkip ? (
+                      <div
+                        className="h-full bg-yellow-500/70"
+                        style={{
+                          width: `${choicePercentage[row.statement.id].skip * 100}%`,
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          }
+          return null;
+        })}
+      </AnimatePresence>
     </div>
   );
 }
@@ -269,5 +338,22 @@ function CustomTabTrigger(props: TabsTriggerProps) {
     >
       {props.children}
     </TabsTrigger>
+  );
+}
+
+function SelectWrapper({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="grid gap-0.5 grid-rows-[auto_minmax(0,1fr)]">
+      <label className="text-sm uppercase text-neutral-400 dark:text-neutral-600">
+        {label}
+      </label>
+      {children}
+    </div>
   );
 }

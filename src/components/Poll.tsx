@@ -162,7 +162,10 @@ export function Poll({
   }, []);
 
   return (
-    <div className="grid gap-2 group" data-drag-selection={dragSelection}>
+    <div
+      className="grid gap-2 group max-w-4xl w-full mx-auto"
+      data-drag-selection={dragSelection}
+    >
       <Progress
         value={(100 * (count - statements.length)) / count}
         className="h-1 text-neutral-300 dark:text-neutral-700"
