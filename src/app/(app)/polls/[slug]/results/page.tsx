@@ -7,13 +7,18 @@ export const dynamic = "force-dynamic";
 
 export default async function Results({
   params,
-  searchParams: { sort = "consensus" },
+  searchParams: { sort = "consensus", segment = "all" },
 }: {
   params: { slug: string };
-  searchParams: { sort: keyof StatementReview };
+  searchParams: { sort: keyof StatementReview; segment: string };
 }) {
   const visitorId = getOptionalVisitorId();
-  const data = await getPollResults(params.slug, sort, visitorId);
+  const data = await getPollResults({
+    slug: params.slug,
+    sort,
+    segment,
+    visitorId,
+  });
 
   return (
     <ResultsPage
@@ -21,6 +26,7 @@ export default async function Results({
       sort={sort}
       visitorId={visitorId}
       initialData={data}
+      segment={segment}
     />
   );
 }
