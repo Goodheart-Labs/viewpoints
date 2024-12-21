@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -68,10 +68,10 @@
     "inquirer": "^11.1.0",
     "kysely": "^0.27.4",
     "kysely-codegen": "^0.15.0",
-    "next": "14.2.5",
+    "next": "^14.2.15",
     "next-themes": "^0.3.0",
     "pg": "^8.12.0",
-    "posthog-js": "^1.165.0",
+    "posthog-js": "^1.203.1",
     "prettier": "^3.3.3",
     "react": "^18",
     "react-day-picker": "latest",
