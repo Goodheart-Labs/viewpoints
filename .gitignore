@@ -36,6 +36,7 @@ yarn-error.log*
 next-env.d.ts
 
 TODO.md
+SEGMENTATION.md
 node_modules/
 /test-results/
 /playwright-report/
