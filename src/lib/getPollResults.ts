@@ -131,12 +131,41 @@ export async function getPollResults({
         (response) => response.statementId === segmentStatement.id,
       );
 
+      const isDemographic = segmentStatement.question_type === "demographic";
+
+      let segmentOptions: {
+        id: number;
+        icon: string | null;
+        option: string;
+        statement_id: number;
+      }[] = [];
+
+      if (isDemographic) {
+        // Get all the options for the segment statement
+        segmentOptions = await db
+          .selectFrom("statement_options")
+          .selectAll()
+          .where("statement_id", "=", segmentStatement.id)
+          .execute();
+      }
+
       // Group the respondents by choice
       const groupedRespondents = segmentResponses.reduce(
         (acc, response) => {
-          if (!response.session_id || !response.choice) return acc;
-          if (!acc[response.choice]) acc[response.choice] = [];
-          acc[response.choice].push(response.session_id);
+          if (!response.session_id) return acc;
+
+          if (isDemographic) {
+            const option = segmentOptions.find(
+              (option) => option.id === response.option_id,
+            );
+            if (!option) return acc;
+            if (!acc[option.option]) acc[option.option] = [];
+            acc[option.option].push(response.session_id);
+          } else {
+            if (!response.choice) return acc;
+            if (!acc[response.choice]) acc[response.choice] = [];
+            acc[response.choice].push(response.session_id);
+          }
           return acc;
         },
         {} as Record<string, string[]>,
@@ -196,7 +225,17 @@ export async function getPollResults({
 
     // Count agree/disagree/skip for each statement
     for (const { statementId, choice } of responses) {
-      if (!choice) continue;
+      if (!choice) {
+        continue;
+      }
+
+      if (!choiceCount[statementId]) {
+        continue;
+      }
+
+      if (!(choice in choiceCount[statementId])) {
+        continue;
+      }
 
       choiceCount[statementId][choice] += 1;
     }
