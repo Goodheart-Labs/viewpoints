@@ -14,9 +14,11 @@ export default function Page({
   params: { slug: string };
 }) {
   return (
-    <ClientOnly>
-      <EmbedPage slug={slug} />
-    </ClientOnly>
+    <>
+      <ClientOnly>
+        <EmbedPage slug={slug} />
+      </ClientOnly>
+    </>
   );
 }
 
