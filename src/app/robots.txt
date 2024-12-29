@@ -1,5 +1,6 @@
-User-Agent: *
+User-agent: *
 Allow: /
 Disallow: /user/
+Disallow: /polls/
 
-Sitemap: https://viewpoints.xyz
+Sitemap: https://viewpoints.xyz/sitemap.xml

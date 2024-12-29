@@ -3,6 +3,12 @@ import { getPollResults } from "@/lib/getPollResults";
 import { getOptionalVisitorId } from "@/lib/getVisitorIdOrThrow";
 import { StatementReview } from "@/lib/schemas";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: "noindex, nofollow",
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function Results({

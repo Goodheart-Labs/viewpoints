@@ -5,8 +5,13 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ClientOnly } from "@/components/ClientOnly";
 import { Poll } from "@/components/Poll";
 import type { GetPollData } from "@/lib/getPoll";
+import { Metadata } from "next/types";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  robots: "noindex, nofollow",
+};
 
 export default function Page({
   params: { slug },
@@ -14,9 +19,11 @@ export default function Page({
   params: { slug: string };
 }) {
   return (
-    <ClientOnly>
-      <EmbedPage slug={slug} />
-    </ClientOnly>
+    <>
+      <ClientOnly>
+        <EmbedPage slug={slug} />
+      </ClientOnly>
+    </>
   );
 }
 
