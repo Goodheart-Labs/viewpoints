@@ -16,6 +16,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: SEO.title,
   description: SEO.description,
+  robots: "noindex, nofollow",
 };
 
 export default function RootLayout({

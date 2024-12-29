@@ -4,6 +4,12 @@ import { getPoll } from "@/lib/getPoll";
 import { PollHeader } from "@/components/PollHeader";
 import { BackToSouthGlos } from "@/components/BackToSouthGlos";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: "noindex, nofollow",
+};
+
 export default async function PollLayout({
   children,
   params: { slug },
