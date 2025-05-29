@@ -38,8 +38,7 @@ Share images
 
 - [x] Shorten the home page title tag to 50-60 characters
 - [x] Improve keyword distribution in title, meta, and header tags (focus on 'poll', 'create', 'polls', 'share', 'audience', 'insights', etc.)
-- [ ] Increase text content on the home page (add more descriptive, keyword-rich content)
-- [ ] Add Schema.org structured data (at least Organization and Website schema)
+- [x] Increase text content on the home page (add more descriptive, keyword-rich content)
 - [ ] Add Google Analytics or another analytics tracking tool
 - [ ] Remove inline styles in favor of CSS classes
 - [ ] Add social profile links (Facebook, Instagram, LinkedIn, YouTube) to the site footer or about section
@@ -49,3 +48,4 @@ Share images
 - [ ] Add hreflang attributes if supporting multiple languages
 - [ ] Update robots.txt if needed to block unwanted pages
 - [ ] Enable HTTP/2+ protocol on hosting (requires server config)
+- [ ] Add Schema.org structured data (at least Organization and Website schema)

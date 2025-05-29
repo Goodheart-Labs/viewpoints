@@ -80,6 +80,49 @@ export function HomePage() {
         </section>
       </div>
 
+      {/* SEO Intro Paragraph */}
+      <section className="max-w-4xl mx-auto px-4 py-8 text-center">
+        <p className="text-lg text-neutral-700 dark:text-neutral-300 mb-6">
+          <strong>Viewpoints</strong> is the fastest way to create, share, and
+          analyze polls for any audience. Whether you&apos;re running a meeting,
+          hosting an event, teaching a class, or gathering community feedback,
+          our AI-powered platform makes it effortless to collect real-time
+          insights and drive better decision-making. With instant analytics,
+          easy distribution, and privacy-first design, Viewpoints helps you
+          understand what your audience really thinks—so you can take action
+          with confidence.
+        </p>
+      </section>
+
+      {/* Who is Viewpoints for? */}
+      <section className="max-w-4xl mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          Who is Viewpoints for?
+        </h2>
+        <ul className="grid gap-2 text-lg text-neutral-700 dark:text-neutral-300 list-disc list-inside">
+          <li>
+            <strong>Teams & Organizations:</strong> Run quick polls in meetings
+            to build consensus and gather feedback.
+          </li>
+          <li>
+            <strong>Event Organizers:</strong> Engage your audience with live
+            polls and real-time results at conferences or workshops.
+          </li>
+          <li>
+            <strong>Educators:</strong> Check understanding, spark discussion,
+            and collect student insights instantly.
+          </li>
+          <li>
+            <strong>Community Leaders:</strong> Understand what your group or
+            community really thinks about key issues.
+          </li>
+          <li>
+            <strong>Researchers:</strong> Collect structured, actionable data
+            for studies, surveys, and analytics.
+          </li>
+        </ul>
+      </section>
+
       {/* Features Grid */}
       <div className="bg-white dark:bg-slate-600/10 border-y">
         <section className="max-w-6xl mx-auto px-4 py-12">
@@ -149,6 +192,13 @@ export function HomePage() {
         <h2 className="text-3xl font-bold mb-8 text-center">
           How It Works: Create, Share, and Analyze Polls
         </h2>
+        <p className="text-lg text-neutral-700 dark:text-neutral-300 max-w-3xl mx-auto mb-8 text-center">
+          Creating a poll with Viewpoints is simple and fast. In just a few
+          steps, you can launch a poll, share it with your audience, and start
+          collecting real-time insights. Our AI helps you craft the perfect
+          questions, and our analytics dashboard gives you instant feedback to
+          inform your next move.
+        </p>
         <div className="grid gap-6 justify-center">
           {[
             {
