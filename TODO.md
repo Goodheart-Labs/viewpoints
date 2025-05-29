@@ -40,12 +40,12 @@ Share images
 - [x] Improve keyword distribution in title, meta, and header tags (focus on 'poll', 'create', 'polls', 'share', 'audience', 'insights', etc.)
 - [x] Increase text content on the home page (add more descriptive, keyword-rich content)
 - [x] Add Google Analytics or another analytics tracking tool
+- [ ] Add Schema.org structured data (at least Organization and Website schema)
 - [ ] Remove inline styles in favor of CSS classes
+- [ ] Add a noindex tag to poll pages if they should not be indexed
+- [ ] Update robots.txt if needed to block unwanted pages
 - [ ] Add social profile links (Facebook, Instagram, LinkedIn, YouTube) to the site footer or about section
 - [ ] Add business address and phone number (if applicable) to the site footer or contact page
 - [ ] Add Local Business Schema if business address/phone is added
-- [ ] Add a noindex tag to poll pages if they should not be indexed
 - [ ] Add hreflang attributes if supporting multiple languages
-- [ ] Update robots.txt if needed to block unwanted pages
 - [ ] Enable HTTP/2+ protocol on hosting (requires server config)
-- [ ] Add Schema.org structured data (at least Organization and Website schema)
