@@ -21,19 +21,22 @@ export function HomePage() {
       <div className="bg-gradient-to-b from-neutral-50/0 to-neutral-100/80 dark:from-neutral-900/0 dark:to-neutral-900/50">
         {/* Hero Section */}
         <section className="max-w-6xl mx-auto p-8 md:px-4 md:py-20 grid gap-4 justify-center">
-          {/* Hero Text */}
+          {/* SEO Visible H1 */}
+          <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-2">
+            Create and Share AI-Powered Polls for Instant Audience Insights
+          </h1>
+          {/* Hero Text (sr-only for accessibility) */}
           <h1 className="sr-only" data-testid="site-title">
             {SEO.title}
           </h1>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight !leading-[1.1] text-center text-balance">
-            Instant polls for meetings and conferences using{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-transparent bg-clip-text text-center">
-              AI
-            </span>
+            Effortlessly create, share, and analyze polls for meetings, events,
+            and communities
           </h2>
           <p className="text-balance text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-center !leading-normal">
             Discover what your community is thinking with intelligent polling
-            that adapts to your needs
+            that adapts to your needs. Create polls, share them with your
+            audience, and get actionable insights in real time.
           </p>
 
           {/* Quick Start Card */}
@@ -81,7 +84,7 @@ export function HomePage() {
       <div className="bg-white dark:bg-slate-600/10 border-y">
         <section className="max-w-6xl mx-auto px-4 py-12">
           <h2 className="text-3xl font-bold mb-12 tracking-tight">
-            Why choose Viewpoints?
+            Why choose Viewpoints for your polls?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-12">
             {[
@@ -89,35 +92,35 @@ export function HomePage() {
                 icon: FiHelpCircle,
                 title: "AI-Powered Poll Creation",
                 description:
-                  "Get AI-generated polls based on your topic, or create from scratch. You're in control.",
+                  "Get AI-generated polls based on your topic, or create from scratch. You're in control of your poll questions and audience.",
               },
               {
                 icon: FiZap,
                 title: "Lightning-Fast Setup",
                 description:
-                  "Three clicks are all it takes to launch your poll. Perfect for spontaneous meetings or planned conferences.",
+                  "Three clicks are all it takes to create and launch your poll. Perfect for spontaneous meetings or planned conferences.",
               },
               {
                 icon: FiLock,
                 title: "Private by Default",
                 description:
-                  "You control who can respond to your polls. Share exclusively with your intended audience.",
+                  "You control who can respond to your polls. Share exclusively with your intended audience for targeted insights.",
               },
               {
                 icon: FiShare2,
-                title: "Easy Distribution",
+                title: "Easy Poll Distribution",
                 description:
-                  "Share your poll instantly via link or QR code. Reach your audience, wherever they are.",
+                  "Share your poll instantly via link or QR code. Reach your audience, wherever they are, and maximize participation.",
               },
               {
                 icon: FiBarChart2,
-                title: "Real-Time Results",
+                title: "Real-Time Poll Results & Insights",
                 description:
-                  "Watch as responses stream in and opinions take shape before your eyes.",
+                  "Watch as responses stream in and opinions take shape before your eyes. Analyze audience insights instantly.",
               },
               {
                 icon: FiCheck,
-                title: "Statement-Based Polling",
+                title: "Statement-Based Polling for Deeper Insights",
                 description:
                   "Get to the heart of issues faster with direct agree/disagree responses to clear statements, providing deeper insights than traditional questions.",
               },
@@ -143,28 +146,30 @@ export function HomePage() {
 
       {/* How it Works */}
       <section className="px-4 py-12 mx-auto max-w-6xl">
-        <h2 className="text-3xl font-bold mb-8 text-center">How It Works</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          How It Works: Create, Share, and Analyze Polls
+        </h2>
         <div className="grid gap-6 justify-center">
           {[
             {
               icon: FiEdit3,
-              text: "Choose your topic - Tell us what you want to ask about",
+              text: "Choose your topic - Tell us what you want to ask about and who your audience is",
             },
             {
               icon: FiCpu,
-              text: "AI drafts your poll - Our AI suggests questions based on your topic",
+              text: "AI drafts your poll - Our AI suggests poll questions based on your topic for maximum engagement",
             },
             {
               icon: FiSettings,
-              text: "Approve and customize - Tweak the questions to fit your needs",
+              text: "Approve and customize - Tweak the poll questions to fit your needs and audience",
             },
             {
               icon: FiShare2,
-              text: "Share with your audience - Send a link or display a QR code",
+              text: "Share with your audience - Send a link or display a QR code to maximize poll participation",
             },
             {
               icon: FiBarChart2,
-              text: "Collect insights - Get real-time results as people respond",
+              text: "Collect insights - Get real-time poll results and audience insights as people respond",
             },
           ].map(({ text, icon: Icon }, i) => (
             <div key={i} className="flex items-start gap-4 text-pretty">
@@ -189,11 +194,13 @@ export function HomePage() {
       <section className="max-w-4xl mx-auto px-4 py-12 text-center">
         <div className="grid gap-4">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight text-balance !leading-[1.1]">
-            Discover what your community is thinking today
+            Start creating and sharing your first poll to gather real-time
+            insights from your audience
           </h2>
           <p className="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto text-balance !leading-normal">
             Create your first AI-powered poll and start gathering insights in
-            seconds
+            seconds. Share your poll and see what your audience thinks
+            instantly.
           </p>
         </div>
         <Link

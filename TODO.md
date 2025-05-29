@@ -37,7 +37,7 @@ Share images
 # SEO Audit
 
 - [x] Shorten the home page title tag to 50-60 characters
-- [ ] Improve keyword distribution in title, meta, and header tags (focus on 'poll', 'create', 'polls', 'share', 'audience', 'insights', etc.)
+- [x] Improve keyword distribution in title, meta, and header tags (focus on 'poll', 'create', 'polls', 'share', 'audience', 'insights', etc.)
 - [ ] Increase text content on the home page (add more descriptive, keyword-rich content)
 - [ ] Add Schema.org structured data (at least Organization and Website schema)
 - [ ] Add Google Analytics or another analytics tracking tool
