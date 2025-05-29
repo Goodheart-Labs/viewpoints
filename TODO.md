@@ -39,7 +39,7 @@ Share images
 - [x] Shorten the home page title tag to 50-60 characters
 - [x] Improve keyword distribution in title, meta, and header tags (focus on 'poll', 'create', 'polls', 'share', 'audience', 'insights', etc.)
 - [x] Increase text content on the home page (add more descriptive, keyword-rich content)
-- [ ] Add Google Analytics or another analytics tracking tool
+- [x] Add Google Analytics or another analytics tracking tool
 - [ ] Remove inline styles in favor of CSS classes
 - [ ] Add social profile links (Facebook, Instagram, LinkedIn, YouTube) to the site footer or about section
 - [ ] Add business address and phone number (if applicable) to the site footer or contact page
