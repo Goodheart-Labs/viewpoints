@@ -48,14 +48,14 @@ export function HomePage() {
         <HeroPattern />
         <section className="relative z-10 max-w-6xl mx-auto p-8 md:px-4 md:py-24 grid gap-8 justify-center">
           {/* SEO Visible H1 */}
-          <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4 tracking-tight leading-tight md:leading-[1.15] text-balance">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-2 tracking-tight leading-tight md:leading-[1.15] text-balance">
             Create and Share AI-Powered Polls for Instant Audience Insights
           </h1>
           {/* Hero Text (sr-only for accessibility) */}
           <h1 className="sr-only" data-testid="site-title">
             {SEO.title}
           </h1>
-          <h2 className="text-2xl md:text-4xl font-serif font-bold tracking-tight !leading-[1.1] text-center text-balance mb-4">
+          <h2 className="text-xl md:text-2xl font-medium tracking-tight !leading-[1.1] text-center text-balance text-neutral-600 dark:text-neutral-300 mb-2">
             Effortlessly create, share, and analyze polls for meetings, events,
             and communities
           </h2>
@@ -64,11 +64,20 @@ export function HomePage() {
             that adapts to your needs. Create polls, share them with your
             audience, and get actionable insights in real time.
           </p>
+          {/* New CTA Button at the top */}
+          <Link
+            href="/new-poll"
+            className="mx-auto mt-4 inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg transition-colors duration-300 gap-3"
+          >
+            <FiPlus className="w-6 h-6" />
+            Create a New Poll
+            <FiArrowRight className="ml-2 w-6 h-6" />
+          </Link>
         </section>
       </div>
 
       {/* SEO Intro Paragraph */}
-      <section className="max-w-4xl mx-auto px-4 py-16 text-center bg-neutral-100 dark:bg-neutral-900/30 rounded-2xl my-12 shadow-sm">
+      <section className="max-w-4xl mx-auto px-4 py-16 text-center bg-gradient-to-r from-neutral-100 to-neutral-200 dark:from-neutral-900/30 dark:to-neutral-800/30 rounded-2xl my-12 shadow-sm">
         <p className="text-base md:text-lg text-neutral-500 dark:text-neutral-400 mb-6">
           <strong>Viewpoints</strong> is the fastest way to create, share, and
           analyze polls for any audience. Whether you&apos;re running a meeting,
@@ -82,7 +91,7 @@ export function HomePage() {
       </section>
 
       {/* Who is Viewpoints for? */}
-      <section className="max-w-4xl mx-auto px-8 py-16 bg-white dark:bg-neutral-900 rounded-2xl my-12 shadow-[1px_1px_4px_#a2a7ab] dark:shadow-[1px_1px_4px_#242a2e]">
+      <section className="max-w-4xl mx-auto px-8 py-16 bg-white dark:bg-neutral-900 rounded-2xl my-12">
         <h2 className="text-2xl md:text-4xl font-bold tracking-tight leading-tight text-balance !leading-[1.1] text-center mb-8">
           Who is Viewpoints for?
         </h2>
