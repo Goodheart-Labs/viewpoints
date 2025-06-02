@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryProvider } from "@/components/QueryProvider";
 import { PosthogProvider } from "@/components/PosthogProvider";
 import { TrackPageView } from "@/components/TrackPageView";
+import { GoogleAnalytics } from "@next/third-parties/google";
 export { metadata } from "@/lib/copy";
 
 const inter = Inter({
@@ -54,6 +55,7 @@ export default function RootLayout({
                 <Toaster />
               </ThemeProvider>
               <TrackPageView />
+              <GoogleAnalytics gaId="G-EML70HV3F2" />
             </body>
           </html>
         </QueryProvider>

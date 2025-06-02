@@ -29,7 +29,7 @@ export const CHOICE_ICON: Record<ChoiceEnum, typeof FiThumbsUp> = {
 };
 
 export const SEO = {
-  title: "Viewpoints: Effortless Poll Creation & Consensus Building",
+  title: "Viewpoints: Effortless Polls & Consensus Building",
   description:
     "Create and share polls with Viewpoints. Use our intuitive platform to collect opinions, build consensus, and analyze results in real-time. Try it now for free.",
 };
@@ -37,14 +37,14 @@ export const SEO = {
 const canonical = "https://viewpoints.xyz";
 
 export const metadata: Metadata = {
-  title: "Viewpoints: Effortless Poll Creation & Consensus Building",
+  title: "Viewpoints: Effortless Polls & Consensus Building",
   description:
     "Create and share polls with Viewpoints. Use our intuitive platform to collect opinions, build consensus, and analyze results in real-time. Try it now for free.",
   icons: "/favicon.ico",
   openGraph: {
     type: "website",
     siteName: "Viewpoints",
-    title: "Viewpoints - Consensus Building Made Simple",
+    title: "Viewpoints: Effortless Polls & Consensus Building",
     url: canonical,
     description:
       "Create polls, gather opinions, and build consensus with Viewpoints. Our intuitive platform helps you understand what people really think.",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@ViewpointsXYZ",
-    title: "Viewpoints - Poll Creation & Consensus Building Platform",
+    title: "Viewpoints: Effortless Polls & Consensus Building",
     description:
       "Create polls, collect opinions, and analyze consensus in real-time. Make better decisions with data-driven insights.",
     images: `${canonical}/open-graph.png`,
