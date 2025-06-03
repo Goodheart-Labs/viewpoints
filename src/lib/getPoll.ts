@@ -1,5 +1,4 @@
 import { db } from "@/db/client";
-import { notFound } from "next/navigation";
 import { getVisitorId } from "./actions";
 
 /**
@@ -7,88 +6,94 @@ import { getVisitorId } from "./actions";
  */
 export async function getPoll(slug: string, _visitorId?: string) {
   const visitorId = _visitorId ?? (await getVisitorId());
+  console.log("visitorId", visitorId);
 
-  const poll = await db
-    .selectFrom("polls")
-    .selectAll()
-    .where("slug", "=", slug)
-    .executeTakeFirst();
+  try {
+    const poll = await db
+      .selectFrom("polls")
+      .selectAll()
+      .where("slug", "=", slug)
+      .executeTakeFirst();
 
-  if (!poll) notFound();
+    if (!poll) return null;
 
-  let statements = await db
-    .selectFrom("statements")
-    .leftJoin("authors", "statements.user_id", "authors.userId")
-    .select([
-      "statements.id",
-      "statements.poll_id",
-      "statements.user_id",
-      "statements.text",
-      "statements.visible",
-      "statements.created_at",
-      "statements.question_type",
-      "authors.name as author_name",
-      "authors.avatarUrl as author_avatar_url",
-    ])
-    .where("poll_id", "=", poll.id)
-    .where("visible", "=", true)
-    .orderBy("statements.id", "asc")
-    .execute();
+    let statements = await db
+      .selectFrom("statements")
+      .leftJoin("authors", "statements.user_id", "authors.userId")
+      .select([
+        "statements.id",
+        "statements.poll_id",
+        "statements.user_id",
+        "statements.text",
+        "statements.visible",
+        "statements.created_at",
+        "statements.question_type",
+        "authors.name as author_name",
+        "authors.avatarUrl as author_avatar_url",
+      ])
+      .where("poll_id", "=", poll.id)
+      .where("visible", "=", true)
+      .orderBy("statements.id", "asc")
+      .execute();
 
-  // get options for statements
-  const options = await db
-    .selectFrom("statement_options")
-    .selectAll()
-    .where(
-      "statement_id",
-      "in",
-      statements.map((s) => s.id),
-    )
-    .execute();
+    // get options for statements
+    const options = await db
+      .selectFrom("statement_options")
+      .selectAll()
+      .where(
+        "statement_id",
+        "in",
+        statements.map((s) => s.id),
+      )
+      .execute();
 
-  // get any responses from this visitor id for these statements
-  const responses = await db
-    .selectFrom("responses")
-    .selectAll()
-    .where("session_id", "=", visitorId)
-    .where(
-      "statementId",
-      "in",
-      statements.map((s) => s.id),
-    )
-    .execute();
+    // get any responses from this visitor id for these statements
+    const responses = await db
+      .selectFrom("responses")
+      .selectAll()
+      .where("session_id", "=", visitorId)
+      .where(
+        "statementId",
+        "in",
+        statements.map((s) => s.id),
+      )
+      .execute();
 
-  const count = statements.length;
+    const count = statements.length;
 
-  // Get statements this user has flagged
-  const flaggedStatements = await db
-    .selectFrom("flagged_statements")
-    .selectAll()
-    .where("session_id", "=", visitorId)
-    .where(
-      "statementId",
-      "in",
-      statements.map((s) => s.id),
-    )
-    .execute();
+    // Get statements this user has flagged
+    const flaggedStatements = await db
+      .selectFrom("flagged_statements")
+      .selectAll()
+      .where("session_id", "=", visitorId)
+      .where(
+        "statementId",
+        "in",
+        statements.map((s) => s.id),
+      )
+      .execute();
 
-  statements = shuffleStatements(statements, visitorId);
+    statements = shuffleStatements(statements, visitorId);
 
-  statements = statements
-    // Filter out statements which the user has already responded to
-    .filter((s) => {
-      const response = responses.find((r) => r.statementId === s.id);
-      return !response;
-    })
-    // Filter out statements user has flagged
-    .filter((s) => {
-      const flagged = flaggedStatements.find((f) => f.statementId === s.id);
-      return !flagged;
-    });
+    statements = statements
+      // Filter out statements which the user has already responded to
+      .filter((s) => {
+        const response = responses.find((r) => r.statementId === s.id);
+        return !response;
+      })
+      // Filter out statements user has flagged
+      .filter((s) => {
+        const flagged = flaggedStatements.find((f) => f.statementId === s.id);
+        return !flagged;
+      });
 
-  const isOwner = poll.user_id === visitorId;
+    const isOwner = poll.user_id === visitorId;
 
-  return { poll, statements, responses, count, options, isOwner };
+    return { poll, statements, responses, count, options, isOwner };
+  } catch (error) {
+    console.error("Database error:", error);
+    throw new Error("Failed to fetch poll data");
+  }
 }
 
 /**
@@ -99,7 +104,7 @@ export async function getPoll(slug: string, _visitorId?: string) {
  * - After that they should be evenly distributed throughout the remaining items
  */
 function shuffleStatements(
-  statements: Awaited<ReturnType<typeof getPoll>>["statements"],
+  statements: NonNullable<Awaited<ReturnType<typeof getPoll>>>["statements"],
   sessionId: string,
 ) {
   const demographicQuestions = statements.filter(
@@ -167,4 +172,4 @@ class SeededRandom {
   }
 }
 
-export type GetPollData = Awaited<ReturnType<typeof getPoll>>;
+export type GetPollData = NonNullable<Awaited<ReturnType<typeof getPoll>>>;

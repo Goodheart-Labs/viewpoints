@@ -2,6 +2,7 @@ import { getPoll } from "@/lib/getPoll";
 
 import { Poll } from "@/components/Poll";
 import { getBaseUrl } from "@/lib/getBaseUrl";
+import { notFound } from "next/navigation";
 
 export default async function PollPage({
   params: { slug },
@@ -9,6 +10,7 @@ export default async function PollPage({
   params: { slug: string };
 }) {
   const data = await getPoll(slug);
+  if (!data) return notFound();
   const baseUrl = getBaseUrl();
   const url = `${baseUrl}/polls/${data.poll.slug}`;
   const twitterShareUrl = `${url}?utm_source=twitter&utm_medium=social&utm_campaign=share&utm_content=${data.poll.id}`;

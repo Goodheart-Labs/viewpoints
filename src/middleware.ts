@@ -25,22 +25,11 @@ type ClerkMiddlewareHandler = (
   event: NextMiddlewareEvtParam,
 ) => NextMiddlewareReturn;
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/polls/(.*)",
-  "/embed/polls/(.*)",
-  "/api/polls/(.*)",
-  "/api/public/(.*)",
-  "/privacy-policy",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/sitemap.xml",
-  "/robots.txt",
+const isPrivateRoute = createRouteMatcher([
+  "/new-poll",
   "/success",
-  "/embed/(.*)",
-  "/how-it-works",
-  "/features/(.*)",
-  "/(.*).png",
+  "/upgrade",
+  "/user/(.*)",
 ]);
 
 /**
@@ -74,8 +63,8 @@ function handleVisitorId(
 }
 
 const clerkHandler: ClerkMiddlewareHandler = (auth, req, event) => {
-  // If not a public route, ensure user is authenticated
-  if (!isPublicRoute(req)) {
+  // Only require authentication for private routes
+  if (isPrivateRoute(req)) {
     auth().protect();
   }
 

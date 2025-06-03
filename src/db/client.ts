@@ -7,9 +7,12 @@ let connectionString = process.env.DATABASE_URL;
 const dialect = new PostgresDialect({
   pool: new Pool({
     connectionString,
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    ssl:
+      process.env.NODE_ENV === "production"
+        ? {
+            rejectUnauthorized: false,
+          }
+        : undefined,
   }),
 });
 

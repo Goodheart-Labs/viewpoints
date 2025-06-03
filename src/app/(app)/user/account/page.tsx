@@ -68,7 +68,7 @@ export default async function Account() {
             You don&apos;t have an active subscription.
           </p>
           <Button className="w-full text-base font-medium" asChild>
-            <Link href="/pricing">Upgrade to Pro</Link>
+            <Link href="/upgrade">Upgrade to Pro</Link>
           </Button>
         </div>
       )}

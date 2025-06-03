@@ -1,6 +1,6 @@
 "use client";
 
-import type { getPoll, GetPollData } from "@/lib/getPoll";
+import type { GetPollData } from "@/lib/getPoll";
 import { forwardRef, useEffect, useOptimistic, useState } from "react";
 import { FiBarChart, FiFlag } from "react-icons/fi";
 import { cn } from "@/ui/cn";
@@ -329,7 +329,7 @@ function OptionButton({
  */
 export const PollStatement = forwardRef<
   HTMLDivElement,
-  Awaited<ReturnType<typeof getPoll>>["statements"][number] & {
+  GetPollData["statements"][number] & {
     children: React.ReactNode;
     next: () => void;
   }
