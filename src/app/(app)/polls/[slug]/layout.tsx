@@ -21,6 +21,9 @@ export default async function PollLayout({
 }) {
   const results = await getPoll(slug);
 
+  // If no results, poll not found
+  if (!results) return <>{children}</>;
+
   const isCouncilPoll = slug.includes("council");
 
   return (
