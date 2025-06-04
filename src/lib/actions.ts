@@ -60,6 +60,7 @@ export async function createPoll({
   slug,
   question,
   with_demographic_questions,
+  results_public = true,
   statements: statementsInput,
 }: CreatePoll) {
   const user = await currentUser();
@@ -87,6 +88,7 @@ export async function createPoll({
         visibility: "private",
         new_statements_visible_by_default,
         analytics_filters: {},
+        results_public,
       })
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -446,4 +448,22 @@ export async function generatePollWithAI({
       error: (error as Error).message || "An error occurred",
     };
   }
+}
+
+/**
+ * Sets the results_public field for a poll
+ */
+export async function setPollResultsPublic({
+  pollId,
+  resultsPublic,
+}: {
+  pollId: number;
+  resultsPublic: boolean;
+}) {
+  await db
+    .updateTable("polls")
+    .set({ results_public: resultsPublic })
+    .where("id", "=", pollId)
+    .execute();
+  revalidatePath(`/user/polls/${pollId}`);
 }

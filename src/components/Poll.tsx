@@ -29,6 +29,7 @@ export function Poll({
   poll,
   count,
   embedVisitorId,
+  isOwner,
 }: GetPollData & { embedVisitorId?: string }) {
   const [dragThreshold, setDragThreshold] = useState(200);
   useEffect(() => {
@@ -255,8 +256,10 @@ export function Poll({
               )}
             </PollStatement>
           </animated.div>
-        ) : (
+        ) : poll.results_public || isOwner ? (
           <GoToResults slug={poll.slug!} />
+        ) : (
+          <ThankYouForFillingOut />
         )}
       </AnimatePresence>
     </div>
@@ -428,4 +431,24 @@ export const GoToResults = forwardRef<HTMLDivElement, { slug: string }>(
 function useIsEmbed() {
   const path = usePathname();
   return path.startsWith("/embed");
+}
+
+function ThankYouForFillingOut() {
+  return (
+    <motion.div
+      className="grid gap-4 justify-items-center items-center justify-center content-center p-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 min-h-[275px]"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 1.2 }}
+      transition={{ duration: 0.4 }}
+    >
+      <h2 className="text-2xl font-extrabold text-center flex items-center gap-2">
+        🎉 Thank you for sharing your perspective!
+      </h2>
+      <p className="text-neutral-600 dark:text-neutral-300 text-center max-w-md">
+        Your responses have been submitted. This poll&apos;s results are
+        private, so only the creator can view them. We appreciate your input!
+      </p>
+    </motion.div>
+  );
 }

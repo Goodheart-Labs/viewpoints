@@ -1,4 +1,4 @@
-import { ResultsPage } from "@/components/ResultsPage";
+import ResultsPage from "@/components/ResultsPage";
 import { getPollResults } from "@/lib/getPollResults";
 import { getOptionalVisitorId } from "@/lib/getVisitorIdOrThrow";
 import { StatementReview } from "@/lib/schemas";

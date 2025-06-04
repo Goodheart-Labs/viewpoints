@@ -211,6 +211,30 @@ export function NewPollForm() {
                   </Label>
                 </div>
               </FormField>
+
+              <FormField
+                title="Results Page Privacy"
+                description="If results are public, anyone with the link can view the results page. If private, only you (the poll creator) can see the results. You can change this later."
+                errors={form.formState.errors.results_public}
+              >
+                <div className="flex items-center space-x-2">
+                  <Controller
+                    name="results_public"
+                    control={form.control}
+                    render={({ field }) => (
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
+                  />
+                  <Label htmlFor="results_public">
+                    {form.watch("results_public")
+                      ? "Public (anyone with the link can view)"
+                      : "Private (only you can view)"}
+                  </Label>
+                </div>
+              </FormField>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

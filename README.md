@@ -54,3 +54,41 @@ Runs the tests in debug mode.
 
 bun playwright codegen
 Auto generate tests with Codegen.
+
+## Database
+
+### Overview
+
+This project uses [Kysely](https://kysely.dev/) for type-safe database access and migrations, with PostgreSQL as the database engine. Database types are generated using `kysely-codegen` to keep TypeScript types in sync with the actual schema.
+
+### Initial Schema
+
+- The initial schema is set up using the SQL file at `src/db/RUN_BEFORE_MIGRATIONS.sql`. This should be run once to bootstrap a new database before applying TypeScript migrations.
+
+### Migrations
+
+- Migrations are written in TypeScript and stored in `src/db/migrations/`.
+- Use the migration runner script at `src/db/migrate.ts` to manage migrations.
+- Common commands:
+  - `bun run migrate up` — Apply all pending migrations
+  - `bun run migrate down` — Roll back the last migration
+  - `bun run migrate version` — Show migration status
+  - `bun run migrate make <name>` — Create a new migration file from a template
+- Each migration file exports `up` and `down` functions using Kysely's schema builder or raw SQL.
+
+### Making Schema Changes
+
+1. **Create a Migration:**
+   - Run `bun run migrate make <migration_name>` to generate a new migration file in `src/db/migrations/`.
+   - Edit the file to add your schema changes in the `up` function and the reverse in the `down` function.
+2. **Apply the Migration:**
+   - Run `bun run migrate up` to apply your migration to the database.
+3. **Regenerate Types:**
+   - After applying migrations, regenerate the Kysely types (usually with a script or CLI command, e.g., `bun run kysely-codegen`).
+   - This updates the `DB` type used throughout the codebase for type safety.
+
+### Notes
+
+- Always review and test migrations before running them in production.
+- If you add new tables or columns, ensure you update any relevant application logic and types.
+- For questions, see the files in `src/db/` for examples and reference.

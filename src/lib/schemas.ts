@@ -26,6 +26,7 @@ export const createPollSchema = z.object({
   ),
   with_demographic_questions: z.boolean().default(false),
   new_statements_visible_by_default: z.boolean().default(true),
+  results_public: z.boolean().default(true),
 });
 
 export type CreatePoll = z.infer<typeof createPollSchema>;
