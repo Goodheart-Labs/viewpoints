@@ -2,12 +2,24 @@ import Link from "next/link";
 import { db } from "@/db/client";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import { FiArrowRight, FiBarChart, FiEdit, FiPlus } from "react-icons/fi";
+import {
+  FiArrowRight,
+  FiBarChart,
+  FiEdit,
+  FiLock,
+  FiPlus,
+} from "react-icons/fi";
 import { Button } from "@/ui/button";
 import { isUserPro } from "@/lib/isUserPro";
 import { UpgradeLink } from "@/components/UpgradeLink";
 import { DEFAULT_CORE_QUESTION } from "@/lib/copy";
 import { HiChartBar, HiSparkles } from "react-icons/hi2";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/ui/tooltip";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -95,12 +107,32 @@ function UserPoll({
   title,
   core_question,
   slug,
-}: Awaited<ReturnType<typeof getUserPolls>>[number]) {
+  results_public,
+}: Awaited<ReturnType<typeof getUserPolls>>[number] & {
+  results_public: boolean;
+}) {
   return (
     <div className="rounded-lg md:flex border shadow-sm bg-white dark:bg-neutral-800">
       <Link href={`/polls/${slug}`} className="grid gap-1 p-4 md:p-5 flex-grow">
-        <h2 className="text-lg leading-tight font-medium text-neutral-900 dark:text-neutral-50 text-pretty">
+        <h2 className="text-lg leading-tight font-medium text-neutral-900 dark:text-neutral-50 text-pretty flex items-center gap-2">
           {title}
+          {!results_public && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center text-xs text-neutral-500 dark:text-neutral-400 ml-0.5 -mt-px">
+                    <FiLock
+                      className="w-3.5 h-3.5"
+                      aria-label="Results are private"
+                    />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={4}>
+                  Results are private
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </h2>
         <span className="text-neutral-400 dark:text-neutral-500 text-sm text-pretty overflow-hidden text-ellipsis whitespace-nowrap">
           {core_question ? core_question : DEFAULT_CORE_QUESTION}
@@ -127,7 +159,14 @@ function UserPoll({
 async function getUserPolls(userId: string) {
   return db
     .selectFrom("polls")
-    .select(["id", "title", "core_question", "slug", "created_at"])
+    .select([
+      "id",
+      "title",
+      "core_question",
+      "slug",
+      "created_at",
+      "results_public",
+    ])
     .where("user_id", "=", userId)
     .orderBy("created_at", "desc")
     .execute();
