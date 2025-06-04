@@ -37,6 +37,7 @@ export default async function PollLayout({
           slug={slug}
           isOwner={results.isOwner}
           pollId={results.poll.id}
+          resultsPublic={results.poll.results_public}
         />
         <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
           {results.poll.title}

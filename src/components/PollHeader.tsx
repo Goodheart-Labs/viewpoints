@@ -34,10 +34,12 @@ export function PollHeader({
   slug,
   isOwner,
   pollId,
+  resultsPublic,
 }: {
   slug: string;
   isOwner: boolean;
   pollId: number;
+  resultsPublic: boolean;
 }) {
   const pathname = usePathname();
   const isResultsPage = pathname.endsWith("/results");
@@ -69,15 +71,16 @@ export function PollHeader({
 
   return (
     <div className="flex gap-1 items-center mb-3 justify-end">
-      {isResultsPage ? (
-        <PollButton icon={FiArchive} href={`/polls/${slug}`}>
-          Vote
-        </PollButton>
-      ) : (
-        <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
-          Results
-        </PollButton>
-      )}
+      {(resultsPublic || isOwner) &&
+        (isResultsPage ? (
+          <PollButton icon={FiArchive} href={`/polls/${slug}`}>
+            Vote
+          </PollButton>
+        ) : (
+          <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
+            Results
+          </PollButton>
+        ))}
       {isOwner ? (
         <PollButton icon={FiEdit} href={`/user/polls/${pollId}`}>
           Edit
