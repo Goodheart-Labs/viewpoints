@@ -2,11 +2,13 @@
 - [x] Custom 404 Page
 - [ ] Privacy
   - [x] Add a column for this in the database
-  - [ ] Add a toggle for this on the poll creation page
-  - [ ] Make sure the user can edit it after the fact on the poll edit page
+  - [x] Add a toggle for this on the poll creation page
+  - [x] Make sure the user can edit it after the fact on the poll edit page
   - [ ] There's no link to the results page (unless you are poll creator_)
   - [ ] You can't access the results page even by url (shows 404)
   - [ ] At the end of the poll it just "Thanks for filling this out!"
+  - [ ] Check with "Create with AI" should be able to mark results as private
+  - [ ] Show on the polls list if the results are private
   - [ ] API endpoints
   - [ ] Run on staging DB before pushing pull request
   - [ ] Then Prod

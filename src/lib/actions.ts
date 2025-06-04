@@ -449,3 +449,21 @@ export async function generatePollWithAI({
     };
   }
 }
+
+/**
+ * Sets the results_public field for a poll
+ */
+export async function setPollResultsPublic({
+  pollId,
+  resultsPublic,
+}: {
+  pollId: number;
+  resultsPublic: boolean;
+}) {
+  await db
+    .updateTable("polls")
+    .set({ results_public: resultsPublic })
+    .where("id", "=", pollId)
+    .execute();
+  revalidatePath(`/user/polls/${pollId}`);
+}
