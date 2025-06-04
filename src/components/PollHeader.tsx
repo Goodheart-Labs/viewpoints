@@ -145,10 +145,12 @@ export function PollHeader({
             <FiCode className="w-4 h-4 mr-2" />
             Copy embed code
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => handleDownload({ pollId })}>
-            <FiDownload className="w-4 h-4 mr-2" />
-            Download CSV
-          </DropdownMenuItem>
+          {(resultsPublic || isOwner) && (
+            <DropdownMenuItem onSelect={() => handleDownload({ pollId })}>
+              <FiDownload className="w-4 h-4 mr-2" />
+              Download CSV
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
