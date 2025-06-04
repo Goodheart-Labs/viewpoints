@@ -9,6 +9,7 @@ import type { DB } from "kysely-codegen";
 
 export type Database = DB;
 export type Poll = Selectable<DB["polls"]>;
+export type NewPoll = Insertable<DB["polls"]>;
 export type Statement = Selectable<DB["statements"]>;
 export type NewStatement = Insertable<DB["statements"]>;
 export type StatementOption = Selectable<DB["statement_options"]>;

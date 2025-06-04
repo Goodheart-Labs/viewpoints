@@ -12,6 +12,7 @@ const initialStore: UseCreatePollStore = {
   statements: "",
   with_demographic_questions: false,
   new_statements_visible_by_default: true,
+  results_public: true,
   question: DEFAULT_CORE_QUESTION,
 };
 export const useCreatePollStore = create<UseCreatePollStore>()(

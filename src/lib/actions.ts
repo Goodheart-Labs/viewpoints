@@ -60,6 +60,7 @@ export async function createPoll({
   slug,
   question,
   with_demographic_questions,
+  results_public = true,
   statements: statementsInput,
 }: CreatePoll) {
   const user = await currentUser();
@@ -87,6 +88,7 @@ export async function createPoll({
         visibility: "private",
         new_statements_visible_by_default,
         analytics_filters: {},
+        results_public,
       })
       .returningAll()
       .executeTakeFirstOrThrow();
