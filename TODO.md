@@ -11,7 +11,7 @@
   - [x] At the end of the poll it just "Thanks for filling this out!"
   - [x] Check with "Create with AI" should be able to mark results as private
   - [x] Show on the polls list if the results are private
-  - [ ] API endpoints
+  - [x] API endpoints
   - [ ] Run on staging DB before pushing pull request
   - [ ] Then Prod
 
