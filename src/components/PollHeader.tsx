@@ -110,21 +110,23 @@ export function PollHeader({
             <FiLink className="w-4 h-4 mr-2" />
             Copy link to poll
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={() => {
-              posthog.capture("Share Poll Link", {
-                poll_slug: slug,
-                type: "results",
-              });
-              copyText(
-                `${getBaseUrl()}/polls/${slug}/results`,
-                "Results link copied to clipboard",
-              );
-            }}
-          >
-            <FiBarChart className="w-4 h-4 mr-2" />
-            Copy link to results
-          </DropdownMenuItem>
+          {resultsPublic && (
+            <DropdownMenuItem
+              onSelect={() => {
+                posthog.capture("Share Poll Link", {
+                  poll_slug: slug,
+                  type: "results",
+                });
+                copyText(
+                  `${getBaseUrl()}/polls/${slug}/results`,
+                  "Results link copied to clipboard",
+                );
+              }}
+            >
+              <FiBarChart className="w-4 h-4 mr-2" />
+              Copy link to results
+            </DropdownMenuItem>
+          )}
           <QRCodeDialog link={`${getBaseUrl()}/polls/${slug}`}>
             <DropdownMenuItem
               onSelect={(e) => {
