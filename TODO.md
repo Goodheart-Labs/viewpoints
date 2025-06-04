@@ -4,7 +4,7 @@
   - [x] Add a column for this in the database
   - [x] Add a toggle for this on the poll creation page
   - [x] Make sure the user can edit it after the fact on the poll edit page
-  - [ ] There's no link to the results page (unless you are poll creator_)
+  - [x] There's no link to the results page (unless you are poll creator_)
   - [ ] You can't access the results page even by url (shows 404)
   - [ ] At the end of the poll it just "Thanks for filling this out!"
   - [ ] Check with "Create with AI" should be able to mark results as private
