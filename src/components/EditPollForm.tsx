@@ -9,6 +9,7 @@ import { usePendingAction } from "@/lib/usePendingAction";
 import {
   deleteStatement,
   removeAllFlagsFromStatement,
+  setPollResultsPublic,
   toggleStatementVisibility,
 } from "@/lib/actions";
 import { toast } from "sonner";
@@ -39,6 +40,10 @@ export function EditPollForm({
         <EditNewStatementsVisibility
           pollId={poll.id}
           defaultValue={poll.new_statements_visible_by_default || false}
+        />
+        <EditResultsPublic
+          pollId={poll.id}
+          defaultValue={poll.results_public}
         />
         <FormField title="Statements">
           <div className="grid gap-2">
@@ -88,6 +93,45 @@ function EditNewStatementsVisibility({
         />
         <span className="ml-2 text-sm">
           {defaultValue ? "Initially visible" : "Initially hidden"}
+        </span>
+      </div>
+    </FormField>
+  );
+}
+
+function EditResultsPublic({
+  pollId,
+  defaultValue,
+}: {
+  pollId: number;
+  defaultValue: boolean;
+}) {
+  const [loading, handler] = usePendingAction(setPollResultsPublic, {
+    after: () => {
+      toast.success("Results page privacy updated");
+    },
+  });
+
+  const handleChange = (checked: boolean) => {
+    handler({ pollId, resultsPublic: checked });
+  };
+
+  return (
+    <FormField
+      title="Results Page Privacy"
+      description="If results are public, anyone with the link can view the results page. If private, only you (the poll creator) can see the results. You can change this later."
+      loading={loading}
+    >
+      <div className="flex items-center">
+        <Switch
+          checked={defaultValue}
+          onCheckedChange={handleChange}
+          disabled={loading}
+        />
+        <span className="ml-2 text-sm">
+          {defaultValue
+            ? "Public (anyone with the link can view)"
+            : "Private (only you can view)"}
         </span>
       </div>
     </FormField>

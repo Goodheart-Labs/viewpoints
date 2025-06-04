@@ -3,7 +3,13 @@
 import Link, { LinkProps } from "next/link";
 import Image from "next/image";
 import { FiChevronDown, FiHome, FiMenu, FiPlus, FiX } from "react-icons/fi";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  useAuth,
+  UserButton,
+} from "@clerk/nextjs";
 import { ModeToggle } from "./ModeToggle";
 import { useState } from "react";
 import { cn } from "@/ui/cn";
@@ -39,6 +45,7 @@ function MobileNavLinks({ onClose }: { onClose: () => void }) {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isSignedIn } = useAuth();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -46,7 +53,10 @@ export function Header() {
   return (
     <header>
       <div className="flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center">
+        <Link
+          href={isSignedIn ? "/user/polls" : "/"}
+          className="flex items-center"
+        >
           <Image
             src="/logo.png"
             className="dark:hidden"

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getPollResults, PollResults } from "@/lib/getPollResults";
+import { PollResults } from "@/lib/getPollResults";
 import { StatementReview } from "@/lib/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { SORT_EXPLANATIONS } from "@/lib/copy";
@@ -18,12 +18,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/ui/select";
+import { GetPollData } from "@/lib/getPoll";
 
-type Data = Awaited<ReturnType<typeof getPollResults>>;
-type Statement = Data["statements"][number];
+type Statement = GetPollData["statements"][number];
 type Row = { type: "statement"; statement: Statement } | { type: "cta" };
 
-export function ResultsPage({
+// Discriminated union for results data
+// Private results: only poll and resultsPrivate
+export type PrivateResults = { poll: any; resultsPrivate: true };
+// Public results: all fields, resultsPrivate: false
+export type PublicResults = Omit<PollResults, "resultsPrivate"> & {
+  resultsPrivate: false;
+};
+export type ResultsData = PrivateResults | PublicResults;
+
+// Wrapper component
+export default function ResultsPageWrapper(props: {
+  slug: string;
+  sort: keyof StatementReview;
+  segment?: string;
+  visitorId?: string;
+  initialData: ResultsData;
+}) {
+  const { initialData } = props;
+  if (initialData.resultsPrivate) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] text-center">
+        <div className="text-3xl mb-2">🔒</div>
+        <h2 className="text-xl font-semibold mb-2">Results Are Private</h2>
+        <p className="text-neutral-600 dark:text-neutral-400 max-w-md">
+          The results for this poll have been marked private by the poll
+          creator. If you believe this is an error, please contact the poll
+          owner.
+        </p>
+      </div>
+    );
+  }
+  // TypeScript now knows initialData is PublicResults
+  return (
+    <ResultsPageInner {...props} initialData={initialData as PublicResults} />
+  );
+}
+
+// The inner component only accepts PublicResults
+function ResultsPageInner({
   slug,
   sort,
   segment,
@@ -34,25 +72,26 @@ export function ResultsPage({
   sort: keyof StatementReview;
   segment?: string;
   visitorId?: string;
-  initialData: Awaited<ReturnType<typeof getPollResults>>;
+  initialData: PublicResults;
 }) {
   const searchParams = useSearchParams();
   const [isLive, setIsLive] = useState(false);
 
   const { push } = useRouter();
 
-  const segments: { text: string; id: number }[] =
-    initialData.allStatements.map((statement) => ({
-      text: statement.text,
-      id: statement.id,
-    }));
+  const segments: { text: string; id: number }[] = (
+    initialData.allStatements ?? []
+  ).map((statement: any) => ({
+    text: statement.text,
+    id: statement.id,
+  }));
 
   useEffect(() => {
     const liveParam = searchParams.get("live");
     setIsLive(liveParam === "true");
   }, [searchParams]);
 
-  const { data } = useQuery({
+  const { data } = useQuery<PublicResults>({
     queryKey: ["results", slug, sort, segment],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -62,7 +101,11 @@ export function ResultsPage({
       const res = await fetch(
         `/api/polls/${slug}/results?${params.toString()}`,
       );
-      return res.json() as ReturnType<typeof getPollResults>;
+      const json = await res.json();
+      if (json.resultsPrivate) {
+        throw new Error("Results are private");
+      }
+      return json as PublicResults;
     },
     initialData,
     refetchInterval: 10_000,
@@ -107,8 +150,27 @@ export function ResultsPage({
     [sort, segment, isLive, slug],
   );
 
+  // Defensive: all fields are present in PublicResults
+  const safeStatements = data.statements ?? [];
+  const safeAllStatements = data.allStatements ?? [];
+  const safeSegments = data.segments ?? [];
+  const safeChoicePercentage = data.choicePercentage ?? {};
+  const safeReview = data.review ?? {};
+
   // Ordered statement ids
-  const statementIds = data.statements.map((statement) => statement.id);
+  const statementIds = safeStatements.map((statement: any) => statement.id);
+
+  const segmentsList: { text: string; id: number; measures?: any }[] =
+    safeSegments.length > 0
+      ? safeSegments.map((segment: any, idx: number) => ({
+          text: segment.text,
+          id: typeof segment.id === "number" ? segment.id : idx,
+          measures: segment.measures,
+        }))
+      : safeAllStatements.map((statement: any) => ({
+          text: statement.text,
+          id: statement.id,
+        }));
 
   return (
     <div className="grid gap-12 -mt-2">
@@ -116,12 +178,12 @@ export function ResultsPage({
         <FiUsers size={16} />
         <span>
           <strong>
-            {data.uniqueRespondentsCount}{" "}
+            {data.uniqueRespondentsCount ?? 0}{" "}
             {isSingleRespondent ? "person" : "people"}
           </strong>{" "}
           {isSingleRespondent ? "has" : "have"} given{" "}
           <strong>
-            {data.responsesCount}{" "}
+            {data.responsesCount ?? 0}{" "}
             {data.responsesCount === 1 ? "response" : "responses"}
           </strong>
         </span>
@@ -176,7 +238,7 @@ export function ResultsPage({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">None</SelectItem>
-                {segments.map((segment) => (
+                {segmentsList.map((segment) => (
                   <SelectItem
                     key={segment.id}
                     value={segment.id.toString()}
@@ -192,9 +254,9 @@ export function ResultsPage({
         {segment === "all" ? (
           <Column
             statementIds={statementIds}
-            statements={data.statements}
-            choicePercentage={data.choicePercentage}
-            review={data.review}
+            statements={safeStatements}
+            choicePercentage={safeChoicePercentage}
+            review={safeReview}
           />
         ) : (
           <div className="overflow-hidden">
@@ -202,23 +264,25 @@ export function ResultsPage({
               <div
                 className="grid gap-3"
                 style={{
-                  gridTemplateColumns: `repeat(${data.segments.length}, minmax(0, 1fr))`,
-                  minWidth: data.segments.length * 300,
+                  gridTemplateColumns: `repeat(${segmentsList.length}, minmax(0, 1fr))`,
+                  minWidth: segmentsList.length * 300,
                 }}
               >
-                {data.segments.map((segment) => (
+                {segmentsList.map((segment) => (
                   <div key={segment.text} className="grid gap-2">
                     <span className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">
                       {segment.text.charAt(0).toUpperCase() +
                         segment.text.slice(1)}
                     </span>
-                    <Column
-                      statementIds={statementIds}
-                      statements={data.statements}
-                      choicePercentage={segment.measures.choicePercentage}
-                      review={segment.measures.review}
-                      animationKey={segment.text}
-                    />
+                    {segment.measures ? (
+                      <Column
+                        statementIds={statementIds}
+                        statements={safeStatements}
+                        choicePercentage={segment.measures.choicePercentage}
+                        review={segment.measures.review}
+                        animationKey={segment.text}
+                      />
+                    ) : null}
                   </div>
                 ))}
               </div>
@@ -238,9 +302,9 @@ function Column({
   animationKey = "only-once",
 }: {
   statementIds: number[];
-  statements: PollResults["statements"];
-  choicePercentage: PollResults["choicePercentage"];
-  review: PollResults["review"];
+  statements: NonNullable<PollResults["statements"]>;
+  choicePercentage: NonNullable<PollResults["choicePercentage"]>;
+  review: NonNullable<PollResults["review"]>;
   animationKey?: string;
 }) {
   const rows: Row[] = statementIds.reduce((acc, statementId, index) => {
@@ -248,7 +312,13 @@ function Column({
       (statement) => statement.id === statementId,
     );
     if (statement?.question_type === "default") {
-      acc.push({ type: "statement", statement });
+      // Ensure author_name and author_avatar_url are present for type compatibility
+      const fullStatement = {
+        author_name: null,
+        author_avatar_url: null,
+        ...statement,
+      };
+      acc.push({ type: "statement", statement: fullStatement });
     }
     return acc;
   }, [] as Row[]);

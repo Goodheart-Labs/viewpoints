@@ -34,10 +34,12 @@ export function PollHeader({
   slug,
   isOwner,
   pollId,
+  resultsPublic,
 }: {
   slug: string;
   isOwner: boolean;
   pollId: number;
+  resultsPublic: boolean;
 }) {
   const pathname = usePathname();
   const isResultsPage = pathname.endsWith("/results");
@@ -69,15 +71,16 @@ export function PollHeader({
 
   return (
     <div className="flex gap-1 items-center mb-3 justify-end">
-      {isResultsPage ? (
-        <PollButton icon={FiArchive} href={`/polls/${slug}`}>
-          Vote
-        </PollButton>
-      ) : (
-        <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
-          Results
-        </PollButton>
-      )}
+      {(resultsPublic || isOwner) &&
+        (isResultsPage ? (
+          <PollButton icon={FiArchive} href={`/polls/${slug}`}>
+            Vote
+          </PollButton>
+        ) : (
+          <PollButton icon={FiBarChart} href={`/polls/${slug}/results`}>
+            Results
+          </PollButton>
+        ))}
       {isOwner ? (
         <PollButton icon={FiEdit} href={`/user/polls/${pollId}`}>
           Edit
@@ -107,21 +110,23 @@ export function PollHeader({
             <FiLink className="w-4 h-4 mr-2" />
             Copy link to poll
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={() => {
-              posthog.capture("Share Poll Link", {
-                poll_slug: slug,
-                type: "results",
-              });
-              copyText(
-                `${getBaseUrl()}/polls/${slug}/results`,
-                "Results link copied to clipboard",
-              );
-            }}
-          >
-            <FiBarChart className="w-4 h-4 mr-2" />
-            Copy link to results
-          </DropdownMenuItem>
+          {resultsPublic && (
+            <DropdownMenuItem
+              onSelect={() => {
+                posthog.capture("Share Poll Link", {
+                  poll_slug: slug,
+                  type: "results",
+                });
+                copyText(
+                  `${getBaseUrl()}/polls/${slug}/results`,
+                  "Results link copied to clipboard",
+                );
+              }}
+            >
+              <FiBarChart className="w-4 h-4 mr-2" />
+              Copy link to results
+            </DropdownMenuItem>
+          )}
           <QRCodeDialog link={`${getBaseUrl()}/polls/${slug}`}>
             <DropdownMenuItem
               onSelect={(e) => {
@@ -140,10 +145,12 @@ export function PollHeader({
             <FiCode className="w-4 h-4 mr-2" />
             Copy embed code
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => handleDownload({ pollId })}>
-            <FiDownload className="w-4 h-4 mr-2" />
-            Download CSV
-          </DropdownMenuItem>
+          {(resultsPublic || isOwner) && (
+            <DropdownMenuItem onSelect={() => handleDownload({ pollId })}>
+              <FiDownload className="w-4 h-4 mr-2" />
+              Download CSV
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

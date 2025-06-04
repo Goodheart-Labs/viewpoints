@@ -21,6 +21,9 @@ export default async function PollLayout({
 }) {
   const results = await getPoll(slug);
 
+  // If no results, poll not found
+  if (!results) return <>{children}</>;
+
   const isCouncilPoll = slug.includes("council");
 
   return (
@@ -34,6 +37,7 @@ export default async function PollLayout({
           slug={slug}
           isOwner={results.isOwner}
           pollId={results.poll.id}
+          resultsPublic={results.poll.results_public}
         />
         <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
           {results.poll.title}
