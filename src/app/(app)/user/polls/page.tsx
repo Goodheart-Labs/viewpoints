@@ -2,7 +2,7 @@ import Link from "next/link";
 import { db } from "@/db/client";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import { FiArrowRight, FiEdit, FiPlus } from "react-icons/fi";
+import { FiArrowRight, FiBarChart, FiEdit, FiPlus } from "react-icons/fi";
 import { Button } from "@/ui/button";
 import { isUserPro } from "@/lib/isUserPro";
 import { UpgradeLink } from "@/components/UpgradeLink";
@@ -98,7 +98,7 @@ function UserPoll({
 }: Awaited<ReturnType<typeof getUserPolls>>[number]) {
   return (
     <div className="rounded-lg md:flex border shadow-sm bg-white dark:bg-neutral-800">
-      <Link href={`/polls/${slug}`} className="grid gap-2 p-4 md:p-6 flex-grow">
+      <Link href={`/polls/${slug}`} className="grid gap-1 p-4 md:p-5 flex-grow">
         <h2 className="text-lg leading-tight font-medium text-neutral-900 dark:text-neutral-50 text-pretty">
           {title}
         </h2>
@@ -114,6 +114,10 @@ function UserPoll({
         <Link href={`/polls/${slug}`} className={pollButton}>
           <FiArrowRight />
           View
+        </Link>
+        <Link href={`/polls/${slug}/results`} className={pollButton}>
+          <FiBarChart />
+          Results
         </Link>
       </div>
     </div>
