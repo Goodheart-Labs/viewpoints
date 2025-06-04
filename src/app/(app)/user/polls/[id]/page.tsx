@@ -23,6 +23,10 @@ export default async function PollAdminPage({ params }: PageProps) {
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-4">Poll Admin: {data.poll.title}</h1>
+      <p className="mb-4 text-neutral-600 dark:text-neutral-400">
+        This is the edit page for your poll. Some fields can be changed, but
+        others are locked after creation.
+      </p>
       <div className="flex gap-2 mb-6">
         <Link
           href={`/polls/${data.poll.slug}`}

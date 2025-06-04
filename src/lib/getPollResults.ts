@@ -2,6 +2,7 @@ import { db } from "@/db/client";
 import { notFound } from "next/navigation";
 import { StatementChoice, StatementReview } from "./schemas";
 import { ChoiceEnum } from "kysely-codegen";
+import { auth } from "@clerk/nextjs/server";
 
 export type PollResults = Awaited<ReturnType<typeof getPollResults>>;
 
@@ -27,6 +28,17 @@ export async function getPollResults({
 
   if (!poll) {
     return notFound();
+  }
+
+  // Privacy check: if results are not public, only the poll creator can access
+  if (!poll.results_public) {
+    const { userId } = auth();
+    if (!userId || userId !== poll.user_id) {
+      return {
+        poll,
+        resultsPrivate: true,
+      };
+    }
   }
 
   // Get all visible statements including demographic questions
@@ -297,6 +309,7 @@ export async function getPollResults({
     visitorMostConflictStatementId,
     allStatements: questions,
     segments,
+    resultsPrivate: false,
   };
 
   function getAllResponses() {

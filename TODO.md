@@ -5,7 +5,9 @@
   - [x] Add a toggle for this on the poll creation page
   - [x] Make sure the user can edit it after the fact on the poll edit page
   - [x] There's no link to the results page (unless you are poll creator_)
-  - [ ] You can't access the results page even by url (shows 404)
+  - [ ] You can't access the results page even by url (says results are private, 404 doesn't make sense to do)
+  - [ ] Also need to remove the "Copy link to results page" from share dropdown if results private
+  - [ ] Remove download CSV unless it's the poll creator
   - [ ] At the end of the poll it just "Thanks for filling this out!"
   - [ ] Check with "Create with AI" should be able to mark results as private
   - [ ] Show on the polls list if the results are private
