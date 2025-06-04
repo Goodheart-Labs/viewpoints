@@ -12,7 +12,7 @@
   - [x] Check with "Create with AI" should be able to mark results as private
   - [x] Show on the polls list if the results are private
   - [x] API endpoints
-  - [ ] Run on staging DB before pushing pull request
+  - [x] Run on staging DB before pushing pull request
   - [ ] Then Prod
 
 
